@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    android:padding="30dp"
+    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+
+    <TextView
+        android:id="@+id/textView"
+        android:padding="10dp"
+        android:text="Select Your Option"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+
+    <Spinner
+        android:padding="10dp"
+        android:layout_below="@id/textView"
+        android:id="@+id/admin_chooser"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"></Spinner>
+
+
+    <Button
+        android:background="@color/colorPrimary"
+        android:id="@+id/btnSelect"
+        android:layout_below="@id/admin_chooser"
+        android:layout_centerHorizontal="true"
+        android:text="Done"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+</RelativeLayout>

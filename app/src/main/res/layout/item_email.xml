@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.CardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/email_cardView"
+    xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    card_view:cardElevation="4dp"
+    card_view:cardUseCompatPadding="true"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:padding="10dp">
+
+        <TextView
+            android:id="@+id/date_time_txt"
+            android:text="12:10, 3 dec 2017"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true" />
+
+        <View
+            android:id="@+id/anchorE"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_centerInParent="true"
+            android:layout_marginLeft="-70dp"
+            android:layout_marginRight="80dp" />
+
+        <RelativeLayout
+            android:id="@+id/left_side"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="0dip"
+            android:layout_centerInParent="true"
+            android:layout_toLeftOf="@+id/anchorE"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/calltxt"
+                android:visibility="gone"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Call By" />
+
+            <TextView
+                android:id="@+id/called_contactE"
+                android:layout_width="wrap_content"
+                android:layout_below="@+id/calltxt"
+                android:layout_height="wrap_content"
+                android:text="Cell"
+                android:textColor="@color/black" />
+
+            <TextView
+                android:id="@+id/called_numberE"
+                android:layout_width="wrap_content"
+                android:layout_below="@+id/calltxt"
+                android:layout_height="wrap_content"
+                android:paddingLeft="15dp"
+                android:layout_toRightOf="@+id/called_contactE"
+                android:text="Cell"
+                android:textColor="@color/black" />
+
+            <TextView
+                android:id="@+id/tempoE"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/called_contactE"
+                android:text="Saved Details" />
+
+            <TextView
+                android:id="@+id/contact_idE"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/tempoE"
+                android:textColor="@color/black"
+                android:text="Contact Name : " />
+
+            <TextView
+                android:id="@+id/contact_nameE"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/tempoE"
+                android:textColor="@color/black"
+                android:layout_toRightOf="@id/contact_idE" />
+
+            <TextView
+                android:id="@+id/contact_id2E"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/contact_idE"
+                android:textColor="@color/black"
+                android:text="Email Id : " />
+
+            <TextView
+                android:id="@+id/emailId"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="@color/black"
+                android:layout_below="@id/contact_idE"
+                android:layout_toRightOf="@id/contact_id2E" />
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:padding="0dp"
+            android:id="@+id/right_side"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="0dip"
+            android:layout_centerInParent="true"
+            android:layout_toRightOf="@+id/left_side"
+            android:orientation="vertical"
+            android:text="Right Side">
+
+            <ImageView
+                android:id="@+id/stateofcallE"
+                android:layout_width="50dp"
+                android:layout_height="25dp"
+                android:layout_margin="10dp"
+                android:src="@drawable/incoming_call" />
+
+            <ImageView
+                android:id="@+id/overflow"
+                android:layout_width="50dp"
+                android:layout_height="35dp"
+                android:layout_marginTop="5dp"
+                android:layout_toRightOf="@+id/stateofcallE"
+                android:adjustViewBounds="true"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:scaleType="centerCrop"
+                android:src="@drawable/overflow_grey" />
+        </RelativeLayout>
+    </RelativeLayout>
+
+
+</android.support.v7.widget.CardView>

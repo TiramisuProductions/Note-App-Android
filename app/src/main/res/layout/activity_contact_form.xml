@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="truelancer.noteapp.noteapp.ContactForm">
+
+<TextView
+    android:text="Add a New Contact"
+    android:textSize="30sp"
+    android:id="@+id/label"
+    android:textColor="@color/colorPrimary"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content" />
+
+
+    <android.support.design.widget.TextInputLayout
+        android:id="@+id/laout_conatctname"
+        android:layout_below="@+id/label"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <EditText
+            android:id="@+id/contactname"
+            android:layout_width="match_parent"
+            android:inputType="text"
+            android:layout_height="wrap_content"
+            android:hint="Enter Contact Name" />
+
+    </android.support.design.widget.TextInputLayout>
+
+    <android.support.design.widget.TextInputLayout
+        android:id="@+id/layout_contactnumber"
+        android:layout_below="@+id/laout_conatctname"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <EditText
+            android:id="@+id/contactnumber"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="phone"
+            android:hint="Enter Contact Number" />
+
+    </android.support.design.widget.TextInputLayout>
+
+
+
+    <Button
+        android:layout_below="@id/layout_contactnumber"
+        android:id="@+id/done"
+        android:background="@color/colorAccent"
+        android:layout_marginTop="50dp"
+        android:layout_centerInParent="true"
+        android:text="Done"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+
+</RelativeLayout>
