@@ -3,8 +3,21 @@
     <string name="contact">Contact</string>
     <string name="email">Email</string>
     <string name="account">Account</string>
-    <string name="notes">Note</string>
+    <string name="note">Note</string>
+    <string name="fab_contact">Add Contact</string>
+    <string name="fab_email">Add Email</string>
+    <string name="fab_account">Add Bank Account</string>
+    <string name="fab_note">Add Note</string>
+
+    <string name="hint_contact_name">Enter Contact Name</string>
+    <string name="hint_contact_number">Enter Contact Number</string>
+    <string name="hint__name">Enter Name</string>
+    <string name="hint_email">Enter Email</string>
     <string name="Enter">Enter the name </string>
+    <string name="contacts">Contacts</string>
+    <string name="emails">Email</string>
+    <string name="accounts">Account</string>
+    <string name="notes">Notes</string>
 
     <string name="saved_details">
          <u>Saved Details</u>
@@ -18,5 +31,10 @@
     <string name="others_ifsc_no">Others (IFSC No.)</string>
     <string name="save">Save</string>
     <string name="email_id">Email ID</string>
+    <string name="admin_option_1">Report A Bug</string>
+    <string name="admin_option_2">Suggest A Feature</string>
+    <string name="admin_email">admin@hellonote.com</string>
+    <string name="admin_subject_1">Sir I would like to Report A Issue</string>
+    <string name="admin_subject_2">Sir I would like to Suggest A Feature</string>
 
 </resources>

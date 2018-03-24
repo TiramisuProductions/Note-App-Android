@@ -1,6 +1,8 @@
     package truelancer.noteapp.noteapp;
 
 
+    import android.animation.Animator;
+    import android.animation.AnimatorListenerAdapter;
     import android.annotation.TargetApi;
     import android.app.Activity;
     import android.app.Dialog;
@@ -10,18 +12,26 @@
     import android.content.pm.ResolveInfo;
     import android.database.Cursor;
     import android.graphics.Bitmap;
+    import android.graphics.Color;
+    import android.graphics.drawable.ColorDrawable;
     import android.net.Uri;
     import android.os.Build;
     import android.provider.ContactsContract;
     import android.provider.MediaStore;
     import android.support.annotation.NonNull;
+    import android.support.annotation.RequiresApi;
     import android.support.design.widget.FloatingActionButton;
     import android.support.design.widget.TabLayout;
+    import android.support.design.widget.TextInputEditText;
+    import android.support.design.widget.TextInputLayout;
     import android.support.v4.app.ActivityCompat;
     import android.support.v4.content.ContextCompat;
+    import android.support.v4.view.MenuItemCompat;
     import android.support.v4.view.ViewPager;
+    import android.support.v7.app.AlertDialog;
     import android.support.v7.app.AppCompatActivity;
     import android.os.Bundle;
+    import android.support.v7.widget.SearchView;
     import android.support.v7.widget.Toolbar;
     import android.util.Log;
     import android.view.LayoutInflater;
@@ -29,15 +39,20 @@
     import android.view.MenuInflater;
     import android.view.MenuItem;
     import android.view.View;
+    import android.view.ViewAnimationUtils;
     import android.view.ViewGroup;
     import android.widget.AdapterView;
     import android.widget.ArrayAdapter;
+    import android.widget.AutoCompleteTextView;
     import android.widget.Button;
+    import android.widget.EditText;
+    import android.widget.ImageView;
     import android.widget.Spinner;
     import android.widget.TextView;
     import android.widget.Toast;
 
 
+    import com.github.clans.fab.FloatingActionMenu;
     import com.google.android.gms.auth.api.signin.GoogleSignIn;
     import com.google.android.gms.auth.api.signin.GoogleSignInClient;
     import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
@@ -66,6 +81,7 @@
     import java.io.OutputStream;
     import java.io.OutputStreamWriter;
     import java.io.Writer;
+    import java.lang.reflect.Field;
     import java.util.List;
 
     import butterknife.BindView;
@@ -90,39 +106,190 @@
     import static android.Manifest.permission.WRITE_CONTACTS;
     import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
 
-    public class MainActivity extends AppCompatActivity {
-
+    public class MainActivity extends AppCompatActivity implements View.OnClickListener {
+        @BindView(R.id.fab_contact) com.github.clans.fab.FloatingActionButton contactFab;
+        @BindView(R.id.fab_email) com.github.clans.fab.FloatingActionButton emailFab;
+        @BindView(R.id.fab_bank_account) com.github.clans.fab.FloatingActionButton bankAccountfab;
+        @BindView(R.id.fab_last_notes) com.github.clans.fab.FloatingActionButton lastNoteFab;
+        @BindView(R.id.toolbar) Toolbar toolbar;
+        @BindView(R.id.viewpager) ViewPager homeViewPager;
+        @BindView(R.id.tabs) TabLayout homeTabLayout;
+        @BindView(R.id.fab_menu) FloatingActionMenu floatingActionMenu;
+        @BindView(R.id.searchtoolbar) Toolbar searchToolbar;
+        Menu search_menu;
+        MenuItem item_search;
         private static final int REQUEST_CODE_SIGN_IN = 0;
         private static final int REQUEST_CODE_CAPTURE_IMAGE = 1;
         private static final int RequestPermissionCode = 3;
         static final int RESULT_PICK_CONTACT_C = 4;
         static final int RESULT_PICK_CONTACT_E = 5;
-
-        @BindView(R.id.add_new)
-        FloatingActionButton addNew;
         Boolean isImport = false;
-        String TAG = "iodex";
-        Toolbar toolbar;
-        ViewPager viewPager;
-        TabLayout tabLayout;
-
         public static String dataFromAapter;
-
-        String filenamecool = "leharq.json";
-
         GoogleSignInClient mGoogleSignInClient;
         private DriveClient mDriveClient;
         private DriveResourceClient mDriveResourceClient;
-
         String jsonString = "";
+        String TAG ="MainActivity";
 
-        @Override
-        public void setContentView(View view) {
-            super.setContentView(view);
 
-            FontChangeCrawler fontChanger = new FontChangeCrawler(getAssets(), "font.ttf");
-            fontChanger.replaceFonts((ViewGroup) this.findViewById(android.R.id.content));
+        public void setSearchtollbar()
+        {
+            searchToolbar = (Toolbar) findViewById(R.id.searchtoolbar);
+            if (searchToolbar != null) {
+                searchToolbar.inflateMenu(R.menu.menu_search);
+                search_menu=searchToolbar.getMenu();
+
+                searchToolbar.setNavigationOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
+                            circleReveal(R.id.searchtoolbar,1,true,false);
+                        else {
+                            searchToolbar.setVisibility(View.GONE);
+                            homeTabLayout.setVisibility(View.VISIBLE);
+                        }
+
+
+
+                    }
+                });
+
+                item_search = search_menu.findItem(R.id.action_filter_search);
+
+                MenuItemCompat.setOnActionExpandListener(item_search, new MenuItemCompat.OnActionExpandListener() {
+                    @Override
+                    public boolean onMenuItemActionCollapse(MenuItem item) {
+                        // Do something when collapsed
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                            circleReveal(R.id.searchtoolbar,1,true,false);
+                        }
+                        else
+                            searchToolbar.setVisibility(View.GONE);
+                        return true;
+                    }
+
+                    @Override
+                    public boolean onMenuItemActionExpand(MenuItem item) {
+                        // Do something when expanded
+                        return true;
+                    }
+                });
+
+                initSearchView();
+
+
+            } else
+                Log.d("toolbar", "setSearchtollbar: NULL");
         }
+
+
+        public void initSearchView()
+        {
+            final SearchView searchView =
+                    (SearchView) search_menu.findItem(R.id.action_filter_search).getActionView();
+
+            // Enable/Disable Submit button in the keyboard
+
+            searchView.setSubmitButtonEnabled(false);
+
+            // Change search close button image
+
+            ImageView closeButton = (ImageView) searchView.findViewById(R.id.search_close_btn);
+            closeButton.setImageResource(R.drawable.ic_close);
+
+
+            // set hint and the text colors
+
+            EditText txtSearch = ((EditText) searchView.findViewById(android.support.v7.appcompat.R.id.search_src_text));
+            txtSearch.setHint("Search..");
+            txtSearch.setHintTextColor(Color.DKGRAY);
+            txtSearch.setTextColor(getResources().getColor(R.color.colorPrimary));
+
+
+            // set the cursor
+
+            AutoCompleteTextView searchTextView = (AutoCompleteTextView) searchView.findViewById(android.support.v7.appcompat.R.id.search_src_text);
+            try {
+                Field mCursorDrawableRes = TextView.class.getDeclaredField("mCursorDrawableRes");
+                mCursorDrawableRes.setAccessible(true);
+                mCursorDrawableRes.set(searchTextView, R.drawable.search_cursor); //This sets the cursor resource ID to 0 or @null which will make it visible on white background
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+            searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+                @Override
+                public boolean onQueryTextSubmit(String query) {
+                    callSearch(query);
+                    searchView.clearFocus();
+                    return true;
+                }
+
+                @Override
+                public boolean onQueryTextChange(String newText) {
+                    callSearch(newText);
+                    return true;
+                }
+
+                public void callSearch(String query) {
+                    //Do searching
+                    Log.i("query", "" + query);
+
+                }
+
+            });
+
+        }
+
+
+        @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+        public void circleReveal(int viewID, int posFromRight, boolean containsOverflow, final boolean isShow)
+        {
+            final View myView = findViewById(viewID);
+
+            int width=myView.getWidth();
+
+            if(posFromRight>0)
+                width-=(posFromRight*getResources().getDimensionPixelSize(R.dimen.abc_action_button_min_width_material))-(getResources().getDimensionPixelSize(R.dimen.abc_action_button_min_width_material)/ 2);
+            if(containsOverflow)
+                width-=getResources().getDimensionPixelSize(R.dimen.abc_action_button_min_width_overflow_material);
+
+            int cx=width;
+            int cy=myView.getHeight()/2;
+
+            Animator anim;
+            if(isShow)
+                anim = ViewAnimationUtils.createCircularReveal(myView, cx, cy, 0,(float)width);
+            else
+                anim = ViewAnimationUtils.createCircularReveal(myView, cx, cy, (float)width, 0);
+
+            anim.setDuration((long)220);
+
+            // make the view invisible when the animation is done
+            anim.addListener(new AnimatorListenerAdapter() {
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    if(!isShow)
+                    {
+                        super.onAnimationEnd(animation);
+                        myView.setVisibility(View.INVISIBLE);
+                        homeTabLayout.setVisibility(View.VISIBLE);
+                    }
+                }
+            });
+
+            // make the view visible and start the animation
+            if(isShow)
+                myView.setVisibility(View.VISIBLE);
+
+            // start the animation
+            anim.start();
+
+
+        }
+
+
+        
 
         @Override
         protected void onCreate(Bundle savedInstanceState) {
@@ -130,28 +297,23 @@
 
             setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
-            toolbar = (Toolbar) findViewById(R.id.toolbar);
-            viewPager = (ViewPager) findViewById(R.id.viewpager);
-            tabLayout = (TabLayout) findViewById(R.id.tabs);
-
+            setSearchtollbar();
+            contactFab.setOnClickListener(this);
+            emailFab.setOnClickListener(this);
+            bankAccountfab.setOnClickListener(this);
+            lastNoteFab.setOnClickListener(this);
             setSupportActionBar(toolbar);
             getSupportActionBar().setDisplayHomeAsUpEnabled(false); //To disable back button on toolbar
 
-            tabLayout.setupWithViewPager(viewPager);
+            homeTabLayout.setupWithViewPager(homeViewPager);
 
-            setupViewPager(viewPager);
-            tabLayout.setupWithViewPager(viewPager);
+            setupViewPager(homeViewPager);
+            homeTabLayout.setupWithViewPager(homeViewPager);
             setupTabIcons();//icons on tabs
 
-            addNew.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    Intent i = new Intent(MainActivity.this,Add_New.class);
-                    i.putExtra("option",tabLayout.getSelectedTabPosition());
-                    startActivity(i);
 
-                }
-            });
+
+
 
             if (checkPermission()) {
                 initiateTabs();
@@ -225,10 +387,10 @@
 
         private void setupViewPager(ViewPager viewPager) {
             ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
-            adapter.addFragment(new ContactFragment(), "Contacts");
-            adapter.addFragment(new emailFragment(), "Emails");
-            adapter.addFragment(new bankAccountFragment(), "Bank Account");
-            adapter.addFragment(new lastNoteFragment(), "Last Note");
+            adapter.addFragment(new ContactFragment(), getString(R.string.contacts));
+            adapter.addFragment(new emailFragment(), getString(R.string.emails));
+            adapter.addFragment(new bankAccountFragment(), getString(R.string.accounts));
+            adapter.addFragment(new lastNoteFragment(), getString(R.string.notes));
             viewPager.setAdapter(adapter);
         }
 
@@ -237,22 +399,22 @@
             TextView tabContact = (TextView) LayoutInflater.from(this).inflate(R.layout.custom_tab, null);
             tabContact.setText("Contacts");
             tabContact.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.contactimage, 0, 0);
-            tabLayout.getTabAt(0).setCustomView(tabContact);
+            homeTabLayout.getTabAt(0).setCustomView(tabContact);
 
             TextView tabemail = (TextView) LayoutInflater.from(this).inflate(R.layout.custom_tab, null);
             tabemail.setText(" Emails");
             tabemail.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.emailimage, 0, 0);
-            tabLayout.getTabAt(1).setCustomView(tabemail);
+            homeTabLayout.getTabAt(1).setCustomView(tabemail);
 
             TextView tabBankAccount = (TextView) LayoutInflater.from(this).inflate(R.layout.custom_tab, null);
             tabBankAccount.setText("Bank Accounts");
             tabBankAccount.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.bankaccountimage, 0, 0);
-            tabLayout.getTabAt(2).setCustomView(tabBankAccount);
+            homeTabLayout.getTabAt(2).setCustomView(tabBankAccount);
 
             TextView tabLastNote = (TextView) LayoutInflater.from(this).inflate(R.layout.custom_tab, null);
             tabLastNote.setText("Last Notes");
             tabLastNote.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.lastnotesimage, 0, 0);
-            tabLayout.getTabAt(3).setCustomView(tabLastNote);
+            homeTabLayout.getTabAt(3).setCustomView(tabLastNote);
         }
 
 
@@ -285,7 +447,13 @@
 
                 case R.id.menu_search:
 
-                    startActivity(new Intent(getApplicationContext(), Search.class));
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
+                        circleReveal(R.id.searchtoolbar,1,true,true);
+                    else
+                        searchToolbar.setVisibility(View.VISIBLE);
+
+                    homeTabLayout.setVisibility(View.GONE);
+                    item_search.expandActionView();
                     return true;
 
                 case R.id.menu_import:
@@ -296,8 +464,7 @@
 
                 case R.id.menu_email_to_admin:
                     final Dialog dialog = new Dialog(MainActivity.this);
-                    String options[] = {"Report a bug","Suggest a feature"};
-
+                    String options[] = {getString(R.string.admin_option_1),getString(R.string.admin_option_2)};
                     dialog.setContentView(R.layout.dialog_admin);
                     final Spinner adminSpinner = (Spinner)dialog.findViewById(R.id.admin_chooser);
                     Button buttonSelect = (Button)dialog.findViewById(R.id.btnSelect);
@@ -309,12 +476,12 @@
                         @Override
                         public void onClick(View view) {
                             if(adminSpinner.getSelectedItemPosition()==0){
-                                String email[]={"admin@hellonote.com"};
-                                shareToGMail(email,"Report A Bug","Sir I would like to Report A Issue");
+                                String email[]={getString(R.string.admin_email)};
+                                shareToGMail(email,getString(R.string.admin_option_1),getString(R.string.admin_subject_1));
                             }
                             else{
-                                String email[]={"admin@hellonote.com"};
-                                shareToGMail(email,"Suggest A Feature","Sir I would like to Suggest A Feature");
+                                String email[]={getString(R.string.admin_email)};
+                                shareToGMail(email,getString(R.string.admin_option_2),getString(R.string.admin_subject_2));
                             }
                         }
                     });
@@ -483,7 +650,7 @@
                                     }
 
                                     MetadataChangeSet changeSet = new MetadataChangeSet.Builder()
-                                            .setTitle(filenamecool)
+                                            .setTitle(Config.BACKUP_FILE_NAME)
                                             .setMimeType("json/application")
                                             .setStarred(true)
                                             .build();
@@ -496,7 +663,7 @@
                                     new OnSuccessListener<DriveFile>() {
                                         @Override
                                         public void onSuccess(DriveFile driveFile) {
-                                            Log.d("Working", "Working");
+                                            Log.d(TAG, "Working");
                                         }
                                     })
                             .addOnFailureListener(this, new OnFailureListener() {
@@ -513,7 +680,7 @@
 
         private void getDriveId() {
             Query query = new Query.Builder()
-                    .addFilter(Filters.eq(SearchableField.TITLE, filenamecool))
+                    .addFilter(Filters.eq(SearchableField.TITLE, Config.BACKUP_FILE_NAME))
                     .build();
 
             Task<MetadataBuffer> queryTask = mDriveResourceClient.query(query);
@@ -628,5 +795,99 @@
         }
 
 
+        @Override
+        public void onClick(View v) {
+
+            switch (v.getId()) {
+                case  R.id.fab_contact: {
+                    floatingActionMenu.close(true);
+                    final Dialog dialog = new Dialog(this);
+                    dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                    dialog.setContentView(R.layout.add_contact_dialog);
+                    TextInputLayout field1 = (TextInputLayout)dialog.findViewById(R.id.field_layout_1);
+                    TextInputLayout field2 = (TextInputLayout)dialog.findViewById(R.id.field_layout_2);
+                    Button save = (Button)dialog.findViewById(R.id.save);
+                    Button cancel = (Button)dialog.findViewById(R.id.cancel);
+                    TextInputEditText contactName = (TextInputEditText)dialog.findViewById(R.id.field_1);
+                    TextInputEditText contactNumber= (TextInputEditText)dialog.findViewById(R.id.field_2);
+                    field1.setHint(getString(R.string.hint_contact_name));
+                    field2.setHint(getString(R.string.hint_contact_number));
+
+                    cancel.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            dialog.dismiss();
+                        }
+                    });
+
+                    save.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+
+                        }
+                    });
+
+
+
+
+                    dialog.show();
+                    break;
+                }
+
+                case R.id.fab_email: {
+                    // do something for button 2 click
+                    floatingActionMenu.close(true);
+                    final Dialog dialog = new Dialog(this);
+                    dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                    dialog.setContentView(R.layout.add_contact_dialog);
+                    TextInputLayout field1 = (TextInputLayout)dialog.findViewById(R.id.field_layout_1);
+                    TextInputLayout field2 = (TextInputLayout)dialog.findViewById(R.id.field_layout_2);
+                    Button save = (Button)dialog.findViewById(R.id.save);
+                    Button cancel = (Button)dialog.findViewById(R.id.cancel);
+                    TextInputEditText contactName = (TextInputEditText)dialog.findViewById(R.id.field_1);
+                    TextInputEditText contactNumber= (TextInputEditText)dialog.findViewById(R.id.field_2);
+                    field1.setHint(getString(R.string.hint__name));
+                    field2.setHint(getString(R.string.hint_email));
+
+                    cancel.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            dialog.dismiss();
+                        }
+                    });
+
+                    save.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+
+                        }
+                    });
+
+
+
+
+                    dialog.show();
+
+
+
+                    break;
+                }
+
+                case R.id.fab_bank_account: {
+                    // do something for button 2 click
+                    break;
+                }
+
+
+                case R.id.fab_last_notes: {
+                        // do something for button 2 click
+                    break;
+                }
+
+
+                //.... etc
+            }
+
+        }
     }
 
