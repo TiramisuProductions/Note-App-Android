@@ -66,13 +66,21 @@ public class emailAdapter extends RecyclerView.Adapter<emailAdapter.MyView> {
     @Override
     public void onBindViewHolder(final MyView holder, final int position) {
 
-        if (!emails.get(position).isIncoming()) {
-            holder.call_txt.setText("Call To");
-            inout = "Call To";
-            holder.state_of_call.setImageResource(R.drawable.outgoing_call);
-        } else {
-            inout = "Call By";
+
+       if(emails.get(position).isSavedFromApp()){
+           holder.state_of_call.setVisibility(View.INVISIBLE);
+        }else{
+            if (!emails.get(position).isIncoming()) {
+                holder.call_txt.setText("Call To");
+                inout = "Call To";
+                holder.state_of_call.setImageResource(R.drawable.outgoing_call);
+            } else {
+                inout = "Call By";
+            }
         }
+
+
+
 
         String tsMilli = emails.get(position).getTsMilli();
         long tsLong = Long.parseLong(tsMilli);

@@ -13,12 +13,16 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
 import truelancer.noteapp.noteapp.Adapters.contactAdapter;
 import truelancer.noteapp.noteapp.Database.Contact;
+import truelancer.noteapp.noteapp.EventB;
 import truelancer.noteapp.noteapp.R;
 
 
@@ -41,6 +45,9 @@ public class ContactFragment extends Fragment {
         // Inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.fragment_contact, container, false);
 
+            EventBus.getDefault().register(this);
+
+
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getActivity());
         mRecyclerView = (RecyclerView) rootView.findViewById(R.id.recycler_contact);
         mRecyclerView.setLayoutManager(mLayoutManager);
@@ -59,6 +66,15 @@ public class ContactFragment extends Fragment {
         return rootView;
     }
 
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        EventBus.getDefault().unregister(this);
+    }
+
+
+
     @Override
     public void onResume() {
         super.onResume();
@@ -67,5 +83,16 @@ public class ContactFragment extends Fragment {
         Collections.reverse(contacts);
         mAdapter = new contactAdapter(getActivity(), contacts);
         mRecyclerView.setAdapter(mAdapter);
+    }
+@Subscribe
+    public void onEvent(EventB event){
+        // your implementation
+       if(event.getMessage().equals("1")){
+           mAdapter.notifyDataSetChanged();
+           List<Contact> contacts = Contact.listAll(Contact.class);
+           Collections.reverse(contacts);
+           mAdapter = new contactAdapter(getActivity(), contacts);
+           mRecyclerView.setAdapter(mAdapter);
+       }
     }
 }

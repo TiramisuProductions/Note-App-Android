@@ -3,24 +3,19 @@
 
     import android.animation.Animator;
     import android.animation.AnimatorListenerAdapter;
-    import android.annotation.TargetApi;
     import android.app.Activity;
     import android.app.Dialog;
-    import android.content.Context;
     import android.content.Intent;
     import android.content.pm.PackageManager;
     import android.content.pm.ResolveInfo;
     import android.database.Cursor;
-    import android.graphics.Bitmap;
     import android.graphics.Color;
     import android.graphics.drawable.ColorDrawable;
     import android.net.Uri;
     import android.os.Build;
     import android.provider.ContactsContract;
-    import android.provider.MediaStore;
     import android.support.annotation.NonNull;
     import android.support.annotation.RequiresApi;
-    import android.support.design.widget.FloatingActionButton;
     import android.support.design.widget.TabLayout;
     import android.support.design.widget.TextInputEditText;
     import android.support.design.widget.TextInputLayout;
@@ -28,7 +23,6 @@
     import android.support.v4.content.ContextCompat;
     import android.support.v4.view.MenuItemCompat;
     import android.support.v4.view.ViewPager;
-    import android.support.v7.app.AlertDialog;
     import android.support.v7.app.AppCompatActivity;
     import android.os.Bundle;
     import android.support.v7.widget.SearchView;
@@ -40,8 +34,6 @@
     import android.view.MenuItem;
     import android.view.View;
     import android.view.ViewAnimationUtils;
-    import android.view.ViewGroup;
-    import android.widget.AdapterView;
     import android.widget.ArrayAdapter;
     import android.widget.AutoCompleteTextView;
     import android.widget.Button;
@@ -75,8 +67,9 @@
     import com.google.android.gms.tasks.Tasks;
     import com.google.gson.Gson;
 
+    import org.greenrobot.eventbus.EventBus;
+
     import java.io.BufferedReader;
-    import java.io.IOException;
     import java.io.InputStreamReader;
     import java.io.OutputStream;
     import java.io.OutputStreamWriter;
@@ -87,7 +80,6 @@
     import butterknife.BindView;
     import butterknife.ButterKnife;
     import truelancer.noteapp.noteapp.Adapters.ViewPagerAdapter;
-    import truelancer.noteapp.noteapp.Adapters.contactAdapter;
     import truelancer.noteapp.noteapp.Database.BankAccount;
     import truelancer.noteapp.noteapp.Database.Contact;
     import truelancer.noteapp.noteapp.Database.Email;
@@ -311,7 +303,7 @@
             homeTabLayout.setupWithViewPager(homeViewPager);
             setupTabIcons();//icons on tabs
 
-
+            homeViewPager.setOffscreenPageLimit(4);
 
 
 
@@ -808,8 +800,8 @@
                     TextInputLayout field2 = (TextInputLayout)dialog.findViewById(R.id.field_layout_2);
                     Button save = (Button)dialog.findViewById(R.id.save);
                     Button cancel = (Button)dialog.findViewById(R.id.cancel);
-                    TextInputEditText contactName = (TextInputEditText)dialog.findViewById(R.id.field_1);
-                    TextInputEditText contactNumber= (TextInputEditText)dialog.findViewById(R.id.field_2);
+                    final TextInputEditText contactName = (TextInputEditText)dialog.findViewById(R.id.field_1);
+                    final TextInputEditText contactNumber= (TextInputEditText)dialog.findViewById(R.id.field_2);
                     field1.setHint(getString(R.string.hint_contact_name));
                     field2.setHint(getString(R.string.hint_contact_number));
 
@@ -823,7 +815,11 @@
                     save.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
+                           Contact contact = new Contact(contactName.getText().toString(),contactNumber.getText().toString(),"3243432",true);
+                           contact.save();
+                           dialog.dismiss();
 
+                            EventBus.getDefault().post(new EventB("1"));
                         }
                     });
 
@@ -844,8 +840,8 @@
                     TextInputLayout field2 = (TextInputLayout)dialog.findViewById(R.id.field_layout_2);
                     Button save = (Button)dialog.findViewById(R.id.save);
                     Button cancel = (Button)dialog.findViewById(R.id.cancel);
-                    TextInputEditText contactName = (TextInputEditText)dialog.findViewById(R.id.field_1);
-                    TextInputEditText contactNumber= (TextInputEditText)dialog.findViewById(R.id.field_2);
+                    final TextInputEditText contactName = (TextInputEditText)dialog.findViewById(R.id.field_1);
+                    final TextInputEditText contactNumber= (TextInputEditText)dialog.findViewById(R.id.field_2);
                     field1.setHint(getString(R.string.hint__name));
                     field2.setHint(getString(R.string.hint_email));
 
@@ -859,7 +855,11 @@
                     save.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
+                           Email email = new Email(contactName.getText().toString(),contactNumber.getText().toString(),"45354",true);
+                           email.save();
+                            dialog.dismiss();
 
+                            EventBus.getDefault().post(new EventB("2"));
                         }
                     });
 
@@ -875,6 +875,9 @@
 
                 case R.id.fab_bank_account: {
                     // do something for button 2 click
+
+
+
                     break;
                 }
 

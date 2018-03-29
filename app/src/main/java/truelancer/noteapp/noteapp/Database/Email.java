@@ -14,6 +14,7 @@ public class Email extends SugarRecord {
     String calledName;
     boolean incoming;
     String tsMilli;
+    boolean isSavedFromApp;
 
     public Email() {}
 
@@ -24,6 +25,17 @@ public class Email extends SugarRecord {
         this.calledName = calledName;
         this.incoming = incoming;
         this.tsMilli = tsMilli;
+    }
+
+    public Email(String name, String emailId, String tsMilli, boolean isSavedFromApp) {
+        this.name = name;
+        this.emailId = emailId;
+        this.tsMilli = tsMilli;
+        this.isSavedFromApp = isSavedFromApp;
+    }
+
+    public boolean isSavedFromApp() {
+        return isSavedFromApp;
     }
 
     public String getName() {

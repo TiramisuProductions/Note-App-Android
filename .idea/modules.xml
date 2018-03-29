@@ -3,9 +3,11 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/Note-App-Android.iml" filepath="$PROJECT_DIR$/Note-App-Android.iml" />
+      <module fileurl="file://C:\Users\Siddhant Naique\Desktop\Sarvesh\Note-App-Android\Note-App-Android.iml" filepath="C:\Users\Siddhant Naique\Desktop\Sarvesh\Note-App-Android\Note-App-Android.iml" />
       <module fileurl="file://D:\Projects\Note-App-Android\Note-App-Android-sid3.iml" filepath="D:\Projects\Note-App-Android\Note-App-Android-sid3.iml" />
       <module fileurl="file://C:\Users\Siddhant Naique\AndroidStudioProjects\New\Note-App\new 3\Note-App-Android\NoteApp.iml" filepath="C:\Users\Siddhant Naique\AndroidStudioProjects\New\Note-App\new 3\Note-App-Android\NoteApp.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
+      <module fileurl="file://C:\Users\Siddhant Naique\Desktop\Sarvesh\Note-App-Android\app\app.iml" filepath="C:\Users\Siddhant Naique\Desktop\Sarvesh\Note-App-Android\app\app.iml" />
     </modules>
   </component>
 </project>

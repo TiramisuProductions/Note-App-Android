@@ -12,12 +12,17 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+
 import java.util.Collections;
 import java.util.List;
 
 import truelancer.noteapp.noteapp.Adapters.contactAdapter;
 import truelancer.noteapp.noteapp.Adapters.emailAdapter;
+import truelancer.noteapp.noteapp.Database.Contact;
 import truelancer.noteapp.noteapp.Database.Email;
+import truelancer.noteapp.noteapp.EventB;
 import truelancer.noteapp.noteapp.R;
 
 
@@ -42,6 +47,8 @@ public class emailFragment extends Fragment {
 
         View rootView = inflater.inflate(R.layout.fragment_email, container, false);
 
+        EventBus.getDefault().register(this);
+
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getActivity());
         mRecyclerView = (RecyclerView) rootView.findViewById(R.id.recycler_email);
         mRecyclerView.setLayoutManager(mLayoutManager);
@@ -61,11 +68,19 @@ public class emailFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        mAdapter.notifyDataSetChanged();
-        List<Email> emails = Email.listAll(Email.class);
-        Collections.reverse(emails);
-        mAdapter = new emailAdapter(getActivity(), emails);
 
-        mRecyclerView.setAdapter(mAdapter);
+    }
+
+    @Subscribe
+    public void onEvent(EventB event){
+        // your implementation
+        if(event.getMessage().equals("2")){
+            mAdapter.notifyDataSetChanged();
+            List<Email> emails = Email.listAll(Email.class);
+            Collections.reverse(emails);
+            mAdapter = new emailAdapter(getActivity(), emails);
+
+            mRecyclerView.setAdapter(mAdapter);
+        }
     }
 }

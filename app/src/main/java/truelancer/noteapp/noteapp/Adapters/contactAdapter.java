@@ -114,15 +114,23 @@ public class contactAdapter extends RecyclerView.Adapter<contactAdapter.MyView> 
 
     public void executeit(final MyView holder, final int position) {
 
-        if (!contacts.get(position).isIncoming()) {
-            holder.call_txt.setText("Call To");
-            holder.state_of_call.setImageResource(R.drawable.outgoing_call);
-            inout = "Call To";
 
-        } else {
-            inout = "Call By";
+        if(contacts.get(position).isSavedFromApp()){
+holder.state_of_call.setVisibility(View.INVISIBLE);
+        }else{
+            if (!contacts.get(position).isIncoming()) {
+                holder.call_txt.setText("Call To");
+                holder.state_of_call.setImageResource(R.drawable.outgoing_call);
+                inout = "Call To";
+
+            } else {
+                inout = "Call By";
+            }
         }
 
+
+
+        Log.d("god",""+contacts.get(position).isIncoming());
         String tsMilli = contacts.get(position).getTsMilli();
         long tsLong = Long.parseLong(tsMilli);
 
