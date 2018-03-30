@@ -14,17 +14,21 @@ import truelancer.noteapp.noteapp.Database.BankAccount;
 import truelancer.noteapp.noteapp.Database.Contact;
 import truelancer.noteapp.noteapp.Database.Email;
 import truelancer.noteapp.noteapp.Database.Note;
-import truelancer.noteapp.noteapp.Services.HeadService;
-
+import truelancer.noteapp.noteapp.Services.PopUpService;
 
 
 public class MyApp extends SugarApp {
     String TAG = "red";
-    public HeadService headService;
+    public PopUpService popUpService;
     private boolean bound;
     public boolean toHideBubble;
     static public boolean toSave;
     String defaultValue = "default";
+    public boolean firstRun = true;
+
+
+    public static String firstRunRingingNumber,firstRunContactName,firstRuntsMilli;
+    public static Boolean firstRunIsIncoming;
 
     static public String contactName0 = "", contactNumber0 = "",
             contactName1 = "", emailId1 = "",
@@ -37,10 +41,11 @@ public class MyApp extends SugarApp {
         public void onServiceConnected(ComponentName className,
                                        IBinder service) {
             // We've bound to LocalService, cast the IBinder and get LocalService instance
-            HeadService.LocalBinder binder = (HeadService.LocalBinder) service;
-            headService = binder.getService();
+            PopUpService.LocalBinder binder = (PopUpService.LocalBinder) service;
+            popUpService = binder.getService();
             bound = true;
-            headService.minimize();
+            popUpService.minimize();
+            firstRun = false;
         }
 
         @Override
@@ -125,12 +130,16 @@ public class MyApp extends SugarApp {
     }
 
 
+    public void bindService(){
+        Intent intent = new Intent(getApplicationContext(), PopUpService.class);
+        startService(intent);
+        bindService(intent, mConnection, Context.BIND_AUTO_CREATE);
+    }
+
     @Override
     public void onCreate() {
         super.onCreate();
-        Intent intent = new Intent(getApplicationContext(), HeadService.class);
-        startService(intent);
-        bindService(intent, mConnection, Context.BIND_AUTO_CREATE);
+
 
 
         // font from assets: "assets/fonts/Roboto-Regular.ttf

@@ -41,10 +41,25 @@ public class PhoneStateRecieverOutgoing extends BroadcastReceiver {
         app = (MyApp) context.getApplicationContext();
 
         final String outgoingNumber = intent.getStringExtra(Intent.EXTRA_PHONE_NUMBER);
+        if(app.firstRun){
+            MyApp.firstRunRingingNumber = outgoingNumber;
+            MyApp.firstRunContactName = getContactDisplayNameByNumber(outgoingNumber,context);
+            MyApp.firstRunIsIncoming = false;
+            MyApp.firstRuntsMilli = tsMilli;
+            app.bindService();
 
-        app.checkForDraft(outgoingNumber, getContactDisplayNameByNumber(outgoingNumber, context), false, tsMilli);
-        app.headService.removeAllChatHeads();
-        app.headService.addChatHead(outgoingNumber, getContactDisplayNameByNumber(outgoingNumber, context), false, tsMilli);
+        }
+        else{
+            app.checkForDraft(outgoingNumber, getContactDisplayNameByNumber(outgoingNumber, context), false, tsMilli);
+            app.popUpService.removeAllChatHeads();
+            app.popUpService.addChatHead(outgoingNumber, getContactDisplayNameByNumber(outgoingNumber, context), false, tsMilli);
+        }
+
+
+
+
+
+
         String msg = "Intercepted outgoing call number " + outgoingNumber + " " + getContactDisplayNameByNumber(outgoingNumber, context);
 
         //Toast.makeText(context, msg, Toast.LENGTH_LONG).show();

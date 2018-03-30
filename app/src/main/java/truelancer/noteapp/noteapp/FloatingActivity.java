@@ -11,7 +11,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
-import truelancer.noteapp.noteapp.Services.HeadService;
+import truelancer.noteapp.noteapp.Services.PopUpService;
 
 /**
  * Created by Sarvesh Palav on 12/27/2017.
@@ -24,7 +24,7 @@ public class FloatingActivity extends AppCompatActivity implements View.OnClickL
     private Button removeAllButtons;
     private Button toggleButton;
     private Button updateBadgeCount;
-    private HeadService headService;
+    private PopUpService popUpService;
     private boolean bound;
     /**
      * Defines callbacks for service binding, passed to bindService()
@@ -35,10 +35,10 @@ public class FloatingActivity extends AppCompatActivity implements View.OnClickL
         public void onServiceConnected(ComponentName className,
                                        IBinder service) {
             // We've bound to LocalService, cast the IBinder and get LocalService instance
-            HeadService.LocalBinder binder = (HeadService.LocalBinder) service;
-            headService = binder.getService();
+            PopUpService.LocalBinder binder = (PopUpService.LocalBinder) service;
+            popUpService = binder.getService();
             bound = true;
-            headService.minimize();
+            popUpService.minimize();
         }
 
         @Override
@@ -50,7 +50,7 @@ public class FloatingActivity extends AppCompatActivity implements View.OnClickL
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Intent intent = new Intent(this, HeadService.class);
+        Intent intent = new Intent(this, PopUpService.class);
         startService(intent);
         bindService(intent, mConnection, Context.BIND_AUTO_CREATE);
         setupButtons();
@@ -77,15 +77,15 @@ public class FloatingActivity extends AppCompatActivity implements View.OnClickL
     public void onClick(View v) {
         if (bound) {
             if (v == addButton) {
-               // headService.addChatHead();
+               // popUpService.addChatHead();
             } else if (v == removeButton) {
-                headService.removeChatHead();
+                popUpService.removeChatHead();
             } else if (v == removeAllButtons) {
-                headService.removeAllChatHeads();
+                popUpService.removeAllChatHeads();
             } else if (v == toggleButton) {
-                headService.toggleArrangement();
+                popUpService.toggleArrangement();
             } else if (v == updateBadgeCount) {
-                headService.updateBadgeCount();
+                popUpService.updateBadgeCount();
             }
         } else {
             Toast.makeText(this, "Service not bound", Toast.LENGTH_SHORT).show();

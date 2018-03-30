@@ -25,6 +25,8 @@
     import android.support.v4.view.ViewPager;
     import android.support.v7.app.AppCompatActivity;
     import android.os.Bundle;
+    import android.support.v7.widget.LinearLayoutManager;
+    import android.support.v7.widget.RecyclerView;
     import android.support.v7.widget.SearchView;
     import android.support.v7.widget.Toolbar;
     import android.util.Log;
@@ -39,6 +41,7 @@
     import android.widget.Button;
     import android.widget.EditText;
     import android.widget.ImageView;
+    import android.widget.ScrollView;
     import android.widget.Spinner;
     import android.widget.TextView;
     import android.widget.Toast;
@@ -75,11 +78,17 @@
     import java.io.OutputStreamWriter;
     import java.io.Writer;
     import java.lang.reflect.Field;
+    import java.util.ArrayList;
+    import java.util.Collections;
     import java.util.List;
 
     import butterknife.BindView;
     import butterknife.ButterKnife;
     import truelancer.noteapp.noteapp.Adapters.ViewPagerAdapter;
+    import truelancer.noteapp.noteapp.Adapters.bankAccountAdapter;
+    import truelancer.noteapp.noteapp.Adapters.contactAdapter;
+    import truelancer.noteapp.noteapp.Adapters.emailAdapter;
+    import truelancer.noteapp.noteapp.Adapters.noteAdapter;
     import truelancer.noteapp.noteapp.Database.BankAccount;
     import truelancer.noteapp.noteapp.Database.Contact;
     import truelancer.noteapp.noteapp.Database.Email;
@@ -103,11 +112,32 @@
         @BindView(R.id.fab_email) com.github.clans.fab.FloatingActionButton emailFab;
         @BindView(R.id.fab_bank_account) com.github.clans.fab.FloatingActionButton bankAccountfab;
         @BindView(R.id.fab_last_notes) com.github.clans.fab.FloatingActionButton lastNoteFab;
+        @BindView(R.id.search_scrollview) ScrollView searchScrollView;
         @BindView(R.id.toolbar) Toolbar toolbar;
         @BindView(R.id.viewpager) ViewPager homeViewPager;
         @BindView(R.id.tabs) TabLayout homeTabLayout;
         @BindView(R.id.fab_menu) FloatingActionMenu floatingActionMenu;
         @BindView(R.id.searchtoolbar) Toolbar searchToolbar;
+        @BindView(R.id.contact_search_recycler) RecyclerView contactSearchRecycler;
+        @BindView(R.id.email_search_recycler) RecyclerView emailSearchRecycler;
+        @BindView(R.id.bank_search_recycler) RecyclerView bankSearchRecycler;
+        @BindView(R.id.note_search_recycler) RecyclerView noteSearchRecycler;
+        @BindView(R.id.contacttxt) TextView contacttxt;
+        @BindView(R.id.emailtxt) TextView emailtxt;
+        @BindView(R.id.banktxt) TextView banktxt;
+        @BindView(R.id.notetxt) TextView notetxt;
+        private contactAdapter contactSearchAdapter;
+        private emailAdapter emailSearchAdapter;
+        private bankAccountAdapter bankSearchAdapter;
+        private noteAdapter noteSearchAdapter;
+        List<Contact> contactFilterList = new ArrayList<Contact>();
+        List<Email> emailFilterList = new ArrayList<Email>();
+        List<BankAccount> bankFilterList = new ArrayList<BankAccount>();
+        List<Note> noteFilterList = new ArrayList<Note>();
+
+
+
+
         Menu search_menu;
         MenuItem item_search;
         private static final int REQUEST_CODE_SIGN_IN = 0;
@@ -122,6 +152,49 @@
         private DriveResourceClient mDriveResourceClient;
         String jsonString = "";
         String TAG ="MainActivity";
+
+
+
+
+
+        public void initSearch(){
+            if (contactFilterList.isEmpty()) {
+                contacttxt.setVisibility(View.GONE);
+            } else {
+                contacttxt.setVisibility(View.VISIBLE);
+            }
+            if (emailFilterList.isEmpty()) {
+                emailtxt.setVisibility(View.GONE);
+            } else {
+                emailtxt.setVisibility(View.VISIBLE);
+            }
+            if (bankFilterList.isEmpty()) {
+                banktxt.setVisibility(View.GONE);
+            } else {
+                banktxt.setVisibility(View.VISIBLE);
+            }
+            if (noteFilterList.isEmpty()) {
+                notetxt.setVisibility(View.GONE);
+            } else {
+                notetxt.setVisibility(View.VISIBLE);
+            }
+
+            RecyclerView.LayoutManager mLayoutManager1 = new LinearLayoutManager(getApplicationContext());
+            contactSearchRecycler.setLayoutManager(mLayoutManager1);
+            RecyclerView.LayoutManager mLayoutManager2 = new LinearLayoutManager(getApplicationContext());
+
+            emailSearchRecycler.setLayoutManager(mLayoutManager2);
+
+            RecyclerView.LayoutManager mLayoutManager3 = new LinearLayoutManager(getApplicationContext());
+
+            bankSearchRecycler.setLayoutManager(mLayoutManager3);
+
+            RecyclerView.LayoutManager mLayoutManager4 = new LinearLayoutManager(getApplicationContext());
+
+            noteSearchRecycler.setLayoutManager(mLayoutManager4);
+        }
+
+
 
 
         public void setSearchtollbar()
@@ -156,7 +229,12 @@
                             circleReveal(R.id.searchtoolbar,1,true,false);
                         }
                         else
-                            searchToolbar.setVisibility(View.GONE);
+                        {   searchToolbar.setVisibility(View.GONE);}
+
+                        homeTabLayout.setVisibility(View.VISIBLE);
+                        floatingActionMenu.setVisibility(View.VISIBLE);
+                        homeViewPager.setVisibility(View.VISIBLE);
+
                         return true;
                     }
 
@@ -177,6 +255,11 @@
 
         public void initSearchView()
         {
+
+
+            initSearch();
+
+            Log.d(TAG,"SearchView");
             final SearchView searchView =
                     (SearchView) search_menu.findItem(R.id.action_filter_search).getActionView();
 
@@ -226,11 +309,174 @@
                 public void callSearch(String query) {
                     //Do searching
                     Log.i("query", "" + query);
+                    if (query.equals("")) {
+                        //Toast.makeText(getApplicationContext(), "Nothing to serach", Toast.LENGTH_SHORT).show();
+                        contacttxt.setVisibility(View.GONE);
+                        emailtxt.setVisibility(View.GONE);
+                        banktxt.setVisibility(View.GONE);
+                        notetxt.setVisibility(View.GONE);
+
+                        contactFilterList.clear();
+                        emailFilterList.clear();
+                        bankFilterList.clear();
+                        noteFilterList.clear();
+                    } else {
+                        contactFilterList.clear();
+                        emailFilterList.clear();
+                        bankFilterList.clear();
+                        noteFilterList.clear();
+                        execute(query);
+                    }
+
 
                 }
 
             });
 
+        }
+
+
+
+        public void execute(String searchWord1) {
+
+            String searchWord = searchWord1.toLowerCase();
+
+            List<Contact> contacts = Contact.listAll(Contact.class);
+            Collections.reverse(contacts);
+
+            for (int i = 0; i < contacts.size(); i++) {
+                String contactnameAll = contacts.get(i).getName().toLowerCase();
+                String phoneAll = contacts.get(i).getPhoneno().toLowerCase();
+                String callednoAll = contacts.get(i).getCalledNumber().toLowerCase();
+                String callednameAll = contacts.get(i).getCalledName().toLowerCase();
+
+                if (contactnameAll.contains(searchWord)) {
+                    contactFilterList.add(contacts.get(i));
+                } else if (phoneAll.contains(searchWord)) {
+                    contactFilterList.add(contacts.get(i));
+                } else if (callednameAll.contains(searchWord)) {
+                    contactFilterList.add(contacts.get(i));
+                } else if (callednoAll.contains(searchWord)) {
+                    contactFilterList.add(contacts.get(i));
+                } else {
+                }
+
+            }
+
+            contactSearchAdapter = new contactAdapter(this, contactFilterList);
+            contactSearchRecycler.setAdapter(contactSearchAdapter);
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+            List<Email> emails = Email.listAll(Email.class);
+            Collections.reverse(emails);
+
+            for (int i = 0; i < emails.size(); i++) {
+                String contactnameAll = emails.get(i).getName().toLowerCase();
+                String emailAll = emails.get(i).getEmailId().toLowerCase();
+                String callednoAll = emails.get(i).getCalledNumber().toLowerCase();
+                String callednameAll = emails.get(i).getCalledName().toLowerCase();
+
+                if (contactnameAll.contains(searchWord)) {
+                    emailFilterList.add(emails.get(i));
+                } else if (emailAll.contains(searchWord)) {
+                    emailFilterList.add(emails.get(i));
+                } else if (callednameAll.contains(searchWord)) {
+                    emailFilterList.add(emails.get(i));
+                } else if (callednoAll.contains(searchWord)) {
+                    emailFilterList.add(emails.get(i));
+                } else {
+                }
+
+            }
+
+            emailSearchAdapter = new emailAdapter(this, emailFilterList);
+            emailSearchRecycler.setAdapter(emailSearchAdapter);
+////////////////////////////////////////////////////////////////////////////////////////////////////////
+            List<BankAccount> bankAccounts = BankAccount.listAll(BankAccount.class);
+            Collections.reverse(bankAccounts);
+
+            for (int i = 0; i < bankAccounts.size(); i++) {
+                String contactnameAll = bankAccounts.get(i).getName().toLowerCase();
+                String accNoAll = bankAccounts.get(i).getAccountNo().toLowerCase();
+                String ifscAll = bankAccounts.get(i).getIfscCode().toLowerCase();
+                String callednoAll = bankAccounts.get(i).getCalledNumber().toLowerCase();
+                String callednameAll = bankAccounts.get(i).getCalledName().toLowerCase();
+
+                if (contactnameAll.contains(searchWord)) {
+                    bankFilterList.add(bankAccounts.get(i));
+                } else if (accNoAll.contains(searchWord)) {
+                    bankFilterList.add(bankAccounts.get(i));
+                } else if (ifscAll.contains(searchWord)) {
+                    bankFilterList.add(bankAccounts.get(i));
+                } else if (callednameAll.contains(searchWord)) {
+                    bankFilterList.add(bankAccounts.get(i));
+                } else if (callednoAll.contains(searchWord)) {
+                    bankFilterList.add(bankAccounts.get(i));
+                } else {
+                }
+
+            }
+
+            bankSearchAdapter = new bankAccountAdapter(this, bankFilterList);
+            bankSearchRecycler.setAdapter(bankSearchAdapter);
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+            List<Note> notes = Note.listAll(Note.class);
+            Collections.reverse(notes);
+
+            for (int i = 0; i < notes.size(); i++) {
+                String noteAll = notes.get(i).getNote().toLowerCase();
+                String callednoAll = notes.get(i).getCalledNumber().toLowerCase();
+                String callednameAll = notes.get(i).getCalledName().toLowerCase();
+
+                if (noteAll.contains(searchWord)) {
+                    noteFilterList.add(notes.get(i));
+                } else if (callednameAll.contains(searchWord)) {
+                    noteFilterList.add(notes.get(i));
+                } else if (callednoAll.contains(searchWord)) {
+                    noteFilterList.add(notes.get(i));
+                } else {
+                }
+
+            }
+
+            noteSearchAdapter = new noteAdapter(this, noteFilterList);
+            noteSearchRecycler.setAdapter(noteSearchAdapter);
+
+            if (contactFilterList.isEmpty()) {
+                contacttxt.setVisibility(View.GONE);
+            } else {
+                contacttxt.setVisibility(View.VISIBLE);
+            }
+            if (emailFilterList.isEmpty()) {
+                emailtxt.setVisibility(View.GONE);
+            } else {
+                emailtxt.setVisibility(View.VISIBLE);
+            }
+            if (bankFilterList.isEmpty()) {
+                banktxt.setVisibility(View.GONE);
+            } else {
+                banktxt.setVisibility(View.VISIBLE);
+            }
+            if (noteFilterList.isEmpty()) {
+                notetxt.setVisibility(View.GONE);
+            } else {
+                notetxt.setVisibility(View.VISIBLE);
+            }
+
+
+
+            if (contactFilterList.isEmpty()) {
+                if (emailFilterList.isEmpty()) {
+                    if (bankFilterList.isEmpty()) {
+                        if (noteFilterList.isEmpty()) {
+
+                        }
+                        else {
+
+                        }
+                    }
+                }
+
+            }
         }
 
 
@@ -440,9 +686,12 @@
                 case R.id.menu_search:
 
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
-                        circleReveal(R.id.searchtoolbar,1,true,true);
+                       circleReveal(R.id.searchtoolbar,1,true,true);
                     else
-                        searchToolbar.setVisibility(View.VISIBLE);
+                {  searchToolbar.setVisibility(View.VISIBLE);}
+                    floatingActionMenu.setVisibility(View.GONE);
+                    homeViewPager.setVisibility(View.GONE);
+                    searchScrollView.setVisibility(View.VISIBLE);
 
                     homeTabLayout.setVisibility(View.GONE);
                     item_search.expandActionView();

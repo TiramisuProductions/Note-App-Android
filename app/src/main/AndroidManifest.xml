@@ -58,7 +58,7 @@
         <activity android:name=".ContactForm" />
         <activity android:name=".FloatingActivity" />
 
-        <service android:name=".Services.HeadService" />
+        <service android:name=".Services.PopUpService" />
 
         <activity android:name=".contactActivity" />
         <activity android:name=".bankActivity" />

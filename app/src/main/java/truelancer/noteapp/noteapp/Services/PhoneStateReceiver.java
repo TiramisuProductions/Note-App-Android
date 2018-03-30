@@ -47,7 +47,7 @@ public class PhoneStateReceiver extends BroadcastReceiver {
         Log.d("Receiver", "Start");
         //Toast.makeText(context, " Receiver start ", Toast.LENGTH_SHORT).show();
         app = (MyApp) context.getApplicationContext();
-        //app.headService.removeAllChatHeads();
+        //app.popUpService.removeAllChatHeads();
         Log.d("yoyo", "" + app.toHideBubble);
 
         String state = intent.getStringExtra(TelephonyManager.EXTRA_STATE);
@@ -58,9 +58,22 @@ public class PhoneStateReceiver extends BroadcastReceiver {
             if (!MyApp.toSave) {
 
             }
-            app.checkForDraft(ringingNumber, getContactDisplayNameByNumber(ringingNumber, context), true, tsMilli);
-            app.headService.removeAllChatHeads();
-            app.headService.addChatHead(ringingNumber, getContactDisplayNameByNumber(ringingNumber, context), true, tsMilli);
+
+            if(app.firstRun){
+                MyApp.firstRunRingingNumber = ringingNumber;
+                MyApp.firstRunContactName = getContactDisplayNameByNumber(ringingNumber,context);
+                MyApp.firstRunIsIncoming = false;
+                MyApp.firstRuntsMilli = tsMilli;
+                app.bindService();
+
+            }
+            else{
+                app.checkForDraft(ringingNumber, getContactDisplayNameByNumber(ringingNumber, context), true, tsMilli);
+                app.popUpService.removeAllChatHeads();
+                app.popUpService.addChatHead(ringingNumber, getContactDisplayNameByNumber(ringingNumber, context), true, tsMilli);
+            }
+
+
             //Toast.makeText(context, "Ringing State Name is -" + getContactDisplayNameByNumber(ringingNumber, context), Toast.LENGTH_SHORT).show();
 
         }

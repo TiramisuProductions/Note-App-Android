@@ -54,9 +54,9 @@ import truelancer.noteapp.noteapp.MainActivity;
 import truelancer.noteapp.noteapp.MyApp;
 import truelancer.noteapp.noteapp.R;
 
-public class HeadService extends Service {
+public class PopUpService extends Service {
 
-    private static final String TAG = "HeadService";
+    private static final String TAG = "PopUpService";
     private final IBinder mBinder = new LocalBinder();
     private DefaultChatHeadManager<String> chatHeadManager;
     private int chatHeadIdentifier = 0;
@@ -496,7 +496,7 @@ public class HeadService extends Service {
             public Drawable getChatHeadDrawable(String key) {
                 // this is where you return a drawable for the chat head itself based on the key. Typically you return a circular shape
                 // you may want to checkout circular image library https://github.com/flipkart-incubator/circular-image
-                return HeadService.this.getChatHeadDrawable(key);
+                return PopUpService.this.getChatHeadDrawable(key);
             }
         });
 
@@ -564,7 +564,7 @@ public class HeadService extends Service {
         }
 
         String tsMilli = "" + startDate.getTime();
-        addChatHead("undefined", "undefined", true, "8768768768");
+        addChatHead(MyApp.firstRunRingingNumber, MyApp.firstRunContactName, MyApp.firstRunIsIncoming, MyApp.firstRuntsMilli);
         chatHeadManager.setArrangement(MinimizedArrangement.class, null);
         moveToForeground();
 
@@ -654,9 +654,9 @@ public class HeadService extends Service {
      * runs in the same process as its clients, we don't need to deal with IPC.
      */
     public class LocalBinder extends Binder {
-        public HeadService getService() {
+        public PopUpService getService() {
             // Return this instance of LocalService so clients can call public methods
-            return HeadService.this;
+            return PopUpService.this;
         }
     }
 
