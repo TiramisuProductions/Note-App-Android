@@ -1,14 +1,11 @@
 package truelancer.noteapp.noteapp.Fragments;
 
 
-import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.provider.ContactsContract;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,24 +15,20 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import truelancer.noteapp.noteapp.Adapters.noteAdapter;
+import truelancer.noteapp.noteapp.Adapters.NoteAdapter;
 import truelancer.noteapp.noteapp.Adapters.noteDoneAdapter;
 import truelancer.noteapp.noteapp.Database.Note;
 import truelancer.noteapp.noteapp.R;
 
 
-import static android.content.Context.MODE_PRIVATE;
-
-
-
-public class lastNoteFragment extends Fragment {
+public class NoteFragment extends Fragment {
     private RecyclerView mRecyclerView, mRecyclerView2;
-    private noteAdapter mAdapter;
+    private NoteAdapter mAdapter;
     private noteDoneAdapter mAdapter2;
     private ArrayList<Note> noteDoneList = new ArrayList<>();
     private ArrayList<Note> noteNotDoneList = new ArrayList<>();
 
-    public lastNoteFragment() {/*required empty*/}
+    public NoteFragment() {/*required empty*/}
 
 
     @Override
@@ -61,7 +54,7 @@ public class lastNoteFragment extends Fragment {
         Collections.reverse(notes);
 
 
-        mAdapter = new noteAdapter(getActivity(), notes);
+        mAdapter = new NoteAdapter(getActivity(), notes);
         mRecyclerView.setAdapter(mAdapter);
         onResume();
         return rootView;
@@ -73,7 +66,7 @@ public class lastNoteFragment extends Fragment {
         mAdapter.notifyDataSetChanged();
         List<Note> emails = Note.listAll(Note.class);
         Collections.reverse(emails);
-        mAdapter = new noteAdapter(getActivity(), emails);
+        mAdapter = new NoteAdapter(getActivity(), emails);
         mRecyclerView.setAdapter(mAdapter);
     }
 

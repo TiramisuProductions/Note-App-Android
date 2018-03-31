@@ -29,7 +29,7 @@ import java.util.List;
 import truelancer.noteapp.noteapp.Database.BankAccount;
 import truelancer.noteapp.noteapp.R;
 
-public class bankAccountAdapter extends RecyclerView.Adapter<bankAccountAdapter.MyView> {
+public class BankAccountAdapter extends RecyclerView.Adapter<BankAccountAdapter.MyView> {
     List<BankAccount> bankAccounts;
     Activity activity;
     String timeStampString;
@@ -37,7 +37,7 @@ public class bankAccountAdapter extends RecyclerView.Adapter<bankAccountAdapter.
     Context itemContext;
     String inout ="";
 
-    public bankAccountAdapter(FragmentActivity activity, List<BankAccount> bankAccounts) {
+    public BankAccountAdapter(FragmentActivity activity, List<BankAccount> bankAccounts) {
         this.bankAccounts = bankAccounts;
         this.activity = activity;
     }
@@ -51,6 +51,9 @@ public class bankAccountAdapter extends RecyclerView.Adapter<bankAccountAdapter.
 
     @Override
     public void onBindViewHolder(final MyView holder, final int position) {
+
+
+
 
         if (!bankAccounts.get(position).isIncoming()) {
             holder.call_txt.setText("Call To");

@@ -34,7 +34,7 @@ import truelancer.noteapp.noteapp.R;
 import static com.orm.SugarRecord.findById;
 
 
-public class noteAdapter extends RecyclerView.Adapter<noteAdapter.MyView> {
+public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.MyView> {
 
     List<Note> notes;
     Activity activity;
@@ -43,7 +43,7 @@ public class noteAdapter extends RecyclerView.Adapter<noteAdapter.MyView> {
     Context itemContext;
     String inout = "";
 
-    public noteAdapter(FragmentActivity activity, List<Note> not) {
+    public NoteAdapter(FragmentActivity activity, List<Note> not) {
         this.activity = activity;
         this.notes = not;
     }

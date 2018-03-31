@@ -1,16 +1,13 @@
 package truelancer.noteapp.noteapp.Fragments;
 
 
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -18,25 +15,20 @@ import org.greenrobot.eventbus.Subscribe;
 import java.util.Collections;
 import java.util.List;
 
-import truelancer.noteapp.noteapp.Adapters.contactAdapter;
-import truelancer.noteapp.noteapp.Adapters.emailAdapter;
-import truelancer.noteapp.noteapp.Database.Contact;
+import truelancer.noteapp.noteapp.Adapters.EmailAdapter;
 import truelancer.noteapp.noteapp.Database.Email;
 import truelancer.noteapp.noteapp.EventB;
 import truelancer.noteapp.noteapp.R;
 
-
-import static android.content.Context.MODE_PRIVATE;
-
 /**
  * A simple {@link Fragment} subclass.
  */
-public class emailFragment extends Fragment {
+public class EmailFragment extends Fragment {
     private RecyclerView mRecyclerView;
-    private emailAdapter mAdapter;
+    private EmailAdapter mAdapter;
 
 
-    public emailFragment() {
+    public EmailFragment() {
         // Required empty public constructor
     }
 
@@ -58,7 +50,7 @@ public class emailFragment extends Fragment {
 
         //Toast.makeText(getContext(),"emails coming! "+emails.size(),Toast.LENGTH_LONG).show();
 
-        mAdapter = new emailAdapter(getActivity(), emails);
+        mAdapter = new EmailAdapter(getActivity(), emails);
         mRecyclerView.setAdapter(mAdapter);
         onResume();
         return rootView;
@@ -78,7 +70,7 @@ public class emailFragment extends Fragment {
             mAdapter.notifyDataSetChanged();
             List<Email> emails = Email.listAll(Email.class);
             Collections.reverse(emails);
-            mAdapter = new emailAdapter(getActivity(), emails);
+            mAdapter = new EmailAdapter(getActivity(), emails);
 
             mRecyclerView.setAdapter(mAdapter);
         }

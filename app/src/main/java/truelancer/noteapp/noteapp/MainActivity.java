@@ -85,18 +85,18 @@
     import butterknife.BindView;
     import butterknife.ButterKnife;
     import truelancer.noteapp.noteapp.Adapters.ViewPagerAdapter;
-    import truelancer.noteapp.noteapp.Adapters.bankAccountAdapter;
-    import truelancer.noteapp.noteapp.Adapters.contactAdapter;
-    import truelancer.noteapp.noteapp.Adapters.emailAdapter;
-    import truelancer.noteapp.noteapp.Adapters.noteAdapter;
+    import truelancer.noteapp.noteapp.Adapters.BankAccountAdapter;
+    import truelancer.noteapp.noteapp.Adapters.ContactAdapter;
+    import truelancer.noteapp.noteapp.Adapters.EmailAdapter;
+    import truelancer.noteapp.noteapp.Adapters.NoteAdapter;
     import truelancer.noteapp.noteapp.Database.BankAccount;
     import truelancer.noteapp.noteapp.Database.Contact;
     import truelancer.noteapp.noteapp.Database.Email;
     import truelancer.noteapp.noteapp.Database.Note;
-    import truelancer.noteapp.noteapp.Fragments.bankAccountFragment;
+    import truelancer.noteapp.noteapp.Fragments.BankAccountFragment;
     import truelancer.noteapp.noteapp.Fragments.ContactFragment;
-    import truelancer.noteapp.noteapp.Fragments.emailFragment;
-    import truelancer.noteapp.noteapp.Fragments.lastNoteFragment;
+    import truelancer.noteapp.noteapp.Fragments.EmailFragment;
+    import truelancer.noteapp.noteapp.Fragments.NoteFragment;
 
     import static android.Manifest.permission.CALL_PHONE;
     import static android.Manifest.permission.CAPTURE_AUDIO_OUTPUT;
@@ -126,10 +126,10 @@
         @BindView(R.id.emailtxt) TextView emailtxt;
         @BindView(R.id.banktxt) TextView banktxt;
         @BindView(R.id.notetxt) TextView notetxt;
-        private contactAdapter contactSearchAdapter;
-        private emailAdapter emailSearchAdapter;
-        private bankAccountAdapter bankSearchAdapter;
-        private noteAdapter noteSearchAdapter;
+        private ContactAdapter contactSearchAdapter;
+        private EmailAdapter emailSearchAdapter;
+        private BankAccountAdapter bankSearchAdapter;
+        private NoteAdapter noteSearchAdapter;
         List<Contact> contactFilterList = new ArrayList<Contact>();
         List<Email> emailFilterList = new ArrayList<Email>();
         List<BankAccount> bankFilterList = new ArrayList<BankAccount>();
@@ -300,9 +300,9 @@
         private void setupViewPager(ViewPager viewPager) {
             ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
             adapter.addFragment(new ContactFragment(), getString(R.string.contacts));
-            adapter.addFragment(new emailFragment(), getString(R.string.emails));
-            adapter.addFragment(new bankAccountFragment(), getString(R.string.accounts));
-            adapter.addFragment(new lastNoteFragment(), getString(R.string.notes));
+            adapter.addFragment(new EmailFragment(), getString(R.string.emails));
+            adapter.addFragment(new BankAccountFragment(), getString(R.string.accounts));
+            adapter.addFragment(new NoteFragment(), getString(R.string.notes));
             viewPager.setAdapter(adapter);
         }
 
@@ -519,23 +519,30 @@
             for (int i = 0; i < contacts.size(); i++) {
                 String contactnameAll = contacts.get(i).getName().toLowerCase();
                 String phoneAll = contacts.get(i).getPhoneno().toLowerCase();
-                String callednoAll = contacts.get(i).getCalledNumber().toLowerCase();
-                String callednameAll = contacts.get(i).getCalledName().toLowerCase();
+                String callednoAll ="";
+                String callednameAll = "";
+                boolean savedFromApp = contacts.get(i).isSavedFromApp();
+
+
+                if(!savedFromApp){
+                    callednoAll = contacts.get(i).getCalledNumber().toLowerCase();
+                     callednameAll = contacts.get(i).getCalledName().toLowerCase();
+                }
 
                 if (contactnameAll.contains(searchWord)) {
                     contactFilterList.add(contacts.get(i));
                 } else if (phoneAll.contains(searchWord)) {
                     contactFilterList.add(contacts.get(i));
-                } else if (callednameAll.contains(searchWord)) {
+                } else if (callednameAll.contains(searchWord)&&!savedFromApp) {
                     contactFilterList.add(contacts.get(i));
-                } else if (callednoAll.contains(searchWord)) {
+                } else if (callednoAll.contains(searchWord)&&!savedFromApp) {
                     contactFilterList.add(contacts.get(i));
                 } else {
                 }
 
             }
 
-            contactSearchAdapter = new contactAdapter(this, contactFilterList);
+            contactSearchAdapter = new ContactAdapter(this, contactFilterList);
             contactSearchRecycler.setAdapter(contactSearchAdapter);
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
             List<Email> emails = Email.listAll(Email.class);
@@ -544,23 +551,30 @@
             for (int i = 0; i < emails.size(); i++) {
                 String contactnameAll = emails.get(i).getName().toLowerCase();
                 String emailAll = emails.get(i).getEmailId().toLowerCase();
-                String callednoAll = emails.get(i).getCalledNumber().toLowerCase();
-                String callednameAll = emails.get(i).getCalledName().toLowerCase();
+                String callednoAll ="";
+                String callednameAll = "";
+                boolean savedFromApp = emails.get(i).isSavedFromApp();
+
+
+                if(!savedFromApp){
+                    callednoAll = emails.get(i).getCalledNumber().toLowerCase();
+                    callednameAll = emails.get(i).getCalledName().toLowerCase();
+                }
 
                 if (contactnameAll.contains(searchWord)) {
                     emailFilterList.add(emails.get(i));
                 } else if (emailAll.contains(searchWord)) {
                     emailFilterList.add(emails.get(i));
-                } else if (callednameAll.contains(searchWord)) {
+                } else if (callednameAll.contains(searchWord)&&!savedFromApp) {
                     emailFilterList.add(emails.get(i));
-                } else if (callednoAll.contains(searchWord)) {
+                } else if (callednoAll.contains(searchWord)&&!savedFromApp) {
                     emailFilterList.add(emails.get(i));
                 } else {
                 }
 
             }
 
-            emailSearchAdapter = new emailAdapter(this, emailFilterList);
+            emailSearchAdapter = new EmailAdapter(this, emailFilterList);
             emailSearchRecycler.setAdapter(emailSearchAdapter);
 ////////////////////////////////////////////////////////////////////////////////////////////////////////
             List<BankAccount> bankAccounts = BankAccount.listAll(BankAccount.class);
@@ -570,8 +584,15 @@
                 String contactnameAll = bankAccounts.get(i).getName().toLowerCase();
                 String accNoAll = bankAccounts.get(i).getAccountNo().toLowerCase();
                 String ifscAll = bankAccounts.get(i).getIfscCode().toLowerCase();
-                String callednoAll = bankAccounts.get(i).getCalledNumber().toLowerCase();
-                String callednameAll = bankAccounts.get(i).getCalledName().toLowerCase();
+                String callednoAll ="";
+                String callednameAll = "";
+                boolean savedFromApp = bankAccounts.get(i).isSavedFromApp();
+
+
+                if(!savedFromApp){
+                    callednoAll = bankAccounts.get(i).getCalledNumber().toLowerCase();
+                    callednameAll = bankAccounts.get(i).getCalledName().toLowerCase();
+                }
 
                 if (contactnameAll.contains(searchWord)) {
                     bankFilterList.add(bankAccounts.get(i));
@@ -579,16 +600,16 @@
                     bankFilterList.add(bankAccounts.get(i));
                 } else if (ifscAll.contains(searchWord)) {
                     bankFilterList.add(bankAccounts.get(i));
-                } else if (callednameAll.contains(searchWord)) {
+                } else if (callednameAll.contains(searchWord)&&!savedFromApp) {
                     bankFilterList.add(bankAccounts.get(i));
-                } else if (callednoAll.contains(searchWord)) {
+                } else if (callednoAll.contains(searchWord)&&!savedFromApp) {
                     bankFilterList.add(bankAccounts.get(i));
                 } else {
                 }
 
             }
 
-            bankSearchAdapter = new bankAccountAdapter(this, bankFilterList);
+            bankSearchAdapter = new BankAccountAdapter(this, bankFilterList);
             bankSearchRecycler.setAdapter(bankSearchAdapter);
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
             List<Note> notes = Note.listAll(Note.class);
@@ -610,7 +631,7 @@
 
             }
 
-            noteSearchAdapter = new noteAdapter(this, noteFilterList);
+            noteSearchAdapter = new NoteAdapter(this, noteFilterList);
             noteSearchRecycler.setAdapter(noteSearchAdapter);
 
             if (contactFilterList.isEmpty()) {
@@ -1121,7 +1142,40 @@
                 case R.id.fab_bank_account: {
                     // do something for button 2 click
 
+                    floatingActionMenu.close(true);
+                    final Dialog dialog = new Dialog(this);
+                    dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                    dialog.setContentView(R.layout.add_bank_account_dialog);
+                    TextInputLayout field1 = (TextInputLayout)dialog.findViewById(R.id.field_layout_1);
+                    TextInputLayout field2 = (TextInputLayout)dialog.findViewById(R.id.field_layout_2);
+                    TextInputLayout field3 = (TextInputLayout)dialog.findViewById(R.id.field_layout_3);
+                    final TextInputEditText contactName = (TextInputEditText)dialog.findViewById(R.id.field_1);
+                    final TextInputEditText contactAccountNo= (TextInputEditText)dialog.findViewById(R.id.field_2);
+                    final TextInputEditText contactIFSC= (TextInputEditText)dialog.findViewById(R.id.field_3);
+                    Button save = (Button)dialog.findViewById(R.id.save);
+                    Button cancel = (Button)dialog.findViewById(R.id.cancel);
+                    field1.setHint(getString(R.string.hint_contact_name));
+                    field2.setHint(getString(R.string.hint_ac_no));
+                    field3.setHint(getString(R.string.hint_Others));
 
+                    dialog.show();
+                    save.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            BankAccount bankAccount = new BankAccount(contactName.getText().toString(),contactAccountNo.getText().toString(),contactIFSC.getText().toString(),"3445445",true);
+                            bankAccount.save();
+                            dialog.dismiss();
+
+                            EventBus.getDefault().post(new EventB("3"));
+                        }
+                    });
+
+                    cancel.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            dialog.dismiss();
+                        }
+                    });
 
                     break;
                 }

@@ -8,10 +8,14 @@ import android.content.DialogInterface;
 import android.content.Intent;
 
 import android.provider.ContactsContract;
+import android.support.design.widget.TextInputEditText;
+import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -19,21 +23,24 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
+
+import org.greenrobot.eventbus.EventBus;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.List;
 
 import truelancer.noteapp.noteapp.Database.Contact;
+import truelancer.noteapp.noteapp.EventB;
 import truelancer.noteapp.noteapp.MainActivity;
 import truelancer.noteapp.noteapp.R;
+import truelancer.noteapp.noteapp.Utils;
 
 
-public class contactAdapter extends RecyclerView.Adapter<contactAdapter.MyView> {
+public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.MyView> {
     List<Contact> contacts;
     Context activity;
     Context itemContext;
@@ -45,7 +52,7 @@ public class contactAdapter extends RecyclerView.Adapter<contactAdapter.MyView> 
     static final int RESULT_PICK_CONTACT = 4;
 
 
-    public contactAdapter(Activity activity, List<Contact> contacts) {
+    public ContactAdapter(Activity activity, List<Contact> contacts) {
         this.activity = activity;
         this.contacts = contacts;
     }
@@ -100,14 +107,16 @@ public class contactAdapter extends RecyclerView.Adapter<contactAdapter.MyView> 
 
 
         if(contacts.get(position).isSavedFromApp()){
-holder.state_of_call.setVisibility(View.INVISIBLE);
+holder.state_of_call.setImageResource(R.drawable.ic_saved_from_app);
+inout="Saved From App";
         }else{
             if (!contacts.get(position).isIncoming()) {
-                holder.call_txt.setText("Call To");
+
                 holder.state_of_call.setImageResource(R.drawable.ic_outgoing);
                 inout = "Call To";
 
             } else {
+                holder.state_of_call.setImageResource(R.drawable.ic_incoming);
                 inout = "Call By";
             }
         }
@@ -117,7 +126,7 @@ holder.state_of_call.setVisibility(View.INVISIBLE);
         Log.d("god",""+contacts.get(position).isIncoming());
         String tsMilli = contacts.get(position).getTsMilli();
         long tsLong = Long.parseLong(tsMilli);
-
+        holder.call_txt.setText(inout);
         timeStampString = getDate(tsLong);
         holder.date_time.setText("" + timeStampString);
         holder.contactNum.setText(contacts.get(position).getPhoneno());
@@ -196,15 +205,123 @@ holder.state_of_call.setVisibility(View.INVISIBLE);
                             alert.show();
                         }else if(temp.equals("Edit")){
                             final Dialog dialog = new Dialog(itemContext);
-                            dialog.setContentView(R.layout.edit_dialog);
+                            dialog.setContentView(R.layout.edit_dialog2);
                             dialog.setTitle("Title...");
                             dialog.setCancelable(false);
-                            final EditText contactName = (EditText)dialog.findViewById(R.id.editContactName);
-                            final EditText contactNumber = (EditText)dialog.findViewById(R.id.editContactNumber);
-                            final EditText calledName =(EditText)dialog.findViewById(R.id.editCalledName);
-                            final EditText calledNumber = (EditText)dialog.findViewById(R.id.editCalledNumber);
+                            final TextInputLayout contactNameTextInputLayout =(TextInputLayout)dialog.findViewById(R.id.field1);
+                            final TextInputLayout contactNumberTextInputLayout =(TextInputLayout)dialog.findViewById(R.id.field2);
+                            final TextInputLayout calledNameTextInputLayout =(TextInputLayout)dialog.findViewById(R.id.field3);
+                            final TextInputLayout calledNumberTextInputLayout =(TextInputLayout)dialog.findViewById(R.id.field4);
+
+                            contactNameTextInputLayout.setHint(itemContext.getString(R.string.hint_contact_name));
+                            contactNumberTextInputLayout.setHint(itemContext.getString(R.string.hint_contact_number));
+                            calledNameTextInputLayout.setHint(itemContext.getString(R.string.hint_called_name));
+                            calledNumberTextInputLayout.setHint(itemContext.getString(R.string.hint_called_number));
+
+                            final TextInputEditText contactName = (TextInputEditText) dialog.findViewById(R.id.editField1);
+                            final TextInputEditText contactNumber = (TextInputEditText)dialog.findViewById(R.id.editField2);
+                            final TextInputEditText calledName =(TextInputEditText)dialog.findViewById(R.id.editField3);
+                            final TextInputEditText calledNumber = (TextInputEditText)dialog.findViewById(R.id.editField4);
+
+
+                            final ImageView tick1 = (ImageView)dialog.findViewById(R.id.tick_1);
+                            final ImageView tick2 = (ImageView)dialog.findViewById(R.id.tick_2);
+                            final ImageView tick3 = (ImageView)dialog.findViewById(R.id.tick_3);
+                            final ImageView tick4 = (ImageView)dialog.findViewById(R.id.tick_4);
+
+                            contactName.addTextChangedListener(new TextWatcher() {
+                                @Override
+                                public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+                                }
+
+                                @Override
+                                public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+                                    if(String.valueOf(charSequence).length()>0){
+                                        tick1.setVisibility(View.VISIBLE);
+                                    }else{
+                                        tick1.setVisibility(View.INVISIBLE);
+                                    }
+                                }
+
+                                @Override
+                                public void afterTextChanged(Editable editable) {
+
+                                }
+                            });
+
+
+                            contactNumber.addTextChangedListener(new TextWatcher() {
+                                @Override
+                                public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+                                }
+
+                                @Override
+                                public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                                    if(Utils.isValidMobile(String.valueOf(charSequence))){
+                                        tick2.setVisibility(View.VISIBLE);
+                                    }else{
+                                        tick2.setVisibility(View.INVISIBLE);
+                                    }
+                                }
+
+                                @Override
+                                public void afterTextChanged(Editable editable) {
+
+                                }
+                            });
+
+                            calledName.addTextChangedListener(new TextWatcher() {
+                                @Override
+                                public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+                                }
+
+                                @Override
+                                public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+                                    if(String.valueOf(charSequence).length()>0){
+                                        tick3.setVisibility(View.VISIBLE);
+                                    }else{
+                                        tick3.setVisibility(View.INVISIBLE);
+                                    }
+                                }
+
+                                @Override
+                                public void afterTextChanged(Editable editable) {
+
+                                }
+                            });
+
+                            calledNumber.addTextChangedListener(new TextWatcher() {
+                                @Override
+                                public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+                                }
+
+                                @Override
+                                public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                                    if(Utils.isValidMobile(String.valueOf(charSequence))){
+                                        tick4.setVisibility(View.VISIBLE);
+                                    }else{
+                                        tick4.setVisibility(View.INVISIBLE);
+                                    }
+                                }
+
+                                @Override
+                                public void afterTextChanged(Editable editable) {
+
+                                }
+                            });
+
+
+
+
+
                             final Spinner calledState =(Spinner)dialog.findViewById(R.id.callstate);
-                            Button btnDone = (Button)dialog.findViewById(R.id.btnSelect);
+                            Button btnDone = (Button)dialog.findViewById(R.id.btnDone);
                             Button btnCancel = (Button)dialog.findViewById(R.id.btnCancel);
                             String options[] = {"Incoming","Outgoing"};
                             ArrayAdapter<String> adminSpinnerArrayAdapter = new ArrayAdapter<String>(itemContext,   android.R.layout.simple_spinner_item, options);
@@ -225,19 +342,36 @@ holder.state_of_call.setVisibility(View.INVISIBLE);
                             btnDone.setOnClickListener(new View.OnClickListener() {
 
                                 public void onClick(View view) {
-                                    Contact contact =  Contact.findById(Contact.class,contacts.get(position).getId());
-                                    contact.setPhoneno(contactNumber.getText().toString());
-                                    contact.setName(contactName.getText().toString());
-                                    contact.setCalledName(calledName.getText().toString());
-                                    contact.setCalledNumber(calledNumber.getText().toString());
-                                    if(calledState.getSelectedItemPosition()==0){
-                                        contact.setIncoming(true);
+
+                                    if(contactName.getText().toString().length()<=0){
+                                        contactName.setError(itemContext.getString(R.string.hint_contact_name));
+                                    }else if(!Utils.isValidMobile(contactNumber.getText().toString())){
+                                        contactNumber.setError(itemContext.getString(R.string.hint_contact_number));
+                                    }else if(calledName.getText().toString().length()<=0){
+                                        calledName.setError(itemContext.getString(R.string.hint_called_name));
+                                    }else if(!Utils.isValidMobile(calledNumber.getText().toString())){
+                                        calledNumber.setError(itemContext.getString(R.string.hint_called_number));
+                                    }else{
+                                        Contact contact =  Contact.findById(Contact.class,contacts.get(position).getId());
+                                        contact.setPhoneno(contactNumber.getText().toString());
+                                        contact.setName(contactName.getText().toString());
+                                        contact.setCalledName(calledName.getText().toString());
+                                        contact.setCalledNumber(calledNumber.getText().toString());
+                                        if(calledState.getSelectedItemPosition()==0){
+                                            contact.setIncoming(true);
+                                        }
+                                        else {
+                                            contact.setIncoming(false);
+                                        }
+                                        contact.save();
+                                        EventBus.getDefault().post(new EventB("1"));
+                                        dialog.dismiss();
                                     }
-                                    else {
-                                        contact.setIncoming(false);
-                                    }
-                                    contact.save();
-                                    dialog.dismiss();
+
+
+
+
+
                                 }
                             });
 

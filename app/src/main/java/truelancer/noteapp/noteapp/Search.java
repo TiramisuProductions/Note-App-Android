@@ -5,13 +5,10 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.SearchView;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
-import android.view.WindowManager;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
@@ -24,10 +21,10 @@ import java.util.Collections;
 import java.util.List;
 
 
-import truelancer.noteapp.noteapp.Adapters.bankAccountAdapter;
-import truelancer.noteapp.noteapp.Adapters.contactAdapter;
-import truelancer.noteapp.noteapp.Adapters.emailAdapter;
-import truelancer.noteapp.noteapp.Adapters.noteAdapter;
+import truelancer.noteapp.noteapp.Adapters.BankAccountAdapter;
+import truelancer.noteapp.noteapp.Adapters.ContactAdapter;
+import truelancer.noteapp.noteapp.Adapters.EmailAdapter;
+import truelancer.noteapp.noteapp.Adapters.NoteAdapter;
 import truelancer.noteapp.noteapp.Database.BankAccount;
 import truelancer.noteapp.noteapp.Database.Contact;
 import truelancer.noteapp.noteapp.Database.Email;
@@ -40,10 +37,10 @@ public class Search extends AppCompatActivity {
     private TextView contacttxt, emailtxt, banktxt, notetxt, notfoundtxt;
 
     private RecyclerView contactSearchRecycler, emailSearchRecycler, bankSearchRecycler, noteSearchRecycler;
-    private contactAdapter contactSearchAdapter;
-    private emailAdapter emailSearchAdapter;
-    private bankAccountAdapter bankSearchAdapter;
-    private noteAdapter noteSearchAdapter;
+    private ContactAdapter contactSearchAdapter;
+    private EmailAdapter emailSearchAdapter;
+    private BankAccountAdapter bankSearchAdapter;
+    private NoteAdapter noteSearchAdapter;
 
     View view = this.getCurrentFocus();
 
@@ -189,21 +186,22 @@ public class Search extends AppCompatActivity {
             String phoneAll = contacts.get(i).getPhoneno().toLowerCase();
             String callednoAll = contacts.get(i).getCalledNumber().toLowerCase();
             String callednameAll = contacts.get(i).getCalledName().toLowerCase();
+            boolean savedFromApp = contacts.get(i).isSavedFromApp();
 
             if (contactnameAll.contains(searchWord)) {
                 contactFilterList.add(contacts.get(i));
             } else if (phoneAll.contains(searchWord)) {
                 contactFilterList.add(contacts.get(i));
-            } else if (callednameAll.contains(searchWord)) {
+            } else if (callednameAll.contains(searchWord)&&!savedFromApp) {
                 contactFilterList.add(contacts.get(i));
-            } else if (callednoAll.contains(searchWord)) {
+            } else if (callednoAll.contains(searchWord)&&!savedFromApp) {
                 contactFilterList.add(contacts.get(i));
             } else {
             }
 
         }
 
-        contactSearchAdapter = new contactAdapter(this, contactFilterList);
+        contactSearchAdapter = new ContactAdapter(this, contactFilterList);
         contactSearchRecycler.setAdapter(contactSearchAdapter);
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         List<Email> emails = Email.listAll(Email.class);
@@ -228,7 +226,7 @@ public class Search extends AppCompatActivity {
 
         }
 
-        emailSearchAdapter = new emailAdapter(this, emailFilterList);
+        emailSearchAdapter = new EmailAdapter(this, emailFilterList);
         emailSearchRecycler.setAdapter(emailSearchAdapter);
 ////////////////////////////////////////////////////////////////////////////////////////////////////////
         List<BankAccount> bankAccounts = BankAccount.listAll(BankAccount.class);
@@ -256,7 +254,7 @@ public class Search extends AppCompatActivity {
 
         }
 
-        bankSearchAdapter = new bankAccountAdapter(this, bankFilterList);
+        bankSearchAdapter = new BankAccountAdapter(this, bankFilterList);
         bankSearchRecycler.setAdapter(bankSearchAdapter);
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         List<Note> notes = Note.listAll(Note.class);
@@ -278,7 +276,7 @@ public class Search extends AppCompatActivity {
 
         }
 
-        noteSearchAdapter = new noteAdapter(this, noteFilterList);
+        noteSearchAdapter = new NoteAdapter(this, noteFilterList);
         noteSearchRecycler.setAdapter(noteSearchAdapter);
 
         if (contactFilterList.isEmpty()) {

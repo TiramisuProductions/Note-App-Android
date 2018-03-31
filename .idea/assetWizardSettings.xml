@@ -19,8 +19,8 @@
                                   <option name="values">
                                     <map>
                                       <entry key="assetType" value="IMAGE" />
-                                      <entry key="imageAsset" value="C:\Users\Sarvesh\Desktop\ic_go_to_app.png" />
-                                      <entry key="outputName" value="ic_go_to_app" />
+                                      <entry key="imageAsset" value="C:\Users\Sarvesh\Downloads\ic_smartphone_white_48dp\ic_smartphone_white_48dp\android\drawable-xxxhdpi\ic_smartphone_white_48dp.png" />
+                                      <entry key="outputName" value="ic_saved_from_app" />
                                       <entry key="theme" value="CUSTOM" />
                                       <entry key="themeColor" value="42a5f5" />
                                     </map>

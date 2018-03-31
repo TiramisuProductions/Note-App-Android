@@ -8,7 +8,8 @@
     <string name="fab_email">Add Email</string>
     <string name="fab_account">Add Bank Account</string>
     <string name="fab_note">Add Note</string>
-
+    <string name="done">Done</string>
+    <string name="cancel">Cancel</string>
     <string name="hint_contact_name">Enter Contact Name</string>
     <string name="hint_contact_number">Enter Contact Number</string>
     <string name="hint__name">Enter Name</string>
@@ -44,6 +45,9 @@
     <string name="hint_Others">Enter IFSC No or Others</string>
     <string name="hint_note">Enter a note</string>
     <string name="hint_add_task">Add task</string>
+    <string name="hint_input_call">Type Of Call</string>
+    <string name="hint_called_name">Enter Called Name</string>
+    <string name="hint_called_number">Enter Called Number</string>
 
 
     <string name="card_contact_no">Contact No :</string>
@@ -52,5 +56,6 @@
     <string name="card_account_no">Account No :</string>
     <string name="card_ifsc_no">IFSC :</string>
     <string name="card_note">Note :</string>
+
 
 </resources>

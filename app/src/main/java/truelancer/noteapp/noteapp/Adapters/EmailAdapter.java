@@ -31,7 +31,7 @@ import truelancer.noteapp.noteapp.Database.Email;
 import truelancer.noteapp.noteapp.MainActivity;
 import truelancer.noteapp.noteapp.R;
 
-public class emailAdapter extends RecyclerView.Adapter<emailAdapter.MyView> {
+public class EmailAdapter extends RecyclerView.Adapter<EmailAdapter.MyView> {
     List<Email> emails;
     Activity activity;
     String timeStampString;
@@ -41,7 +41,7 @@ public class emailAdapter extends RecyclerView.Adapter<emailAdapter.MyView> {
 
     static final int RESULT_PICK_CONTACT_E= 5;
 
-    public emailAdapter(FragmentActivity activity, List<Email> emails) {
+    public EmailAdapter(FragmentActivity activity, List<Email> emails) {
         this.activity = activity;
         this.emails = emails;
 
@@ -58,14 +58,18 @@ public class emailAdapter extends RecyclerView.Adapter<emailAdapter.MyView> {
     public void onBindViewHolder(final MyView holder, final int position) {
 
 
+
+
        if(emails.get(position).isSavedFromApp()){
-           holder.state_of_call.setVisibility(View.INVISIBLE);
+           holder.state_of_call.setImageResource(R.drawable.ic_saved_from_app);
+           inout="Saved From App";
         }else{
             if (!emails.get(position).isIncoming()) {
-                holder.call_txt.setText("Call To");
+
                 inout = "Call To";
                 holder.state_of_call.setImageResource(R.drawable.ic_outgoing);
             } else {
+                holder.state_of_call.setImageResource(R.drawable.ic_incoming);
                 inout = "Call By";
             }
         }
@@ -76,7 +80,7 @@ public class emailAdapter extends RecyclerView.Adapter<emailAdapter.MyView> {
         String tsMilli = emails.get(position).getTsMilli();
         long tsLong = Long.parseLong(tsMilli);
         timeStampString = getDate(tsLong);
-
+        holder.call_txt.setText(inout);
         holder.date_time.setText("" + timeStampString);
         holder.contactName.setText(emails.get(position).getName());
         holder.emailId.setText(emails.get(position).getEmailId());

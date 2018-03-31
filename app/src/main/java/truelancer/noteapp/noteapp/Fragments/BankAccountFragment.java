@@ -1,35 +1,36 @@
 package truelancer.noteapp.noteapp.Fragments;
 
 
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+
 import java.util.Collections;
 import java.util.List;
 
-import truelancer.noteapp.noteapp.Adapters.bankAccountAdapter;
+import truelancer.noteapp.noteapp.Adapters.BankAccountAdapter;
+import truelancer.noteapp.noteapp.Adapters.ContactAdapter;
 import truelancer.noteapp.noteapp.Database.BankAccount;
+import truelancer.noteapp.noteapp.Database.Contact;
+import truelancer.noteapp.noteapp.EventB;
 import truelancer.noteapp.noteapp.R;
-
-
-import static android.content.Context.MODE_PRIVATE;
 
 /**
  * A simple {@link Fragment} subclass.
  */
-public class bankAccountFragment extends Fragment {
+public class BankAccountFragment extends Fragment {
     private RecyclerView mRecycleView;
-    private bankAccountAdapter mAdapter;
+    private BankAccountAdapter mAdapter;
 
 
-    public bankAccountFragment() {
+    public BankAccountFragment() {
         // Required empty public constructor
     }
 
@@ -40,6 +41,7 @@ public class bankAccountFragment extends Fragment {
 
         View rootView = inflater.inflate(R.layout.fragment_bank_account, container, false);
 
+        EventBus.getDefault().register(this);
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getActivity());
         mRecycleView = (RecyclerView) rootView.findViewById(R.id.recycler_bank);
         mRecycleView.setLayoutManager(mLayoutManager);
@@ -47,7 +49,7 @@ public class bankAccountFragment extends Fragment {
         List<BankAccount> bankAccounts = BankAccount.listAll(BankAccount.class);
         Collections.reverse(bankAccounts);
 
-        mAdapter = new bankAccountAdapter(getActivity(), bankAccounts);
+        mAdapter = new BankAccountAdapter(getActivity(), bankAccounts);
         mRecycleView.setAdapter(mAdapter);
         onResume();
         return rootView;
@@ -59,9 +61,22 @@ public class bankAccountFragment extends Fragment {
         mAdapter.notifyDataSetChanged();
         List<BankAccount> banks = BankAccount.listAll(BankAccount.class);
         Collections.reverse(banks);
-        mAdapter = new bankAccountAdapter(getActivity(), banks);
+        mAdapter = new BankAccountAdapter(getActivity(), banks);
 
         mRecycleView.setAdapter(mAdapter);
+    }
+
+    @Subscribe
+    public void onEvent(EventB event){
+        // your implementation
+        if(event.getMessage().equals("3")){
+            mAdapter.notifyDataSetChanged();
+            List<BankAccount> banks = BankAccount.listAll(BankAccount.class);
+            Collections.reverse(banks);
+            mAdapter = new BankAccountAdapter(getActivity(), banks);
+
+            mRecycleView.setAdapter(mAdapter);
+        }
     }
 
 }

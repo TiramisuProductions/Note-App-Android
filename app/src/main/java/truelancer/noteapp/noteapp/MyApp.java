@@ -143,9 +143,9 @@ public class MyApp extends SugarApp {
 
 
         // font from assets: "assets/fonts/Roboto-Regular.ttf
-        FontsOverride.setDefaultFont(this, "DEFAULT", "font.ttf");
+        /*FontsOverride.setDefaultFont(this, "DEFAULT", "font.ttf");
         FontsOverride.setDefaultFont(this, "MONOSPACE", "font.ttf");
         FontsOverride.setDefaultFont(this, "SERIF", "font.ttf");
-        FontsOverride.setDefaultFont(this, "SANS_SERIF", "font.ttf");
+        FontsOverride.setDefaultFont(this, "SANS_SERIF", "font.ttf");*/
     }
 }

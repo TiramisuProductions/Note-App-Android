@@ -55,8 +55,6 @@
             </intent-filter>
         </receiver>
 
-        <activity android:name=".FloatingActivity" />
-
         <service android:name=".Services.PopUpService" />
 
         <activity android:name=".Search" />
