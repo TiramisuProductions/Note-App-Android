@@ -64,7 +64,7 @@ public class emailAdapter extends RecyclerView.Adapter<emailAdapter.MyView> {
             if (!emails.get(position).isIncoming()) {
                 holder.call_txt.setText("Call To");
                 inout = "Call To";
-                holder.state_of_call.setImageResource(R.drawable.outgoing_call);
+                holder.state_of_call.setImageResource(R.drawable.ic_outgoing);
             } else {
                 inout = "Call By";
             }

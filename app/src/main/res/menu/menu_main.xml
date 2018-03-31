@@ -19,7 +19,7 @@
         android:id="@+id/menu_search"
         android:title="Search"
         android:orderInCategory="200"
-        android:icon="@drawable/ic_search_white_24dp"
+        android:icon="@drawable/ic_search"
         app:showAsAction="ifRoom"
         />
 
@@ -27,7 +27,7 @@
         android:id="@+id/menu_email_to_admin"
         android:title="Contact Admin"
         android:orderInCategory="300"
-        android:icon="@drawable/ic_email_white_24dp"></item>
+        android:icon="@drawable/ic_email"></item>
 
 
 

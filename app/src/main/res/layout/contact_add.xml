@@ -52,7 +52,7 @@
         android:adjustViewBounds="true"
         android:scaleType="fitCenter"
         android:visibility="invisible"
-        android:src="@drawable/tick_inside_circle"
+        android:src="@drawable/ic_tick"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.508"
         app:layout_constraintStart_toEndOf="@+id/contact_name_et"
@@ -103,7 +103,7 @@
         android:adjustViewBounds="true"
         android:scaleType="fitCenter"
         android:visibility="invisible"
-        android:src="@drawable/tick_inside_circle"
+        android:src="@drawable/ic_tick"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/contact_no_et"
         app:layout_constraintTop_toBottomOf="@+id/tick1" />

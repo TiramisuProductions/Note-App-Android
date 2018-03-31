@@ -108,7 +108,7 @@
             android:layout_marginEnd="8dp"
             android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
-            android:src="@drawable/incoming_call"
+            android:src="@drawable/ic_incoming"
             card_view:layout_constraintBottom_toTopOf="@+id/noteTitle"
             card_view:layout_constraintEnd_toStartOf="@+id/overflow"
             card_view:layout_constraintHorizontal_bias="1.0"
@@ -124,7 +124,7 @@
             android:adjustViewBounds="true"
             android:background="?attr/selectableItemBackgroundBorderless"
             android:scaleType="centerCrop"
-            android:src="@drawable/overflow_grey"
+            android:src="@drawable/ic_overflow"
             card_view:layout_constraintBottom_toTopOf="@+id/noteTitle"
             card_view:layout_constraintEnd_toEndOf="parent"
             card_view:layout_constraintTop_toBottomOf="@+id/date_time_txt" />

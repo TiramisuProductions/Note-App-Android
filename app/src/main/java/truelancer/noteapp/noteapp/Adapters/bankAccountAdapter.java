@@ -21,7 +21,6 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -56,7 +55,7 @@ public class bankAccountAdapter extends RecyclerView.Adapter<bankAccountAdapter.
         if (!bankAccounts.get(position).isIncoming()) {
             holder.call_txt.setText("Call To");
             inout = "Call To";
-            holder.state_of_call.setImageResource(R.drawable.outgoing_call);
+            holder.state_of_call.setImageResource(R.drawable.ic_outgoing);
         } else {
             inout = "Call By";
         }

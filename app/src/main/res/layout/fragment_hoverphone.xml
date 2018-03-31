@@ -58,7 +58,7 @@
         android:layout_marginBottom="8dp"
         android:layout_marginEnd="8dp"
         android:background="#757575"
-        android:drawableRight="@drawable/gotoappicon"
+        android:drawableRight="@drawable/ic_go_to_app"
         android:padding="10dp"
         android:text="Go to app "
         android:textColor="#ffffff"

@@ -51,7 +51,7 @@
         android:adjustViewBounds="true"
         android:scaleType="fitCenter"
 
-        android:src="@drawable/tick_inside_circle"
+        android:src="@drawable/ic_tick"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/note_et"
         app:layout_constraintTop_toTopOf="parent" />

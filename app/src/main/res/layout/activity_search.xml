@@ -24,7 +24,7 @@
                 android:layout_width="30dp"
                 android:layout_height="30dp"
                 android:layout_centerVertical="true"
-                android:src="@drawable/searchic"/>
+                android:src="@drawable/ic_search"/>
 
             <EditText
                 android:id="@+id/search"
@@ -131,7 +131,6 @@
                 android:adjustViewBounds="true"
                 android:scaleType="fitCenter"
                 android:layout_marginTop="50dp"
-                android:src="@drawable/notfound"
                 android:visibility="invisible" />
 
             <TextView

@@ -60,7 +60,7 @@ public class noteAdapter extends RecyclerView.Adapter<noteAdapter.MyView> {
 
         if (!notes.get(position).isIncoming()) {
             holder.call_txt.setText("Call To");
-            holder.state_of_call.setImageResource(R.drawable.outgoing_call);
+            holder.state_of_call.setImageResource(R.drawable.ic_outgoing);
             inout = "Call To";
 
         } else {

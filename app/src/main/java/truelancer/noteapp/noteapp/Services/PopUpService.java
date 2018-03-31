@@ -711,8 +711,8 @@ public class PopUpService extends Service {
         boolean check = false;
         if (!Pattern.matches("[a-zA-Z]+", phone)) {
             if (phone.length() < 6 || phone.length() > 13) {
-                //for only indian phone no
-                //if(phone.length() != 10) {
+                //for only indian ic_phone no
+                //if(ic_phone.length() != 10) {
                 check = false;
             } else {
                 check = true;

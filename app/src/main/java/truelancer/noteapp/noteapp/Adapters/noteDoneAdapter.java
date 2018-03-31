@@ -23,7 +23,6 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -61,7 +60,7 @@ public class noteDoneAdapter extends RecyclerView.Adapter<noteDoneAdapter.MyView
 
         if (!notes.get(position).isIncoming()) {
             holder.call_txt.setText("Call To");
-            holder.state_of_call.setImageResource(R.drawable.outgoing_call);
+            holder.state_of_call.setImageResource(R.drawable.ic_outgoing);
             inout = "Call To";
 
         } else {

@@ -310,22 +310,22 @@
 
             TextView tabContact = (TextView) LayoutInflater.from(this).inflate(R.layout.custom_tab, null);
             tabContact.setText("Contacts");
-            tabContact.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.contactimage, 0, 0);
+            tabContact.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_contact, 0, 0);
             homeTabLayout.getTabAt(0).setCustomView(tabContact);
 
             TextView tabemail = (TextView) LayoutInflater.from(this).inflate(R.layout.custom_tab, null);
             tabemail.setText(" Emails");
-            tabemail.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.emailimage, 0, 0);
+            tabemail.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_email, 0, 0);
             homeTabLayout.getTabAt(1).setCustomView(tabemail);
 
             TextView tabBankAccount = (TextView) LayoutInflater.from(this).inflate(R.layout.custom_tab, null);
             tabBankAccount.setText("Bank Accounts");
-            tabBankAccount.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.bankaccountimage, 0, 0);
+            tabBankAccount.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_bank, 0, 0);
             homeTabLayout.getTabAt(2).setCustomView(tabBankAccount);
 
             TextView tabLastNote = (TextView) LayoutInflater.from(this).inflate(R.layout.custom_tab, null);
             tabLastNote.setText("Last Notes");
-            tabLastNote.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.lastnotesimage, 0, 0);
+            tabLastNote.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_note, 0, 0);
             homeTabLayout.getTabAt(3).setCustomView(tabLastNote);
         }
 
