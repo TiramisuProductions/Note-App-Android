@@ -22,6 +22,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.flipkart.chatheads.ui.ChatHead;
@@ -115,6 +116,8 @@ public class PopUpService extends Service {
                 case 0:
                     final EditText EditContactName = (EditText) layout.findViewById(R.id.contact_name_et);
                     final EditText EditContactNo = (EditText) layout.findViewById(R.id.contact_no_et);
+                    final ImageView contactTick1 = (ImageView)layout.findViewById(R.id.tick1);
+                    final ImageView contactTick2 = (ImageView)layout.findViewById(R.id.tick2);
 
                     TextWatcher textWatcher01 = new TextWatcher() {
 
@@ -130,6 +133,12 @@ public class PopUpService extends Service {
                                                   int count) {
 
                             MyApp.contactNumber0 = String.valueOf(s);
+                            if(isValidMobile(String.valueOf(s))){
+                                contactTick2.setVisibility(View.VISIBLE);
+                            }else{
+                                contactTick2.setVisibility(View.INVISIBLE);
+                            }
+
 
                         }
                     };
@@ -146,6 +155,12 @@ public class PopUpService extends Service {
                         public void onTextChanged(CharSequence s, int start, int before,
                                                   int count) {
                             MyApp.contactName0 = String.valueOf(s);
+
+                            if(String.valueOf(s).length()>0){
+                                contactTick1.setVisibility(View.VISIBLE);
+                            }else{
+                                contactTick1.setVisibility(View.INVISIBLE);
+                            }
                         }
 
 
@@ -194,7 +209,8 @@ public class PopUpService extends Service {
                     final EditText ContactName2 = (EditText) layout.findViewById(R.id.contact_name2_et);
                     final EditText EmailID = (EditText) layout.findViewById(R.id.emailId_et);
                     Button saveEmail = (Button) layout.findViewById(R.id.saveemail_btn);
-
+                    final ImageView emailTick1 = (ImageView)layout.findViewById(R.id.tick1);
+                    final ImageView emailTick2 = (ImageView)layout.findViewById(R.id.tick2);
                     TextWatcher textWatcher11 = new TextWatcher() {
 
                         public void afterTextChanged(Editable s) {
@@ -206,6 +222,11 @@ public class PopUpService extends Service {
                         public void onTextChanged(CharSequence s, int start, int before,
                                                   int count) {
                             MyApp.contactName1 = String.valueOf(s);
+                            if(String.valueOf(s).length()>0){
+                                emailTick1.setVisibility(View.VISIBLE);
+                            }else{
+                                emailTick1.setVisibility(View.INVISIBLE);
+                            }
                         }
                     };
                     ContactName2.addTextChangedListener(textWatcher11);
@@ -220,6 +241,12 @@ public class PopUpService extends Service {
                         public void onTextChanged(CharSequence s, int start, int before,
                                                   int count) {
                             MyApp.emailId1 = String.valueOf(s);
+
+                            if(isValidEmail(String.valueOf(s))){
+                                emailTick2.setVisibility(View.VISIBLE);
+                            }else{
+                                emailTick2.setVisibility(View.INVISIBLE);
+                            }
                         }
                     };
                     EmailID.addTextChangedListener(textWatcher12);
@@ -261,6 +288,10 @@ public class PopUpService extends Service {
                     final EditText AccountNo = (EditText) layout.findViewById(R.id.account_no_et);
                     final EditText Others = (EditText) layout.findViewById(R.id.others_et);
                     Button saveAccount = (Button) layout.findViewById(R.id.saveaccount_btn);
+                    final ImageView bankAccountTick1 = (ImageView)layout.findViewById(R.id.tick1);
+                    final ImageView bankAccountTick2 = (ImageView)layout.findViewById(R.id.tick2);
+                    final ImageView bankAccountTick3 = (ImageView)layout.findViewById(R.id.tick3);
+
 
                     TextWatcher textWatcher21 = new TextWatcher() {
 
@@ -273,6 +304,11 @@ public class PopUpService extends Service {
                         public void onTextChanged(CharSequence s, int start, int before,
                                                   int count) {
                             MyApp.contactName2 = String.valueOf(s);
+                            if(String.valueOf(s).length()>0){
+                                bankAccountTick1.setVisibility(View.VISIBLE);
+                            }else{
+                                bankAccountTick1.setVisibility(View.INVISIBLE);
+                            }
                         }
                     };
                     ContactName3.addTextChangedListener(textWatcher21);
@@ -288,6 +324,11 @@ public class PopUpService extends Service {
                         public void onTextChanged(CharSequence s, int start, int before,
                                                   int count) {
                             MyApp.accountNumber2 = String.valueOf(s);
+                            if(String.valueOf(s).length()>0){
+                                bankAccountTick2.setVisibility(View.VISIBLE);
+                            }else{
+                                bankAccountTick2.setVisibility(View.INVISIBLE);
+                            }
                         }
                     };
                     AccountNo.addTextChangedListener(textWatcher22);
@@ -303,6 +344,11 @@ public class PopUpService extends Service {
                         public void onTextChanged(CharSequence s, int start, int before,
                                                   int count) {
                             MyApp.ifsc2 = String.valueOf(s);
+                            if(String.valueOf(s).length()>0){
+                                bankAccountTick3.setVisibility(View.VISIBLE);
+                            }else{
+                                bankAccountTick3.setVisibility(View.INVISIBLE);
+                            }
                         }
                     };
                     Others.addTextChangedListener(textWatcher23);

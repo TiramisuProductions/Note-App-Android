@@ -28,9 +28,7 @@ import java.util.Calendar;
 import java.util.List;
 
 import truelancer.noteapp.noteapp.Database.BankAccount;
-import truelancer.noteapp.noteapp.Database.Contact;
 import truelancer.noteapp.noteapp.R;
-import truelancer.noteapp.noteapp.bankActivity;
 
 public class bankAccountAdapter extends RecyclerView.Adapter<bankAccountAdapter.MyView> {
     List<BankAccount> bankAccounts;
@@ -79,23 +77,7 @@ public class bankAccountAdapter extends RecyclerView.Adapter<bankAccountAdapter.
         holder.bankCardView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(activity, bankActivity.class);
-                intent.putExtra("bankContactName", bankAccounts.get(position).getName());
-                intent.putExtra("accountNo", bankAccounts.get(position).getAccountNo());
-                intent.putExtra("ifscCode", bankAccounts.get(position).getIfscCode());
 
-                intent.putExtra("calledName", bankAccounts.get(position).getCalledName());
-                intent.putExtra("calledNumber", bankAccounts.get(position).getCalledNumber());
-
-                String income = "" + bankAccounts.get(position).isIncoming();
-                intent.putExtra("incoming", income);
-
-                String tsMilli = bankAccounts.get(position).getTsMilli();
-                long tsLong = Long.parseLong(tsMilli);
-                String timeStampString2 = getDate(tsLong);
-                intent.putExtra("timestamp", timeStampString2);
-                Toast.makeText(activity, "Contact timestamp: " + timeStampString2, Toast.LENGTH_SHORT).show();
-                activity.startActivity(intent);
             }
         });
 

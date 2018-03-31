@@ -23,16 +23,13 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.List;
 
-import truelancer.noteapp.noteapp.Database.Contact;
 import truelancer.noteapp.noteapp.Database.Note;
 import truelancer.noteapp.noteapp.R;
-import truelancer.noteapp.noteapp.noteActivity;
 
 import static com.orm.SugarRecord.findById;
 
@@ -83,21 +80,7 @@ public class noteAdapter extends RecyclerView.Adapter<noteAdapter.MyView> {
             @Override
             public void onClick(View view) {
 
-                Intent intent = new Intent(activity, noteActivity.class);
-                intent.putExtra("noteText", notes.get(position).getNote());
 
-                intent.putExtra("calledName", notes.get(position).getCalledName());
-                intent.putExtra("calledNumber", notes.get(position).getCalledNumber());
-
-                String income = "" + notes.get(position).isIncoming();
-                intent.putExtra("incoming", income);
-
-                String tsMilli = notes.get(position).getTsMilli();
-                long tsLong = Long.parseLong(tsMilli);
-                String timeStampString2 = getDate(tsLong);
-                intent.putExtra("timestamp", timeStampString2);
-                Toast.makeText(activity, "Contact timestamp: " + timeStampString2, Toast.LENGTH_SHORT).show();
-                activity.startActivity(intent);
             }
         });
 
@@ -264,7 +247,7 @@ public class noteAdapter extends RecyclerView.Adapter<noteAdapter.MyView> {
             this.setIsRecyclable(false);
 
 
-            contactName = (TextView) itemView.findViewById(R.id.contact_nameN);
+            /*contactName = (TextView) itemView.findViewById(R.id.contact_nameN);
             note2 = (TextView) itemView.findViewById(R.id.noteit);
             noteCardView = (CardView) itemView.findViewById(R.id.note_cardView);
             calledName = (TextView) itemView.findViewById(R.id.called_contactN);
@@ -273,7 +256,7 @@ public class noteAdapter extends RecyclerView.Adapter<noteAdapter.MyView> {
             state_of_call = (ImageView) itemView.findViewById(R.id.stateofcallN);
             date_time = (TextView) itemView.findViewById(R.id.date_time_txt);
             overflow = (ImageView) itemView.findViewById(R.id.overflow);
-            checkBox=(CheckBox) itemView.findViewById(R.id.checkBoxNote);
+            checkBox=(CheckBox) itemView.findViewById(R.id.checkBoxNote);*/
             itemContext = itemView.getContext();
         }
     }

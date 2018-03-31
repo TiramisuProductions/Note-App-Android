@@ -55,18 +55,11 @@
             </intent-filter>
         </receiver>
 
-        <activity android:name=".ContactForm" />
         <activity android:name=".FloatingActivity" />
 
         <service android:name=".Services.PopUpService" />
 
-        <activity android:name=".contactActivity" />
-        <activity android:name=".bankActivity" />
-        <activity android:name=".emailActivity" />
-        <activity android:name=".noteActivity" />
         <activity android:name=".Search" />
-        <activity android:name=".Add_New" />
-        <activity android:name=".TestActivity"></activity>
     </application>
 
 </manifest>

@@ -2,20 +2,11 @@ package truelancer.noteapp.noteapp.Adapters;
 
 
 import android.app.Activity;
-import android.app.Application;
 import android.app.Dialog;
-import android.content.ContentProviderOperation;
-import android.content.ContentProviderResult;
-import android.content.ContentUris;
-import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 
-import android.database.Cursor;
-import android.net.Uri;
-import android.os.Bundle;
-import android.provider.Contacts;
 import android.provider.ContactsContract;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.CardView;
@@ -23,7 +14,6 @@ import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -31,22 +21,16 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
 import truelancer.noteapp.noteapp.Database.Contact;
 import truelancer.noteapp.noteapp.MainActivity;
 import truelancer.noteapp.noteapp.R;
-import truelancer.noteapp.noteapp.contactActivity;
-
-import static android.app.Activity.RESULT_OK;
 
 
 public class contactAdapter extends RecyclerView.Adapter<contactAdapter.MyView> {
@@ -94,11 +78,11 @@ public class contactAdapter extends RecyclerView.Adapter<contactAdapter.MyView> 
             super(itemView);
             contactName = (TextView) itemView.findViewById(R.id.contact_name);
             contactNum = (TextView) itemView.findViewById(R.id.contact_number);
-            call_txt = (TextView) itemView.findViewById(R.id.calltxt);
+            call_txt = (TextView) itemView.findViewById(R.id.callText);
             contactCardView = (CardView) itemView.findViewById(R.id.contact_cardView);
             calledName = (TextView) itemView.findViewById(R.id.called_contact);
             calledNumber = (TextView) itemView.findViewById(R.id.called_number);
-            state_of_call = (ImageView) itemView.findViewById(R.id.stateofcall);
+            state_of_call = (ImageView) itemView.findViewById(R.id.stateOfCall);
             date_time = (TextView) itemView.findViewById(R.id.date_time_txt);
             overflow = (ImageView) itemView.findViewById(R.id.overflow);
             itemContext = itemView.getContext();
@@ -144,20 +128,7 @@ holder.state_of_call.setVisibility(View.INVISIBLE);
         holder.contactCardView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(activity, contactActivity.class);
-                intent.putExtra("contactName", contacts.get(position).getName());
-                intent.putExtra("contactNo", contacts.get(position).getPhoneno());
-                intent.putExtra("calledName", contacts.get(position).getCalledName());
-                intent.putExtra("calledNumber", contacts.get(position).getCalledNumber());
-                String income = "" + contacts.get(position).isIncoming();
-                intent.putExtra("incoming", income);
 
-                String tsMilli = contacts.get(position).getTsMilli();
-                long tsLong = Long.parseLong(tsMilli);
-                String timeStampString2 = getDate(tsLong);
-                intent.putExtra("timestamp", timeStampString2);
-                //Toast.makeText(activity, "Contact timestamp: " + timeStampString2, Toast.LENGTH_SHORT).show();
-                activity.startActivity(intent);
             }
         });
 

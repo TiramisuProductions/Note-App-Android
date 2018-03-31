@@ -50,6 +50,7 @@
         android:layout_marginTop="148dp"
         android:adjustViewBounds="true"
         android:scaleType="fitCenter"
+
         android:src="@drawable/tick_inside_circle"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/note_et"

@@ -16,6 +16,7 @@
         android:layout_marginStart="8dp"
         android:layout_marginTop="50dp"
         android:text="@string/contact_name"
+
         android:textColor="#000"
         android:textSize="20sp"
         app:layout_constraintEnd_toEndOf="parent"
@@ -49,6 +50,7 @@
         android:layout_marginTop="92dp"
         android:adjustViewBounds="true"
         android:scaleType="fitCenter"
+        android:visibility="invisible"
         android:src="@drawable/tick_inside_circle"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/contact_name2_et"
@@ -98,6 +100,7 @@
         android:adjustViewBounds="true"
         android:scaleType="fitCenter"
         android:src="@drawable/tick_inside_circle"
+        android:visibility="invisible"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/emailId_et"
         app:layout_constraintTop_toBottomOf="@+id/tick1" />

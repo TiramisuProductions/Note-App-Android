@@ -134,10 +134,6 @@
         List<Email> emailFilterList = new ArrayList<Email>();
         List<BankAccount> bankFilterList = new ArrayList<BankAccount>();
         List<Note> noteFilterList = new ArrayList<Note>();
-
-
-
-
         Menu search_menu;
         MenuItem item_search;
         private static final int REQUEST_CODE_SIGN_IN = 0;
@@ -156,328 +152,6 @@
 
 
 
-
-        public void initSearch(){
-            if (contactFilterList.isEmpty()) {
-                contacttxt.setVisibility(View.GONE);
-            } else {
-                contacttxt.setVisibility(View.VISIBLE);
-            }
-            if (emailFilterList.isEmpty()) {
-                emailtxt.setVisibility(View.GONE);
-            } else {
-                emailtxt.setVisibility(View.VISIBLE);
-            }
-            if (bankFilterList.isEmpty()) {
-                banktxt.setVisibility(View.GONE);
-            } else {
-                banktxt.setVisibility(View.VISIBLE);
-            }
-            if (noteFilterList.isEmpty()) {
-                notetxt.setVisibility(View.GONE);
-            } else {
-                notetxt.setVisibility(View.VISIBLE);
-            }
-
-            RecyclerView.LayoutManager mLayoutManager1 = new LinearLayoutManager(getApplicationContext());
-            contactSearchRecycler.setLayoutManager(mLayoutManager1);
-            RecyclerView.LayoutManager mLayoutManager2 = new LinearLayoutManager(getApplicationContext());
-
-            emailSearchRecycler.setLayoutManager(mLayoutManager2);
-
-            RecyclerView.LayoutManager mLayoutManager3 = new LinearLayoutManager(getApplicationContext());
-
-            bankSearchRecycler.setLayoutManager(mLayoutManager3);
-
-            RecyclerView.LayoutManager mLayoutManager4 = new LinearLayoutManager(getApplicationContext());
-
-            noteSearchRecycler.setLayoutManager(mLayoutManager4);
-        }
-
-
-
-
-        public void setSearchtollbar()
-        {
-            searchToolbar = (Toolbar) findViewById(R.id.searchtoolbar);
-            if (searchToolbar != null) {
-                searchToolbar.inflateMenu(R.menu.menu_search);
-                search_menu=searchToolbar.getMenu();
-
-                searchToolbar.setNavigationOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
-                            circleReveal(R.id.searchtoolbar,1,true,false);
-                        else {
-                            searchToolbar.setVisibility(View.GONE);
-                            homeTabLayout.setVisibility(View.VISIBLE);
-                        }
-
-
-
-                    }
-                });
-
-                item_search = search_menu.findItem(R.id.action_filter_search);
-
-                MenuItemCompat.setOnActionExpandListener(item_search, new MenuItemCompat.OnActionExpandListener() {
-                    @Override
-                    public boolean onMenuItemActionCollapse(MenuItem item) {
-                        // Do something when collapsed
-                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                            circleReveal(R.id.searchtoolbar,1,true,false);
-                        }
-                        else
-                        {   searchToolbar.setVisibility(View.GONE);}
-
-                        homeTabLayout.setVisibility(View.VISIBLE);
-                        floatingActionMenu.setVisibility(View.VISIBLE);
-                        homeViewPager.setVisibility(View.VISIBLE);
-
-                        return true;
-                    }
-
-                    @Override
-                    public boolean onMenuItemActionExpand(MenuItem item) {
-                        // Do something when expanded
-                        return true;
-                    }
-                });
-
-                initSearchView();
-
-
-            } else
-                Log.d("toolbar", "setSearchtollbar: NULL");
-        }
-
-
-        public void initSearchView()
-        {
-
-
-            initSearch();
-
-            Log.d(TAG,"SearchView");
-            final SearchView searchView =
-                    (SearchView) search_menu.findItem(R.id.action_filter_search).getActionView();
-
-            // Enable/Disable Submit button in the keyboard
-
-            searchView.setSubmitButtonEnabled(false);
-
-            // Change search close button image
-
-            ImageView closeButton = (ImageView) searchView.findViewById(R.id.search_close_btn);
-            closeButton.setImageResource(R.drawable.ic_close);
-
-
-            // set hint and the text colors
-
-            EditText txtSearch = ((EditText) searchView.findViewById(android.support.v7.appcompat.R.id.search_src_text));
-            txtSearch.setHint("Search..");
-            txtSearch.setHintTextColor(Color.DKGRAY);
-            txtSearch.setTextColor(getResources().getColor(R.color.colorPrimary));
-
-
-            // set the cursor
-
-            AutoCompleteTextView searchTextView = (AutoCompleteTextView) searchView.findViewById(android.support.v7.appcompat.R.id.search_src_text);
-            try {
-                Field mCursorDrawableRes = TextView.class.getDeclaredField("mCursorDrawableRes");
-                mCursorDrawableRes.setAccessible(true);
-                mCursorDrawableRes.set(searchTextView, R.drawable.search_cursor); //This sets the cursor resource ID to 0 or @null which will make it visible on white background
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-
-            searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-                @Override
-                public boolean onQueryTextSubmit(String query) {
-                    callSearch(query);
-                    searchView.clearFocus();
-                    return true;
-                }
-
-                @Override
-                public boolean onQueryTextChange(String newText) {
-                    callSearch(newText);
-                    return true;
-                }
-
-                public void callSearch(String query) {
-                    //Do searching
-                    Log.i("query", "" + query);
-                    if (query.equals("")) {
-                        //Toast.makeText(getApplicationContext(), "Nothing to serach", Toast.LENGTH_SHORT).show();
-                        contacttxt.setVisibility(View.GONE);
-                        emailtxt.setVisibility(View.GONE);
-                        banktxt.setVisibility(View.GONE);
-                        notetxt.setVisibility(View.GONE);
-
-                        contactFilterList.clear();
-                        emailFilterList.clear();
-                        bankFilterList.clear();
-                        noteFilterList.clear();
-                    } else {
-                        contactFilterList.clear();
-                        emailFilterList.clear();
-                        bankFilterList.clear();
-                        noteFilterList.clear();
-                        execute(query);
-                    }
-
-
-                }
-
-            });
-
-        }
-
-
-
-        public void execute(String searchWord1) {
-
-            String searchWord = searchWord1.toLowerCase();
-
-            List<Contact> contacts = Contact.listAll(Contact.class);
-            Collections.reverse(contacts);
-
-            for (int i = 0; i < contacts.size(); i++) {
-                String contactnameAll = contacts.get(i).getName().toLowerCase();
-                String phoneAll = contacts.get(i).getPhoneno().toLowerCase();
-                String callednoAll = contacts.get(i).getCalledNumber().toLowerCase();
-                String callednameAll = contacts.get(i).getCalledName().toLowerCase();
-
-                if (contactnameAll.contains(searchWord)) {
-                    contactFilterList.add(contacts.get(i));
-                } else if (phoneAll.contains(searchWord)) {
-                    contactFilterList.add(contacts.get(i));
-                } else if (callednameAll.contains(searchWord)) {
-                    contactFilterList.add(contacts.get(i));
-                } else if (callednoAll.contains(searchWord)) {
-                    contactFilterList.add(contacts.get(i));
-                } else {
-                }
-
-            }
-
-            contactSearchAdapter = new contactAdapter(this, contactFilterList);
-            contactSearchRecycler.setAdapter(contactSearchAdapter);
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-            List<Email> emails = Email.listAll(Email.class);
-            Collections.reverse(emails);
-
-            for (int i = 0; i < emails.size(); i++) {
-                String contactnameAll = emails.get(i).getName().toLowerCase();
-                String emailAll = emails.get(i).getEmailId().toLowerCase();
-                String callednoAll = emails.get(i).getCalledNumber().toLowerCase();
-                String callednameAll = emails.get(i).getCalledName().toLowerCase();
-
-                if (contactnameAll.contains(searchWord)) {
-                    emailFilterList.add(emails.get(i));
-                } else if (emailAll.contains(searchWord)) {
-                    emailFilterList.add(emails.get(i));
-                } else if (callednameAll.contains(searchWord)) {
-                    emailFilterList.add(emails.get(i));
-                } else if (callednoAll.contains(searchWord)) {
-                    emailFilterList.add(emails.get(i));
-                } else {
-                }
-
-            }
-
-            emailSearchAdapter = new emailAdapter(this, emailFilterList);
-            emailSearchRecycler.setAdapter(emailSearchAdapter);
-////////////////////////////////////////////////////////////////////////////////////////////////////////
-            List<BankAccount> bankAccounts = BankAccount.listAll(BankAccount.class);
-            Collections.reverse(bankAccounts);
-
-            for (int i = 0; i < bankAccounts.size(); i++) {
-                String contactnameAll = bankAccounts.get(i).getName().toLowerCase();
-                String accNoAll = bankAccounts.get(i).getAccountNo().toLowerCase();
-                String ifscAll = bankAccounts.get(i).getIfscCode().toLowerCase();
-                String callednoAll = bankAccounts.get(i).getCalledNumber().toLowerCase();
-                String callednameAll = bankAccounts.get(i).getCalledName().toLowerCase();
-
-                if (contactnameAll.contains(searchWord)) {
-                    bankFilterList.add(bankAccounts.get(i));
-                } else if (accNoAll.contains(searchWord)) {
-                    bankFilterList.add(bankAccounts.get(i));
-                } else if (ifscAll.contains(searchWord)) {
-                    bankFilterList.add(bankAccounts.get(i));
-                } else if (callednameAll.contains(searchWord)) {
-                    bankFilterList.add(bankAccounts.get(i));
-                } else if (callednoAll.contains(searchWord)) {
-                    bankFilterList.add(bankAccounts.get(i));
-                } else {
-                }
-
-            }
-
-            bankSearchAdapter = new bankAccountAdapter(this, bankFilterList);
-            bankSearchRecycler.setAdapter(bankSearchAdapter);
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-            List<Note> notes = Note.listAll(Note.class);
-            Collections.reverse(notes);
-
-            for (int i = 0; i < notes.size(); i++) {
-                String noteAll = notes.get(i).getNote().toLowerCase();
-                String callednoAll = notes.get(i).getCalledNumber().toLowerCase();
-                String callednameAll = notes.get(i).getCalledName().toLowerCase();
-
-                if (noteAll.contains(searchWord)) {
-                    noteFilterList.add(notes.get(i));
-                } else if (callednameAll.contains(searchWord)) {
-                    noteFilterList.add(notes.get(i));
-                } else if (callednoAll.contains(searchWord)) {
-                    noteFilterList.add(notes.get(i));
-                } else {
-                }
-
-            }
-
-            noteSearchAdapter = new noteAdapter(this, noteFilterList);
-            noteSearchRecycler.setAdapter(noteSearchAdapter);
-
-            if (contactFilterList.isEmpty()) {
-                contacttxt.setVisibility(View.GONE);
-            } else {
-                contacttxt.setVisibility(View.VISIBLE);
-            }
-            if (emailFilterList.isEmpty()) {
-                emailtxt.setVisibility(View.GONE);
-            } else {
-                emailtxt.setVisibility(View.VISIBLE);
-            }
-            if (bankFilterList.isEmpty()) {
-                banktxt.setVisibility(View.GONE);
-            } else {
-                banktxt.setVisibility(View.VISIBLE);
-            }
-            if (noteFilterList.isEmpty()) {
-                notetxt.setVisibility(View.GONE);
-            } else {
-                notetxt.setVisibility(View.VISIBLE);
-            }
-
-
-
-            if (contactFilterList.isEmpty()) {
-                if (emailFilterList.isEmpty()) {
-                    if (bankFilterList.isEmpty()) {
-                        if (noteFilterList.isEmpty()) {
-
-                        }
-                        else {
-
-                        }
-                    }
-                }
-
-            }
-        }
 
 
         @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
@@ -655,6 +329,328 @@
             homeTabLayout.getTabAt(3).setCustomView(tabLastNote);
         }
 
+        public void initSearchLayout(){
+            if (contactFilterList.isEmpty()) {
+                contacttxt.setVisibility(View.GONE);
+            } else {
+                contacttxt.setVisibility(View.VISIBLE);
+            }
+            if (emailFilterList.isEmpty()) {
+                emailtxt.setVisibility(View.GONE);
+            } else {
+                emailtxt.setVisibility(View.VISIBLE);
+            }
+            if (bankFilterList.isEmpty()) {
+                banktxt.setVisibility(View.GONE);
+            } else {
+                banktxt.setVisibility(View.VISIBLE);
+            }
+            if (noteFilterList.isEmpty()) {
+                notetxt.setVisibility(View.GONE);
+            } else {
+                notetxt.setVisibility(View.VISIBLE);
+            }
+
+            RecyclerView.LayoutManager mLayoutManager1 = new LinearLayoutManager(getApplicationContext());
+            contactSearchRecycler.setLayoutManager(mLayoutManager1);
+            RecyclerView.LayoutManager mLayoutManager2 = new LinearLayoutManager(getApplicationContext());
+
+            emailSearchRecycler.setLayoutManager(mLayoutManager2);
+
+            RecyclerView.LayoutManager mLayoutManager3 = new LinearLayoutManager(getApplicationContext());
+
+            bankSearchRecycler.setLayoutManager(mLayoutManager3);
+
+            RecyclerView.LayoutManager mLayoutManager4 = new LinearLayoutManager(getApplicationContext());
+
+            noteSearchRecycler.setLayoutManager(mLayoutManager4);
+        }
+
+
+
+
+        public void setSearchtollbar()
+        {
+            searchToolbar = (Toolbar) findViewById(R.id.searchtoolbar);
+            if (searchToolbar != null) {
+                searchToolbar.inflateMenu(R.menu.menu_search);
+                search_menu=searchToolbar.getMenu();
+
+                searchToolbar.setNavigationOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
+                            circleReveal(R.id.searchtoolbar,1,true,false);
+                        else {
+                            searchToolbar.setVisibility(View.GONE);
+                            homeTabLayout.setVisibility(View.VISIBLE);
+                        }
+
+
+
+                    }
+                });
+
+                item_search = search_menu.findItem(R.id.action_filter_search);
+
+                MenuItemCompat.setOnActionExpandListener(item_search, new MenuItemCompat.OnActionExpandListener() {
+                    @Override
+                    public boolean onMenuItemActionCollapse(MenuItem item) {
+                        // Do something when collapsed
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                            circleReveal(R.id.searchtoolbar,1,true,false);
+                        }
+                        else
+                        {   searchToolbar.setVisibility(View.GONE);}
+
+                        homeTabLayout.setVisibility(View.VISIBLE);
+                        floatingActionMenu.setVisibility(View.VISIBLE);
+                        homeViewPager.setVisibility(View.VISIBLE);
+
+                        return true;
+                    }
+
+                    @Override
+                    public boolean onMenuItemActionExpand(MenuItem item) {
+                        // Do something when expanded
+                        return true;
+                    }
+                });
+
+                initSearchView();
+
+
+            } else
+                Log.d("toolbar", "setSearchtollbar: NULL");
+        }
+
+
+        public void initSearchView()
+        {
+
+
+            initSearchLayout();
+
+            Log.d(TAG,"SearchView");
+            final SearchView searchView =
+                    (SearchView) search_menu.findItem(R.id.action_filter_search).getActionView();
+
+            // Enable/Disable Submit button in the keyboard
+
+            searchView.setSubmitButtonEnabled(false);
+
+            // Change search close button image
+
+            ImageView closeButton = (ImageView) searchView.findViewById(R.id.search_close_btn);
+            closeButton.setImageResource(R.drawable.ic_close);
+
+
+            // set hint and the text colors
+
+            EditText txtSearch = ((EditText) searchView.findViewById(android.support.v7.appcompat.R.id.search_src_text));
+            txtSearch.setHint("Search..");
+            txtSearch.setHintTextColor(Color.DKGRAY);
+            txtSearch.setTextColor(getResources().getColor(R.color.colorPrimary));
+
+
+            // set the cursor
+
+            AutoCompleteTextView searchTextView = (AutoCompleteTextView) searchView.findViewById(android.support.v7.appcompat.R.id.search_src_text);
+            try {
+                Field mCursorDrawableRes = TextView.class.getDeclaredField("mCursorDrawableRes");
+                mCursorDrawableRes.setAccessible(true);
+                mCursorDrawableRes.set(searchTextView, R.drawable.search_cursor); //This sets the cursor resource ID to 0 or @null which will make it visible on white background
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+            searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+                @Override
+                public boolean onQueryTextSubmit(String query) {
+                    callSearch(query);
+                    searchView.clearFocus();
+                    return true;
+                }
+
+                @Override
+                public boolean onQueryTextChange(String newText) {
+                    callSearch(newText);
+                    return true;
+                }
+
+                public void callSearch(String query) {
+                    //Do searching
+                    Log.i("query", "" + query);
+                    if (query.equals("")) {
+                        //Toast.makeText(getApplicationContext(), "Nothing to serach", Toast.LENGTH_SHORT).show();
+                        contacttxt.setVisibility(View.GONE);
+                        emailtxt.setVisibility(View.GONE);
+                        banktxt.setVisibility(View.GONE);
+                        notetxt.setVisibility(View.GONE);
+
+                        contactFilterList.clear();
+                        emailFilterList.clear();
+                        bankFilterList.clear();
+                        noteFilterList.clear();
+                    } else {
+                        contactFilterList.clear();
+                        emailFilterList.clear();
+                        bankFilterList.clear();
+                        noteFilterList.clear();
+                        execute(query);
+                    }
+
+
+                }
+
+            });
+
+        }
+
+
+
+        public void execute(String searchWord) {
+
+             searchWord = searchWord.toLowerCase();
+
+            List<Contact> contacts = Contact.listAll(Contact.class);
+            Collections.reverse(contacts);
+
+            for (int i = 0; i < contacts.size(); i++) {
+                String contactnameAll = contacts.get(i).getName().toLowerCase();
+                String phoneAll = contacts.get(i).getPhoneno().toLowerCase();
+                String callednoAll = contacts.get(i).getCalledNumber().toLowerCase();
+                String callednameAll = contacts.get(i).getCalledName().toLowerCase();
+
+                if (contactnameAll.contains(searchWord)) {
+                    contactFilterList.add(contacts.get(i));
+                } else if (phoneAll.contains(searchWord)) {
+                    contactFilterList.add(contacts.get(i));
+                } else if (callednameAll.contains(searchWord)) {
+                    contactFilterList.add(contacts.get(i));
+                } else if (callednoAll.contains(searchWord)) {
+                    contactFilterList.add(contacts.get(i));
+                } else {
+                }
+
+            }
+
+            contactSearchAdapter = new contactAdapter(this, contactFilterList);
+            contactSearchRecycler.setAdapter(contactSearchAdapter);
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+            List<Email> emails = Email.listAll(Email.class);
+            Collections.reverse(emails);
+
+            for (int i = 0; i < emails.size(); i++) {
+                String contactnameAll = emails.get(i).getName().toLowerCase();
+                String emailAll = emails.get(i).getEmailId().toLowerCase();
+                String callednoAll = emails.get(i).getCalledNumber().toLowerCase();
+                String callednameAll = emails.get(i).getCalledName().toLowerCase();
+
+                if (contactnameAll.contains(searchWord)) {
+                    emailFilterList.add(emails.get(i));
+                } else if (emailAll.contains(searchWord)) {
+                    emailFilterList.add(emails.get(i));
+                } else if (callednameAll.contains(searchWord)) {
+                    emailFilterList.add(emails.get(i));
+                } else if (callednoAll.contains(searchWord)) {
+                    emailFilterList.add(emails.get(i));
+                } else {
+                }
+
+            }
+
+            emailSearchAdapter = new emailAdapter(this, emailFilterList);
+            emailSearchRecycler.setAdapter(emailSearchAdapter);
+////////////////////////////////////////////////////////////////////////////////////////////////////////
+            List<BankAccount> bankAccounts = BankAccount.listAll(BankAccount.class);
+            Collections.reverse(bankAccounts);
+
+            for (int i = 0; i < bankAccounts.size(); i++) {
+                String contactnameAll = bankAccounts.get(i).getName().toLowerCase();
+                String accNoAll = bankAccounts.get(i).getAccountNo().toLowerCase();
+                String ifscAll = bankAccounts.get(i).getIfscCode().toLowerCase();
+                String callednoAll = bankAccounts.get(i).getCalledNumber().toLowerCase();
+                String callednameAll = bankAccounts.get(i).getCalledName().toLowerCase();
+
+                if (contactnameAll.contains(searchWord)) {
+                    bankFilterList.add(bankAccounts.get(i));
+                } else if (accNoAll.contains(searchWord)) {
+                    bankFilterList.add(bankAccounts.get(i));
+                } else if (ifscAll.contains(searchWord)) {
+                    bankFilterList.add(bankAccounts.get(i));
+                } else if (callednameAll.contains(searchWord)) {
+                    bankFilterList.add(bankAccounts.get(i));
+                } else if (callednoAll.contains(searchWord)) {
+                    bankFilterList.add(bankAccounts.get(i));
+                } else {
+                }
+
+            }
+
+            bankSearchAdapter = new bankAccountAdapter(this, bankFilterList);
+            bankSearchRecycler.setAdapter(bankSearchAdapter);
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+            List<Note> notes = Note.listAll(Note.class);
+            Collections.reverse(notes);
+
+            for (int i = 0; i < notes.size(); i++) {
+                String noteAll = notes.get(i).getNote().toLowerCase();
+                String callednoAll = notes.get(i).getCalledNumber().toLowerCase();
+                String callednameAll = notes.get(i).getCalledName().toLowerCase();
+
+                if (noteAll.contains(searchWord)) {
+                    noteFilterList.add(notes.get(i));
+                } else if (callednameAll.contains(searchWord)) {
+                    noteFilterList.add(notes.get(i));
+                } else if (callednoAll.contains(searchWord)) {
+                    noteFilterList.add(notes.get(i));
+                } else {
+                }
+
+            }
+
+            noteSearchAdapter = new noteAdapter(this, noteFilterList);
+            noteSearchRecycler.setAdapter(noteSearchAdapter);
+
+            if (contactFilterList.isEmpty()) {
+                contacttxt.setVisibility(View.GONE);
+            } else {
+                contacttxt.setVisibility(View.VISIBLE);
+            }
+            if (emailFilterList.isEmpty()) {
+                emailtxt.setVisibility(View.GONE);
+            } else {
+                emailtxt.setVisibility(View.VISIBLE);
+            }
+            if (bankFilterList.isEmpty()) {
+                banktxt.setVisibility(View.GONE);
+            } else {
+                banktxt.setVisibility(View.VISIBLE);
+            }
+            if (noteFilterList.isEmpty()) {
+                notetxt.setVisibility(View.GONE);
+            } else {
+                notetxt.setVisibility(View.VISIBLE);
+            }
+
+
+
+            if (contactFilterList.isEmpty()) {
+                if (emailFilterList.isEmpty()) {
+                    if (bankFilterList.isEmpty()) {
+                        if (noteFilterList.isEmpty()) {
+
+                        }
+                        else {
+
+                        }
+                    }
+                }
+
+            }
+        }
+
 
         ////////////////////////////Menu ////////////////////////////////////////////
 
@@ -718,11 +714,11 @@
                         public void onClick(View view) {
                             if(adminSpinner.getSelectedItemPosition()==0){
                                 String email[]={getString(R.string.admin_email)};
-                                shareToGMail(email,getString(R.string.admin_option_1),getString(R.string.admin_subject_1));
+                                sharetoGmail(email,getString(R.string.admin_option_1),getString(R.string.admin_subject_1));
                             }
                             else{
                                 String email[]={getString(R.string.admin_email)};
-                                shareToGMail(email,getString(R.string.admin_option_2),getString(R.string.admin_subject_2));
+                                sharetoGmail(email,getString(R.string.admin_option_2),getString(R.string.admin_subject_2));
                             }
                         }
                     });
@@ -739,8 +735,8 @@
             }
         }
 
-
-        public void shareToGMail(String email[], String subject, String content) {
+        ////////////////////////////Drive////////////////////////////////////////////
+        public void sharetoGmail(String email[], String subject, String content) {
             Intent emailIntent = new Intent(Intent.ACTION_SEND);
             emailIntent.putExtra(Intent.EXTRA_EMAIL, email);
             emailIntent.putExtra(Intent.EXTRA_SUBJECT, subject);
@@ -1035,7 +1031,7 @@
             }
         }
 
-
+        ////////////////////////////OnClick////////////////////////////////////////////
         @Override
         public void onClick(View v) {
 

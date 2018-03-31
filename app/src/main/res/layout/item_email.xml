@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.v7.widget.CardView
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/email_cardView"
     xmlns:card_view="http://schemas.android.com/apk/res-auto"
     card_view:cardElevation="4dp"
@@ -8,132 +9,156 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
-    <RelativeLayout
+    <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:padding="10dp">
+        android:layout_height="wrap_content">
 
         <TextView
             android:id="@+id/date_time_txt"
-            android:text="12:10, 3 dec 2017"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
-            android:layout_alignParentRight="true" />
+            android:layout_alignParentRight="true"
+            android:layout_marginEnd="8dp"
+            android:layout_marginTop="8dp"
+            android:text="12:10, 3 dec 2017"
+            card_view:layout_constraintEnd_toEndOf="parent"
+            card_view:layout_constraintTop_toTopOf="parent" />
 
-        <View
-            android:id="@+id/anchorE"
+        <TextView
+            android:id="@+id/callText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="8dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:text="Call By"
+            card_view:layout_constraintEnd_toStartOf="@+id/date_time_txt"
+            card_view:layout_constraintHorizontal_bias="0.0"
+            card_view:layout_constraintStart_toStartOf="parent"
+            card_view:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/called_contactEmail"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:text="Cell"
+            android:textColor="@color/black"
+            card_view:layout_constraintStart_toStartOf="parent"
+            card_view:layout_constraintTop_toBottomOf="@+id/callText" />
+
+        <TextView
+            android:id="@+id/called_numberEmail"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="8dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:text="Cell"
+            android:textColor="@color/black"
+            card_view:layout_constraintEnd_toEndOf="parent"
+            card_view:layout_constraintHorizontal_bias="0.05"
+            card_view:layout_constraintStart_toEndOf="@+id/called_contactEmail"
+            card_view:layout_constraintTop_toBottomOf="@+id/callText" />
+
+
+        <TextView
+            android:id="@+id/tempoEmail"
             android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:layout_centerInParent="true"
-            android:layout_marginLeft="-70dp"
-            android:layout_marginRight="80dp" />
-
-        <RelativeLayout
-            android:id="@+id/left_side"
-            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="0dip"
-            android:layout_centerInParent="true"
-            android:layout_toLeftOf="@+id/anchorE"
-            android:orientation="vertical">
+            android:layout_marginEnd="8dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:text="Saved Details"
+            card_view:layout_constraintEnd_toEndOf="parent"
+            card_view:layout_constraintStart_toStartOf="parent"
+            card_view:layout_constraintTop_toBottomOf="@+id/called_numberEmail" />
 
-            <TextView
-                android:id="@+id/calltxt"
-                android:visibility="gone"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Call By" />
-
-            <TextView
-                android:id="@+id/called_contactE"
-                android:layout_width="wrap_content"
-                android:layout_below="@+id/calltxt"
-                android:layout_height="wrap_content"
-                android:text="Cell"
-                android:textColor="@color/black" />
-
-            <TextView
-                android:id="@+id/called_numberE"
-                android:layout_width="wrap_content"
-                android:layout_below="@+id/calltxt"
-                android:layout_height="wrap_content"
-                android:paddingLeft="15dp"
-                android:layout_toRightOf="@+id/called_contactE"
-                android:text="Cell"
-                android:textColor="@color/black" />
-
-            <TextView
-                android:id="@+id/tempoE"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/called_contactE"
-                android:text="Saved Details" />
-
-            <TextView
-                android:id="@+id/contact_idE"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/tempoE"
-                android:textColor="@color/black"
-                android:text="Contact Name : " />
-
-            <TextView
-                android:id="@+id/contact_nameE"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/tempoE"
-                android:textColor="@color/black"
-                android:layout_toRightOf="@id/contact_idE" />
-
-            <TextView
-                android:id="@+id/contact_id2E"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/contact_idE"
-                android:textColor="@color/black"
-                android:text="Email Id : " />
-
-            <TextView
-                android:id="@+id/emailId"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:textColor="@color/black"
-                android:layout_below="@id/contact_idE"
-                android:layout_toRightOf="@id/contact_id2E" />
-
-        </RelativeLayout>
-
-        <RelativeLayout
-            android:padding="0dp"
-            android:id="@+id/right_side"
-            android:layout_width="match_parent"
+        <TextView
+            android:id="@+id/contact_idEmail"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="0dip"
-            android:layout_centerInParent="true"
-            android:layout_toRightOf="@+id/left_side"
-            android:orientation="vertical"
-            android:text="Right Side">
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:text="@string/card_contact_name"
+            android:textColor="@color/black"
+            card_view:layout_constraintStart_toStartOf="parent"
+            card_view:layout_constraintTop_toBottomOf="@+id/tempoEmail" />
 
-            <ImageView
-                android:id="@+id/stateofcallE"
-                android:layout_width="50dp"
-                android:layout_height="25dp"
-                android:layout_margin="10dp"
-                android:src="@drawable/incoming_call" />
+        <TextView
+            android:id="@+id/contact_nameEmail"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="8dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:textColor="@color/black"
+            card_view:layout_constraintEnd_toEndOf="parent"
+            card_view:layout_constraintHorizontal_bias="0.0"
+            card_view:layout_constraintStart_toEndOf="@+id/contact_idEmail"
+            card_view:layout_constraintTop_toBottomOf="@+id/tempoEmail" />
 
-            <ImageView
-                android:id="@+id/overflow"
-                android:layout_width="50dp"
-                android:layout_height="35dp"
-                android:layout_marginTop="5dp"
-                android:layout_toRightOf="@+id/stateofcallE"
-                android:adjustViewBounds="true"
-                android:background="?attr/selectableItemBackgroundBorderless"
-                android:scaleType="centerCrop"
-                android:src="@drawable/overflow_grey" />
-        </RelativeLayout>
-    </RelativeLayout>
+        <TextView
+            android:id="@+id/contact_id2Email"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:text="Email ID :"
+            android:textColor="@color/black"
+            card_view:layout_constraintBottom_toBottomOf="parent"
+            card_view:layout_constraintStart_toStartOf="parent"
+            card_view:layout_constraintTop_toBottomOf="@+id/contact_idEmail"
+            card_view:layout_constraintVertical_bias="0.0" />
 
+        <TextView
+            android:id="@+id/emailID"
+            android:layout_width="0dp"
+            android:layout_height="17dp"
+            android:layout_marginBottom="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:textColor="@color/black"
+            card_view:layout_constraintBottom_toBottomOf="parent"
+            card_view:layout_constraintEnd_toEndOf="parent"
+            card_view:layout_constraintHorizontal_bias="0.0"
+            card_view:layout_constraintStart_toEndOf="@+id/contact_id2Email"
+            card_view:layout_constraintTop_toBottomOf="@+id/contact_nameEmail" />
+
+        <ImageView
+            android:id="@+id/stateOfCallEmail"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:layout_marginBottom="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:src="@drawable/incoming_call"
+            card_view:layout_constraintBottom_toTopOf="@+id/contact_nameEmail"
+            card_view:layout_constraintEnd_toStartOf="@+id/overflow"
+            card_view:layout_constraintHorizontal_bias="1.0"
+            card_view:layout_constraintStart_toEndOf="@+id/called_numberEmail"
+            card_view:layout_constraintTop_toBottomOf="@+id/date_time_txt" />
+
+
+        <ImageView
+            android:id="@+id/overflow"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginTop="8dp"
+            android:adjustViewBounds="true"
+            android:scaleType="centerCrop"
+            android:src="@drawable/overflow_grey"
+            card_view:layout_constraintBottom_toTopOf="@+id/contact_nameEmail"
+            card_view:layout_constraintEnd_toEndOf="parent"
+            card_view:layout_constraintTop_toBottomOf="@+id/date_time_txt" />
+
+    </android.support.constraint.ConstraintLayout>
 
 </android.support.v7.widget.CardView>

@@ -3,14 +3,9 @@ package truelancer.noteapp.noteapp.Adapters;
 
 import android.app.Activity;
 import android.app.Dialog;
-import android.content.ContentProviderOperation;
-import android.content.ContentResolver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.database.Cursor;
-import android.net.Uri;
-import android.provider.BaseColumns;
 import android.provider.ContactsContract;
 import android.support.v4.app.FragmentActivity;
 import android.support.v7.app.AlertDialog;
@@ -27,18 +22,14 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
-import truelancer.noteapp.noteapp.Database.Contact;
 import truelancer.noteapp.noteapp.Database.Email;
 import truelancer.noteapp.noteapp.MainActivity;
 import truelancer.noteapp.noteapp.R;
-import truelancer.noteapp.noteapp.emailActivity;
 
 public class emailAdapter extends RecyclerView.Adapter<emailAdapter.MyView> {
     List<Email> emails;
@@ -96,21 +87,7 @@ public class emailAdapter extends RecyclerView.Adapter<emailAdapter.MyView> {
             @Override
             public void onClick(View view) {
 
-                Intent intent = new Intent(activity, emailActivity.class);
-                intent.putExtra("emailContactName", emails.get(position).getName());
-                intent.putExtra("emailId", emails.get(position).getEmailId());
 
-                intent.putExtra("calledName", emails.get(position).getCalledName());
-                intent.putExtra("calledNumber", emails.get(position).getCalledNumber());
-                String income = "" + emails.get(position).isIncoming();
-                intent.putExtra("incoming", income);
-
-                String tsMilli = emails.get(position).getTsMilli();
-                long tsLong = Long.parseLong(tsMilli);
-                String timeStampString2 = getDate(tsLong);
-                intent.putExtra("timestamp", timeStampString2);
-                Toast.makeText(activity, "Contact timestamp: " + timeStampString2, Toast.LENGTH_SHORT).show();
-                activity.startActivity(intent);
             }
         });
 
@@ -264,13 +241,13 @@ public class emailAdapter extends RecyclerView.Adapter<emailAdapter.MyView> {
 
         public MyView(View itemView) {
             super(itemView);
-            contactName = (TextView) itemView.findViewById(R.id.contact_nameE);
-            emailId = (TextView) itemView.findViewById(R.id.emailId);
-            calledName = (TextView) itemView.findViewById(R.id.called_contactE);
-            calledNumber = (TextView) itemView.findViewById(R.id.called_numberE);
+            contactName = (TextView) itemView.findViewById(R.id.contact_nameEmail);
+            emailId = (TextView) itemView.findViewById(R.id.emailID);
+            calledName = (TextView) itemView.findViewById(R.id.called_contactEmail);
+            calledNumber = (TextView) itemView.findViewById(R.id.called_numberEmail);
             emailCardView = (CardView) itemView.findViewById(R.id.email_cardView);
-            call_txt = (TextView) itemView.findViewById(R.id.calltxt);
-            state_of_call = (ImageView) itemView.findViewById(R.id.stateofcallE);
+            call_txt = (TextView) itemView.findViewById(R.id.callText);
+            state_of_call = (ImageView) itemView.findViewById(R.id.stateOfCallEmail);
             date_time = (TextView) itemView.findViewById(R.id.date_time_txt);
             overflow = (ImageView) itemView.findViewById(R.id.overflow);
             itemContext = itemView.getContext();

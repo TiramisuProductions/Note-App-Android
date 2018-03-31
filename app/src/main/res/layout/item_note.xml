@@ -1,150 +1,145 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/note_cardView"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     card_view:cardElevation="4dp"
     card_view:cardUseCompatPadding="true">
 
-    <RelativeLayout
+    <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:padding="10dp">
+        android:layout_height="match_parent">
 
         <TextView
             android:id="@+id/date_time_txt"
-            android:text="12:10, 3 dec 2017"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
-            android:layout_alignParentRight="true" />
+            android:layout_alignParentRight="true"
+            android:layout_marginEnd="8dp"
+            android:layout_marginTop="8dp"
+            android:text="12:10, 3 dec 2017"
+            card_view:layout_constraintEnd_toEndOf="parent"
+            card_view:layout_constraintTop_toTopOf="parent" />
 
-        <View
-            android:id="@+id/anchorN"
+        <TextView
+            android:id="@+id/callText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="8dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:text="Call By"
+            android:visibility="visible"
+            card_view:layout_constraintEnd_toStartOf="@+id/date_time_txt"
+            card_view:layout_constraintHorizontal_bias="0.0"
+            card_view:layout_constraintStart_toStartOf="parent"
+            card_view:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/called_contactNote"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/callText"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:text="Cell"
+            android:textColor="@color/black"
+            card_view:layout_constraintStart_toStartOf="parent"
+            card_view:layout_constraintTop_toBottomOf="@+id/callText" />
+
+        <TextView
+            android:id="@+id/called_numberNote"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="8dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:text="Cell"
+            android:textColor="@color/black"
+            card_view:layout_constraintEnd_toEndOf="parent"
+            card_view:layout_constraintHorizontal_bias="0.05"
+            card_view:layout_constraintStart_toEndOf="@+id/called_contactNote"
+            card_view:layout_constraintTop_toBottomOf="@+id/callText" />
+
+        <TextView
+            android:id="@+id/tempoNote"
             android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:layout_centerInParent="true"
-            android:layout_marginLeft="-70dp"
-            android:layout_marginRight="80dp" />
-
-        <RelativeLayout
-            android:id="@+id/left_side"
-            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
-            android:layout_marginTop="0dip"
-            android:layout_toLeftOf="@+id/anchorN"
-            android:orientation="vertical">
+            android:layout_marginEnd="8dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:text="Saved Details"
+            card_view:layout_constraintEnd_toEndOf="parent"
+            card_view:layout_constraintStart_toStartOf="parent"
+            card_view:layout_constraintTop_toBottomOf="@+id/called_contactNote" />
 
-            <TextView
-                android:id="@+id/calltxt"
-                android:visibility="gone"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Call By" />
 
-            <TextView
-                android:id="@+id/called_contactN"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/calltxt"
-                android:text="Cell"
-                android:textColor="@color/black" />
-
-            <TextView
-                android:id="@+id/called_numberN"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/calltxt"
-                android:layout_toRightOf="@+id/called_contactN"
-                android:paddingLeft="15dp"
-                android:text="Cell"
-                android:textColor="@color/black" />
-
-            <TextView
-                android:id="@+id/tempoN"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/called_contactN"
-                android:text="Saved Details" />
-
-            <TextView
-                android:id="@+id/contact_idN"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/tempoN"
-                android:text="Contact Name : "
-                android:textColor="@color/black" />
-
-            <TextView
-                android:id="@+id/contact_nameN"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/tempoN"
-                android:layout_toRightOf="@id/contact_idN"
-                android:textColor="@color/black" />
-
-            <TextView
-                android:id="@+id/contact_id2N"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/contact_idN"
-                android:text="Note : "
-                android:textColor="@color/black" />
-
-            <TextView
-                android:id="@+id/noteit"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/contact_idN"
-                android:layout_toRightOf="@id/contact_id2N"
-                android:textColor="@color/black" />
-
-        </RelativeLayout>
-
-        <RelativeLayout
-            android:id="@+id/right_side"
-            android:layout_width="match_parent"
+        <TextView
+            android:id="@+id/contact_id2Note"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
-            android:layout_marginTop="0dip"
-            android:layout_toRightOf="@+id/left_side"
-            android:orientation="vertical"
-            android:padding="0dp"
-            android:text="Right Side">
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:text="Note : "
+            android:textColor="@color/black"
+            card_view:layout_constraintStart_toStartOf="parent"
+            card_view:layout_constraintTop_toBottomOf="@+id/tempoNote" />
 
-            <ImageView
-                android:id="@+id/stateofcallN"
-                android:layout_width="50dp"
-                android:layout_height="25dp"
-                android:layout_margin="10dp"
-                android:src="@drawable/incoming_call" />
+        <TextView
+            android:id="@+id/noteTitle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="8dp"
+            android:layout_marginTop="8dp"
+            android:textColor="@color/black"
+            card_view:layout_constraintEnd_toEndOf="parent"
+            card_view:layout_constraintHorizontal_bias="0.0"
+            card_view:layout_constraintStart_toEndOf="@+id/contact_id2Note"
+            card_view:layout_constraintTop_toBottomOf="@+id/tempoNote" />
 
-            <ImageView
-                android:id="@+id/overflow"
-                android:layout_width="50dp"
-                android:layout_height="35dp"
-                android:layout_marginTop="5dp"
-                android:layout_toRightOf="@+id/stateofcallN"
-                android:adjustViewBounds="true"
-                android:background="?attr/selectableItemBackgroundBorderless"
-                android:scaleType="centerCrop"
-                android:src="@drawable/overflow_grey" />
+        <ImageView
+            android:id="@+id/stateOfCallNote"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:layout_marginBottom="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:src="@drawable/incoming_call"
+            card_view:layout_constraintBottom_toTopOf="@+id/noteTitle"
+            card_view:layout_constraintEnd_toStartOf="@+id/overflow"
+            card_view:layout_constraintHorizontal_bias="1.0"
+            card_view:layout_constraintStart_toEndOf="@+id/called_numberNote"
+            card_view:layout_constraintTop_toBottomOf="@+id/date_time_txt" />
 
-
-        </RelativeLayout>
+        <ImageView
+            android:id="@+id/overflow"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:layout_marginTop="8dp"
+            android:adjustViewBounds="true"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:scaleType="centerCrop"
+            android:src="@drawable/overflow_grey"
+            card_view:layout_constraintBottom_toTopOf="@+id/noteTitle"
+            card_view:layout_constraintEnd_toEndOf="parent"
+            card_view:layout_constraintTop_toBottomOf="@+id/date_time_txt" />
 
         <CheckBox
-            android:id="@+id/checkBoxNote"
+            android:id="@+id/checkboxNote"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="end"
-            android:layout_below="@+id/right_side"
-            android:layout_alignParentEnd="true"
-            android:layout_marginTop="10dp"
-            />
-    </RelativeLayout>
 
+            android:layout_marginBottom="8dp"
+            android:layout_marginEnd="8dp"
+            card_view:layout_constraintBottom_toBottomOf="parent"
+            card_view:layout_constraintEnd_toEndOf="parent"
+            card_view:layout_constraintTop_toBottomOf="@+id/noteTitle"
+            card_view:layout_constraintVertical_bias="0.0" />
 
+    </android.support.constraint.ConstraintLayout>
 </android.support.v7.widget.CardView>

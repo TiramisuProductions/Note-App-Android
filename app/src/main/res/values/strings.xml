@@ -37,4 +37,20 @@
     <string name="admin_subject_1">Sir I would like to Report A Issue</string>
     <string name="admin_subject_2">Sir I would like to Suggest A Feature</string>
 
+
+    <string name="hint_name">Enter name</string>
+    <string name="hint_number">Enter number</string>
+    <string name="hint_ac_no">Enter Ac No</string>
+    <string name="hint_Others">Enter IFSC No or Others</string>
+    <string name="hint_note">Enter a note</string>
+    <string name="hint_add_task">Add task</string>
+
+
+    <string name="card_contact_no">Contact No :</string>
+    <string name="card_contact_name">Contact Name :</string>
+    <string name="card_email_id">Email ID :</string>
+    <string name="card_account_no">Account No :</string>
+    <string name="card_ifsc_no">IFSC :</string>
+    <string name="card_note">Note :</string>
+
 </resources>
