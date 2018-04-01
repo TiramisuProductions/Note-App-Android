@@ -32,6 +32,8 @@
                 android:layout_width="fill_parent"
                 android:layout_height="@dimen/custom_tab_layout_height"
                 app:tabGravity="center"
+                app:tabTextColor="@color/black"
+                app:tabSelectedTextColor="@color/black"
                 app:tabIndicatorColor="@color/white"
                 app:tabMode="fixed" />
         </android.support.design.widget.AppBarLayout>

@@ -170,6 +170,7 @@
         android:layout_marginTop="16dp"
         android:background="@color/colorPrimaryDark"
         android:text="Save"
+        android:visibility="invisible"
         android:textColor="@color/white"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

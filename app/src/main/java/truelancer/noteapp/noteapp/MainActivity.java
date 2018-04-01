@@ -25,6 +25,7 @@
     import android.support.v4.view.ViewPager;
     import android.support.v7.app.AppCompatActivity;
     import android.os.Bundle;
+    import android.support.v7.widget.AppCompatTextView;
     import android.support.v7.widget.LinearLayoutManager;
     import android.support.v7.widget.RecyclerView;
     import android.support.v7.widget.SearchView;
@@ -221,6 +222,47 @@
 
             setupViewPager(homeViewPager);
             homeTabLayout.setupWithViewPager(homeViewPager);
+
+
+            for(int i=0;i<homeTabLayout.getTabCount();i++){
+                TabLayout.Tab tab = homeTabLayout.getTabAt(i);
+               // AppCompatTextView textView = (AppCompatTextView)tab.getCustomView().findViewById(R.id.tab);
+                Log.d("lolwa",""+tab.getCustomView());
+
+            }
+
+
+
+
+
+
+
+            homeTabLayout.setOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+                @Override
+                public void onTabSelected(TabLayout.Tab tab) {
+                    Log.d("lolwa",""+tab.getCustomView().findViewById(R.id.tab).toString());
+                    AppCompatTextView textView = (AppCompatTextView)tab.getCustomView().findViewById(R.id.tab);
+                    Log.d("lolwa",textView.getText().toString());
+                    textView.setTextColor(getResources().getColor(R.color.white));
+
+
+
+                }
+
+                @Override
+                public void onTabUnselected(TabLayout.Tab tab) {
+                    AppCompatTextView textView = (AppCompatTextView)tab.getCustomView().findViewById(R.id.tab);
+                    Log.d("lolwa",textView.getText().toString());
+                    textView.setTextColor(getResources().getColor(R.color.white));
+                }
+
+                @Override
+                public void onTabReselected(TabLayout.Tab tab) {
+
+                }
+            });
+
+            homeTabLayout.setTabTextColors(R.color.grey,R.color.black);
             setupTabIcons();//icons on tabs
 
             homeViewPager.setOffscreenPageLimit(4);

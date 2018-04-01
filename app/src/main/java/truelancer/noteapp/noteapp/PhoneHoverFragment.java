@@ -56,7 +56,7 @@ public class PhoneHoverFragment extends Fragment {
 
         View view = inflater.inflate(R.layout.fragment_hoverphone, container, false);
 
-        callRecord = (Button) view.findViewById(R.id.callRecordButton);
+
         stopRecord = (Button) view.findViewById(R.id.callRecordStopButton);
 
         Toast.makeText(getActivity(), "sd", Toast.LENGTH_LONG).show();
@@ -65,14 +65,7 @@ public class PhoneHoverFragment extends Fragment {
         makeDirectory();
         SmartTabLayout viewPagerTab = (SmartTabLayout) getActivity().findViewById(R.id.viewPagerTab);
 
-        callRecord.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
 
-                startRecording(mRecorder);
-                Toast.makeText(getActivity(),"stop",Toast.LENGTH_SHORT).show();
-            }
-        });
         stopRecord.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

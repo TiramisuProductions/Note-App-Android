@@ -38,6 +38,9 @@ import com.flipkart.circularImageView.CircularDrawable;
 import com.flipkart.circularImageView.TextDrawer;
 import com.ogaclejapan.smarttablayout.SmartTabLayout;
 
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+
 import java.io.Serializable;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -51,6 +54,7 @@ import truelancer.noteapp.noteapp.Database.BankAccount;
 import truelancer.noteapp.noteapp.Database.Contact;
 import truelancer.noteapp.noteapp.Database.Email;
 import truelancer.noteapp.noteapp.Database.Note;
+import truelancer.noteapp.noteapp.EventB;
 import truelancer.noteapp.noteapp.MainActivity;
 import truelancer.noteapp.noteapp.MyApp;
 import truelancer.noteapp.noteapp.R;
@@ -63,7 +67,7 @@ public class PopUpService extends Service {
     private int chatHeadIdentifier = 0;
     private WindowManagerContainer windowManagerContainer;
     private Map<String, View> viewCache = new HashMap<>();
-
+int count =0;
 
     private String calledNumber = "";
     private String calledName = "";
@@ -75,7 +79,7 @@ public class PopUpService extends Service {
 
         CONTACT(R.string.contact, R.layout.contact_add),
         EMAIL(R.string.email, R.layout.email_add),
-        ACCOUNT(R.string.account, R.layout.account_add),
+        ACCOUNT(R.string.account, R.layout.account_add_2),
         NOTE(R.string.notes, R.layout.notes_add);
 
         private int mTitleResId;
@@ -98,10 +102,14 @@ public class PopUpService extends Service {
     public class CustomPagerAdapter extends PagerAdapter {
 
         private Context mContext;
+        private EditText abc;
+
 
         public CustomPagerAdapter(Context context) {
             mContext = context;
         }
+
+
 
         @Override
         public Object instantiateItem(ViewGroup collection, int position) {
@@ -111,13 +119,25 @@ public class PopUpService extends Service {
             ViewGroup layout = (ViewGroup) inflater.inflate(customPagerEnum.getLayoutResId(), collection, false);
             collection.addView(layout);
 
+
+
+count++;
+
+if(count==1){
+    EventBus.getDefault().register(this);
+}
             switch (position) {
 
                 case 0:
                     final EditText EditContactName = (EditText) layout.findViewById(R.id.contact_name_et);
                     final EditText EditContactNo = (EditText) layout.findViewById(R.id.contact_no_et);
+                    Log.d("ahaha","ahaha");
+                    MyApp.editContactNameToSave = EditContactName;
+                    MyApp.editContactNumberToSave = EditContactNo;
                     final ImageView contactTick1 = (ImageView)layout.findViewById(R.id.tick1);
                     final ImageView contactTick2 = (ImageView)layout.findViewById(R.id.tick2);
+
+
 
                     TextWatcher textWatcher01 = new TextWatcher() {
 
@@ -211,6 +231,11 @@ public class PopUpService extends Service {
                     Button saveEmail = (Button) layout.findViewById(R.id.saveemail_btn);
                     final ImageView emailTick1 = (ImageView)layout.findViewById(R.id.tick1);
                     final ImageView emailTick2 = (ImageView)layout.findViewById(R.id.tick2);
+
+                    MyApp.editEmailContactNameToSave = ContactName2;
+                    MyApp.editEmailAdressToSave = EmailID;
+
+
                     TextWatcher textWatcher11 = new TextWatcher() {
 
                         public void afterTextChanged(Editable s) {
@@ -291,6 +316,10 @@ public class PopUpService extends Service {
                     final ImageView bankAccountTick1 = (ImageView)layout.findViewById(R.id.tick1);
                     final ImageView bankAccountTick2 = (ImageView)layout.findViewById(R.id.tick2);
                     final ImageView bankAccountTick3 = (ImageView)layout.findViewById(R.id.tick3);
+
+                    MyApp.editBankContactNameToSave = ContactName3;
+                    MyApp.editBankAccountNoToSave = AccountNo;
+                    MyApp.editBankOthersNoToSave = Others;
 
 
                     TextWatcher textWatcher21 = new TextWatcher() {
@@ -387,8 +416,11 @@ public class PopUpService extends Service {
                 case 3:
 
                     final EditText ContactName4 = (EditText) layout.findViewById(R.id.contact_name4_et);
-                    final EditText Note1 = (EditText) layout.findViewById(R.id.note_et);
+                    final  EditText Note1 = (EditText) layout.findViewById(R.id.note_et);
                     Button saveNote = (Button) layout.findViewById(R.id.savenote_btn);
+
+
+
 
                     TextWatcher textWatcher31 = new TextWatcher() {
 
@@ -448,6 +480,8 @@ public class PopUpService extends Service {
             return layout;
         }
 
+
+
         @Override
         public void destroyItem(ViewGroup collection, int position, Object view) {
             collection.removeView((View) view);
@@ -469,6 +503,57 @@ public class PopUpService extends Service {
             return mContext.getString(customPagerEnum.getTitleResId());
         }
 
+        @Subscribe
+        public void onEvent(EventB event){
+            // your implementation
+
+
+
+            if(event.getMessage().equals("0")){
+                if(TextUtils.isEmpty(MyApp.editContactNameToSave.getText().toString())){
+                    MyApp.editContactNameToSave.setError(mContext.getString(R.string.hint_contact_name));
+
+                }else if(!isValidMobile(MyApp.editContactNumberToSave.getText().toString())){
+                    MyApp.editContactNumberToSave.setError(mContext.getString(R.string.hint_contact_number));
+                }else{
+                    Contact contact = new Contact(MyApp.editContactNameToSave.getText().toString(), MyApp.editContactNumberToSave.getText().toString(), calledNumber, calledName, incomingCall, timeStampMilli);
+                    contact.save();
+                    Toast.makeText(mContext,"Sucessfully Saved",Toast.LENGTH_LONG).show();
+                    MyApp.editContactNameToSave.setText(null);
+                    MyApp.editContactNumberToSave.setText(null);
+                }
+            }
+            else if(event.getMessage().equals("1")){
+                    if(TextUtils.isEmpty(MyApp.editEmailContactNameToSave.getText().toString())){
+                        MyApp.editEmailContactNameToSave.setError(mContext.getString(R.string.hint_contact_name));
+                    }else if(!isValidEmail(MyApp.editEmailAdressToSave.getText().toString())){
+                        MyApp.editEmailAdressToSave.setError(mContext.getString(R.string.hint_email));
+                    }else{
+                        Email email = new Email(MyApp.editEmailContactNameToSave.getText().toString(), MyApp.editEmailAdressToSave.getText().toString(), calledNumber, calledName, incomingCall, timeStampMilli);
+                        email.save();
+                        Toast.makeText(mContext,"Sucessfully Saved",Toast.LENGTH_LONG).show();
+                        MyApp.editEmailContactNameToSave.setText(null);
+                        MyApp.editEmailAdressToSave.setText(null);
+                    }
+
+            }else if(event.getMessage().equals("2")){
+                    if(TextUtils.isEmpty(MyApp.editBankContactNameToSave.getText().toString())){
+                        MyApp.editBankContactNameToSave.setError(mContext.getString(R.string.hint_contact_name));
+                    }else if(TextUtils.isEmpty(MyApp.editBankAccountNoToSave.getText().toString())){
+                        MyApp.editBankAccountNoToSave.setError(mContext.getString(R.string.hint_ac_no));
+                    }else{
+                        BankAccount bankAccount = new BankAccount(MyApp.editBankContactNameToSave.getText().toString(),MyApp.editBankAccountNoToSave.getText().toString(), MyApp.editBankOthersNoToSave.getText().toString(), calledNumber, calledName, incomingCall, timeStampMilli);
+                        bankAccount.save();
+                        Toast.makeText(mContext,"Sucessfully Saved",Toast.LENGTH_LONG).show();
+                        MyApp.editBankContactNameToSave.setText(null);
+                        MyApp.editBankAccountNoToSave.setText(null);
+                        MyApp.editBankOthersNoToSave.setText(null);
+                    }
+            }
+
+
+        }
+
     }
 
 
@@ -477,9 +562,13 @@ public class PopUpService extends Service {
         return mBinder;
     }
 
+
+
     @Override
     public void onCreate() {
         super.onCreate();
+
+
 
         windowManagerContainer = new WindowManagerContainer(this);
         chatHeadManager = new DefaultChatHeadManager<String>(this, windowManagerContainer);
@@ -498,18 +587,34 @@ public class PopUpService extends Service {
                     LayoutInflater inflater = (LayoutInflater) getSystemService(LAYOUT_INFLATER_SERVICE);
                     View view = inflater.inflate(R.layout.fragment_hoverphone, parent, false);
 
-                    ViewPager pager = (ViewPager) view.findViewById(R.id.viewPager);
+                    final ViewPager pager = (ViewPager) view.findViewById(R.id.viewPager);
                     pager.setAdapter(new CustomPagerAdapter(getApplicationContext()));
-                    SmartTabLayout viewPagerTab = (SmartTabLayout) view.findViewById(R.id.viewPagerTab);
+                    final SmartTabLayout viewPagerTab = (SmartTabLayout) view.findViewById(R.id.viewPagerTab);
                     viewPagerTab.setViewPager(pager);
 
+
+
                     Button b1 = (Button)view.findViewById(R.id.goToAppButton);
+
+                    Button save = (Button)view.findViewById(R.id.save);
+
+
+                    save.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                           Log.d("booh",""+pager.getCurrentItem());
+                            EventBus.getDefault().post(new EventB(""+pager.getCurrentItem()));
+                        }
+                    });
+
                     b1.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            Intent launchApp = getPackageManager().getLaunchIntentForPackage("truelancer.noteapp.noteapp");
-                            startActivity(launchApp);
-                            minimize();
+
+
+                          //  Intent launchApp = getPackageManager().getLaunchIntentForPackage("truelancer.noteapp.noteapp");
+                           // startActivity(launchApp);
+                        //    minimize();
                         }
                     });
 
@@ -528,6 +633,8 @@ public class PopUpService extends Service {
                     parent.removeView(cachedView);
                 }
             }
+
+
 
             @Override
             public void removeView(String key, ChatHead<? extends Serializable> chatHead, ViewGroup parent) {

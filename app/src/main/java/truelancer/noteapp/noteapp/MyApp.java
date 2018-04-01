@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.ServiceConnection;
 import android.os.IBinder;
 import android.util.Log;
+import android.widget.EditText;
 import android.widget.Toast;
 
 import com.orm.SugarApp;
@@ -25,6 +26,9 @@ public class MyApp extends SugarApp {
     static public boolean toSave;
     String defaultValue = "default";
     public boolean firstRun = true;
+    public static EditText editContactNameToSave, editContactNumberToSave,editEmailContactNameToSave,editEmailAdressToSave,editBankContactNameToSave,editBankAccountNoToSave,editBankOthersNoToSave;
+
+
 
 
     public static String firstRunRingingNumber,firstRunContactName,firstRuntsMilli;

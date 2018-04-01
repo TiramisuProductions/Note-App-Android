@@ -58,4 +58,9 @@
     <string name="card_note">Note :</string>
 
 
+
+    <string name="shared_pref">hello_note_shared_pref</string>
+    <string name="shared_pref_first_time">first_time</string>
+
+
 </resources>
