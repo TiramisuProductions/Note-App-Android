@@ -41,7 +41,10 @@ public class ContactFragment extends Fragment {
         // Inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.fragment_contact, container, false);
 
+        if(!EventBus.getDefault().isRegistered(this)){
             EventBus.getDefault().register(this);
+        }
+
 
 
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getActivity());

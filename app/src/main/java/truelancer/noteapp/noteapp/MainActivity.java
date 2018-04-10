@@ -79,8 +79,11 @@
     import java.io.OutputStreamWriter;
     import java.io.Writer;
     import java.lang.reflect.Field;
+    import java.text.ParseException;
+    import java.text.SimpleDateFormat;
     import java.util.ArrayList;
     import java.util.Collections;
+    import java.util.Date;
     import java.util.List;
 
     import butterknife.BindView;
@@ -441,13 +444,16 @@
                         // Do something when collapsed
                         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                             circleReveal(R.id.searchtoolbar,1,true,false);
+                            homeTabLayout.setVisibility(View.GONE);
+
                         }
                         else
                         {   searchToolbar.setVisibility(View.GONE);}
 
-                        homeTabLayout.setVisibility(View.VISIBLE);
+                        homeTabLayout.setVisibility(View.GONE);
                         floatingActionMenu.setVisibility(View.VISIBLE);
                         homeViewPager.setVisibility(View.VISIBLE);
+                        EventBus.getDefault().post(new EventB("0"));
 
                         return true;
                     }
@@ -1098,6 +1104,19 @@
         @Override
         public void onClick(View v) {
 
+            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("h:mm dd-MM-yyyy");
+            String dateString = simpleDateFormat.format(new Date());//get current timestamp direct to string
+
+
+            Date startDate = null;
+            try {
+                startDate = simpleDateFormat.parse(dateString);
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+
+            final String tsMilli = "" + startDate.getTime();
+
             switch (v.getId()) {
                 case  R.id.fab_contact: {
                     floatingActionMenu.close(true);
@@ -1123,7 +1142,7 @@
                     save.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                           Contact contact = new Contact(contactName.getText().toString(),contactNumber.getText().toString(),"3243432",true);
+                           Contact contact = new Contact(contactName.getText().toString(),contactNumber.getText().toString(),tsMilli,true);
                            contact.save();
                            dialog.dismiss();
 
@@ -1163,7 +1182,7 @@
                     save.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                           Email email = new Email(contactName.getText().toString(),contactNumber.getText().toString(),"45354",true);
+                           Email email = new Email(contactName.getText().toString(),contactNumber.getText().toString(),tsMilli,true);
                            email.save();
                             dialog.dismiss();
 
@@ -1204,7 +1223,7 @@
                     save.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            BankAccount bankAccount = new BankAccount(contactName.getText().toString(),contactAccountNo.getText().toString(),contactIFSC.getText().toString(),"3445445",true);
+                            BankAccount bankAccount = new BankAccount(contactName.getText().toString(),contactAccountNo.getText().toString(),contactIFSC.getText().toString(),tsMilli,true);
                             bankAccount.save();
                             dialog.dismiss();
 

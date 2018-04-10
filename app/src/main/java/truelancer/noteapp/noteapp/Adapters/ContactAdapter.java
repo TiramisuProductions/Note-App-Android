@@ -26,6 +26,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -145,6 +146,7 @@ inout="Saved From App";
         holder.overflow.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                Toast.makeText(itemContext,""+position,Toast.LENGTH_LONG).show();
 
                 PopupMenu popup_overflow = new PopupMenu(activity, holder.overflow);
                 popup_overflow.getMenuInflater().inflate(R.menu.menu_overflow, popup_overflow.getMenu());

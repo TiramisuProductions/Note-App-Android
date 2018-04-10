@@ -41,7 +41,9 @@ public class BankAccountFragment extends Fragment {
 
         View rootView = inflater.inflate(R.layout.fragment_bank_account, container, false);
 
-        EventBus.getDefault().register(this);
+        if(!EventBus.getDefault().isRegistered(this)){
+            EventBus.getDefault().register(this);
+        }
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getActivity());
         mRecycleView = (RecyclerView) rootView.findViewById(R.id.recycler_bank);
         mRecycleView.setLayoutManager(mLayoutManager);

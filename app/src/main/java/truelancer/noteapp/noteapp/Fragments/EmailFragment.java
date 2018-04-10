@@ -39,7 +39,9 @@ public class EmailFragment extends Fragment {
 
         View rootView = inflater.inflate(R.layout.fragment_email, container, false);
 
-        EventBus.getDefault().register(this);
+        if(!EventBus.getDefault().isRegistered(this)){
+            EventBus.getDefault().register(this);
+        }
 
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getActivity());
         mRecyclerView = (RecyclerView) rootView.findViewById(R.id.recycler_email);
