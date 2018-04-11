@@ -30,6 +30,9 @@
     import android.support.v7.widget.RecyclerView;
     import android.support.v7.widget.SearchView;
     import android.support.v7.widget.Toolbar;
+    import android.text.Editable;
+    import android.text.TextUtils;
+    import android.text.TextWatcher;
     import android.util.Log;
     import android.view.LayoutInflater;
     import android.view.Menu;
@@ -445,6 +448,7 @@
                         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                             circleReveal(R.id.searchtoolbar,1,true,false);
                             homeTabLayout.setVisibility(View.GONE);
+                            searchScrollView.setVisibility(View.GONE);
 
                         }
                         else
@@ -799,6 +803,11 @@
 
                     return  true;
 
+
+                case R.id.settings:
+                    startActivity(new Intent(this,Settings.class));
+
+
                 default:
                     return super.onOptionsItemSelected(item);
             }
@@ -1125,12 +1134,66 @@
                     dialog.setContentView(R.layout.add_contact_dialog);
                     TextInputLayout field1 = (TextInputLayout)dialog.findViewById(R.id.field_layout_1);
                     TextInputLayout field2 = (TextInputLayout)dialog.findViewById(R.id.field_layout_2);
+                    final ImageView tick1 = (ImageView)dialog.findViewById(R.id.tick1);
+                    final ImageView tick2 = (ImageView)dialog.findViewById(R.id.tick2);
                     Button save = (Button)dialog.findViewById(R.id.save);
                     Button cancel = (Button)dialog.findViewById(R.id.cancel);
                     final TextInputEditText contactName = (TextInputEditText)dialog.findViewById(R.id.field_1);
                     final TextInputEditText contactNumber= (TextInputEditText)dialog.findViewById(R.id.field_2);
                     field1.setHint(getString(R.string.hint_contact_name));
                     field2.setHint(getString(R.string.hint_contact_number));
+
+                    final TextWatcher textWatcher01 = new TextWatcher() {
+
+                        public void afterTextChanged(Editable s) {
+                            //if (s.toString() != "") {MyApp.toSave = true;}
+                        }
+
+                        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+                        }
+
+                        public void onTextChanged(CharSequence s, int start, int before,
+                                                  int count) {
+
+                            if(!TextUtils.isEmpty(String.valueOf(s))){
+                                tick1.setVisibility(View.VISIBLE);
+                            }else {
+                                tick1.setVisibility(View.INVISIBLE);
+                            }
+
+
+
+                        }
+                    };
+
+
+                    final TextWatcher textWatcher02 = new TextWatcher() {
+
+                        public void afterTextChanged(Editable s) {
+                            //if (s.toString() != "") {MyApp.toSave = true;}
+                        }
+
+                        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+                        }
+
+                        public void onTextChanged(CharSequence s, int start, int before,
+                                                  int count) {
+
+                            if(Utils.isValidMobile(String.valueOf(s))){
+                                tick2.setVisibility(View.VISIBLE);
+                            }else{
+                                tick2.setVisibility(View.GONE);
+                            }
+
+
+
+                        }
+                    };
+
+                    contactName.addTextChangedListener(textWatcher01);
+                    contactNumber.addTextChangedListener(textWatcher02);
 
                     cancel.setOnClickListener(new View.OnClickListener() {
                         @Override
@@ -1142,11 +1205,22 @@
                     save.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                           Contact contact = new Contact(contactName.getText().toString(),contactNumber.getText().toString(),tsMilli,true);
-                           contact.save();
-                           dialog.dismiss();
 
-                            EventBus.getDefault().post(new EventB("1"));
+
+                            if(TextUtils.isEmpty(contactName.getText().toString())){
+                                contactName.setError(getString(R.string.hint_contact_name));
+                            }else if(!Utils.isValidMobile(contactNumber.getText().toString())) {
+                                contactNumber.setError(getString(R.string.hint_contact_number));
+                            }else{
+                                Contact contact = new Contact(contactName.getText().toString(),contactNumber.getText().toString(),tsMilli,true);
+                                contact.save();
+                                dialog.dismiss();
+
+                                EventBus.getDefault().post(new EventB("1"));
+                            }
+
+
+
                         }
                     });
 
@@ -1165,12 +1239,65 @@
                     dialog.setContentView(R.layout.add_contact_dialog);
                     TextInputLayout field1 = (TextInputLayout)dialog.findViewById(R.id.field_layout_1);
                     TextInputLayout field2 = (TextInputLayout)dialog.findViewById(R.id.field_layout_2);
+                    final ImageView tick1 = (ImageView)dialog.findViewById(R.id.tick1);
+                    final ImageView tick2 = (ImageView)dialog.findViewById(R.id.tick2);
                     Button save = (Button)dialog.findViewById(R.id.save);
                     Button cancel = (Button)dialog.findViewById(R.id.cancel);
                     final TextInputEditText contactName = (TextInputEditText)dialog.findViewById(R.id.field_1);
-                    final TextInputEditText contactNumber= (TextInputEditText)dialog.findViewById(R.id.field_2);
+                    final TextInputEditText contactEmail= (TextInputEditText)dialog.findViewById(R.id.field_2);
                     field1.setHint(getString(R.string.hint__name));
                     field2.setHint(getString(R.string.hint_email));
+                    final TextWatcher textWatcher01 = new TextWatcher() {
+
+                        public void afterTextChanged(Editable s) {
+                            //if (s.toString() != "") {MyApp.toSave = true;}
+                        }
+
+                        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+                        }
+
+                        public void onTextChanged(CharSequence s, int start, int before,
+                                                  int count) {
+
+                            if(!TextUtils.isEmpty(String.valueOf(s))){
+                                tick1.setVisibility(View.VISIBLE);
+                            }else {
+                                tick1.setVisibility(View.INVISIBLE);
+                            }
+
+
+
+                        }
+                    };
+
+
+                    final TextWatcher textWatcher02 = new TextWatcher() {
+
+                        public void afterTextChanged(Editable s) {
+                            //if (s.toString() != "") {MyApp.toSave = true;}
+                        }
+
+                        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+                        }
+
+                        public void onTextChanged(CharSequence s, int start, int before,
+                                                  int count) {
+
+                            if(Utils.isValidEmail(String.valueOf(s))){
+                                tick2.setVisibility(View.VISIBLE);
+                            }else{
+                                tick2.setVisibility(View.INVISIBLE);
+                            }
+
+
+
+                        }
+                    };
+                    contactName.addTextChangedListener(textWatcher01);
+                    contactEmail.addTextChangedListener(textWatcher02);
+
 
                     cancel.setOnClickListener(new View.OnClickListener() {
                         @Override
@@ -1182,11 +1309,20 @@
                     save.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                           Email email = new Email(contactName.getText().toString(),contactNumber.getText().toString(),tsMilli,true);
-                           email.save();
-                            dialog.dismiss();
 
-                            EventBus.getDefault().post(new EventB("2"));
+                            if(TextUtils.isEmpty(contactName.getText().toString())){
+                                contactName.setError(getString(R.string.hint_contact_name));
+                            }else if(!Utils.isValidEmail(contactEmail.getText().toString())) {
+                                contactEmail.setError(getString(R.string.hint_email));
+                            }else {
+
+
+                                Email email = new Email(contactName.getText().toString(), contactEmail.getText().toString(), tsMilli, true);
+                                email.save();
+                                dialog.dismiss();
+
+                                EventBus.getDefault().post(new EventB("2"));
+                            }
                         }
                     });
 
@@ -1210,6 +1346,10 @@
                     TextInputLayout field1 = (TextInputLayout)dialog.findViewById(R.id.field_layout_1);
                     TextInputLayout field2 = (TextInputLayout)dialog.findViewById(R.id.field_layout_2);
                     TextInputLayout field3 = (TextInputLayout)dialog.findViewById(R.id.field_layout_3);
+                    final ImageView tick1 = (ImageView)dialog.findViewById(R.id.tick1);
+                    final ImageView tick2 = (ImageView)dialog.findViewById(R.id.tick2);
+                    final ImageView tick3 = (ImageView)dialog.findViewById(R.id.tick3);
+
                     final TextInputEditText contactName = (TextInputEditText)dialog.findViewById(R.id.field_1);
                     final TextInputEditText contactAccountNo= (TextInputEditText)dialog.findViewById(R.id.field_2);
                     final TextInputEditText contactIFSC= (TextInputEditText)dialog.findViewById(R.id.field_3);
@@ -1219,15 +1359,106 @@
                     field2.setHint(getString(R.string.hint_ac_no));
                     field3.setHint(getString(R.string.hint_Others));
 
+
+                    final TextWatcher textWatcher01 = new TextWatcher() {
+
+                        public void afterTextChanged(Editable s) {
+                            //if (s.toString() != "") {MyApp.toSave = true;}
+                        }
+
+                        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+                        }
+
+                        public void onTextChanged(CharSequence s, int start, int before,
+                                                  int count) {
+
+                            if(!TextUtils.isEmpty(String.valueOf(s))){
+                                tick1.setVisibility(View.VISIBLE);
+                            }else{
+                                tick1.setVisibility(View.INVISIBLE);
+                            }
+
+
+
+                        }
+                    };
+
+
+                    final TextWatcher textWatcher02 = new TextWatcher() {
+
+                        public void afterTextChanged(Editable s) {
+                            //if (s.toString() != "") {MyApp.toSave = true;}
+                        }
+
+                        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+                        }
+
+                        public void onTextChanged(CharSequence s, int start, int before,
+                                                  int count) {
+
+                            if(!TextUtils.isEmpty(String.valueOf(s))){
+                                tick2.setVisibility(View.VISIBLE);
+                            }else{
+                                tick2.setVisibility(View.INVISIBLE);
+                            }
+
+
+
+                        }
+                    };
+
+
+                    final TextWatcher textWatcher03 = new TextWatcher() {
+
+                        public void afterTextChanged(Editable s) {
+                            //if (s.toString() != "") {MyApp.toSave = true;}
+                        }
+
+                        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+                        }
+
+                        public void onTextChanged(CharSequence s, int start, int before,
+                                                  int count) {
+
+                            if(!TextUtils.isEmpty(String.valueOf(s))){
+                                tick3.setVisibility(View.VISIBLE);
+                            }else{
+                                tick3.setVisibility(View.INVISIBLE);
+                            }
+
+
+
+                        }
+                    };
+
+
+                    contactName.addTextChangedListener(textWatcher01);
+                    contactAccountNo.addTextChangedListener(textWatcher02);
+                    contactIFSC.addTextChangedListener(textWatcher03);
+
+
                     dialog.show();
                     save.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            BankAccount bankAccount = new BankAccount(contactName.getText().toString(),contactAccountNo.getText().toString(),contactIFSC.getText().toString(),tsMilli,true);
-                            bankAccount.save();
-                            dialog.dismiss();
 
-                            EventBus.getDefault().post(new EventB("3"));
+
+                            if(TextUtils.isEmpty(contactName.getText().toString())){
+                                contactName.setError(getString(R.string.hint_contact_name));
+                            }else if(TextUtils.isEmpty(contactAccountNo.getText().toString())) {
+                                contactAccountNo.setError(getString(R.string.hint_ac_no));
+                            }else {
+
+
+                                BankAccount bankAccount = new BankAccount(contactName.getText().toString(), contactAccountNo.getText().toString(), contactIFSC.getText().toString(), tsMilli, true);
+                                bankAccount.save();
+                                dialog.dismiss();
+
+                                EventBus.getDefault().post(new EventB("3"));
+                            }
                         }
                     });
 

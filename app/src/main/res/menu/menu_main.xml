@@ -29,6 +29,12 @@
         android:orderInCategory="300"
         android:icon="@drawable/ic_email"></item>
 
+    <item
+        android:id="@+id/settings"
+        android:title="Settings"
+        android:orderInCategory="300"
+       ></item>
+
 
 
 

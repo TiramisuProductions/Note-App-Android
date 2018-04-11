@@ -1,5 +1,8 @@
 package truelancer.noteapp.noteapp;
 
+import android.text.TextUtils;
+import android.util.Patterns;
+
 import java.util.regex.Pattern;
 
 public class Utils {
@@ -19,5 +22,10 @@ public class Utils {
             check = false;
         }
         return check;
+    }
+
+
+    public final static boolean isValidEmail(String target) {
+        return (!TextUtils.isEmpty(target) && Patterns.EMAIL_ADDRESS.matcher(target).matches());
     }
 }

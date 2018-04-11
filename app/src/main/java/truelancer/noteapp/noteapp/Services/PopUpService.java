@@ -737,14 +737,14 @@ if(count==1){
     }
 
     private void moveToForeground() {
-        Notification notification = new NotificationCompat.Builder(this)
+      /*  Notification notification = new NotificationCompat.Builder(this)
                 .setSmallIcon(R.drawable.notification_template_icon_bg)
                 .setContentTitle("Hello Note is Active")
                 .setContentText("Click to Open App.")
                 .setContentIntent(PendingIntent.getActivity(this, 0, new Intent(this, MainActivity.class), 0))
                 .build();
 
-        startForeground(1, notification);
+        startForeground(1, notification);*/
     }
 
     public void addChatHead(String calledNumber, String calledName, boolean incomingCall, String tsMilli) {
