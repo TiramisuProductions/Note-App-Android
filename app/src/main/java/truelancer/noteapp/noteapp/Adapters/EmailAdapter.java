@@ -243,6 +243,8 @@ public class EmailAdapter extends RecyclerView.Adapter<EmailAdapter.MyView> {
         private CardView emailCardView;
         private ImageView state_of_call, overflow;
 
+
+
         public MyView(View itemView) {
             super(itemView);
             contactName = (TextView) itemView.findViewById(R.id.contact_nameEmail);

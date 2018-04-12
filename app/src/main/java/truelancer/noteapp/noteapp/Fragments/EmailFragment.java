@@ -37,8 +37,11 @@ public class EmailFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
+
+
         View rootView = inflater.inflate(R.layout.fragment_email, container, false);
 
+       // getActivity().setTheme(R.style.MyMaterialThemeDark);
         if(!EventBus.getDefault().isRegistered(this)){
             EventBus.getDefault().register(this);
         }

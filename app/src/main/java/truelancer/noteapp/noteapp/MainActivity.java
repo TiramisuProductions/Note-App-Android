@@ -213,7 +213,7 @@
         @Override
         protected void onCreate(Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
-
+setTheme(R.style.MyMaterialThemeDark);
             setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
             setSearchtollbar();
