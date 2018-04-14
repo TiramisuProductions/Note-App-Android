@@ -35,17 +35,17 @@
         android:background="@color/colorPrimary"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/goToAppButton"
-        app:layout_constraintStart_toEndOf="@+id/callRecordStopButton" />
+        app:layout_constraintStart_toEndOf="@+id/callRecordButton" />
 
     <Button
-        android:id="@+id/callRecordStopButton"
+        android:id="@+id/callRecordButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/viewPager"
         android:layout_marginBottom="8dp"
         android:layout_marginStart="8dp"
         android:layout_toRightOf="@+id/save"
-        android:text="stop record"
+        android:text="@string/call_record_start"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 

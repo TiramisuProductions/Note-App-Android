@@ -1,17 +1,18 @@
 package truelancer.noteapp.noteapp.Services;
 
-import android.app.Notification;
-import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
+import android.media.MediaRecorder;
 import android.os.Binder;
+import android.os.Environment;
 import android.os.IBinder;
-import android.support.v4.app.NotificationCompat;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.support.v7.app.AlertDialog;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
@@ -20,6 +21,7 @@ import android.util.Patterns;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -41,21 +43,24 @@ import com.ogaclejapan.smarttablayout.SmartTabLayout;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
+import java.io.File;
 import java.io.Serializable;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Random;
 import java.util.regex.Pattern;
 
 import truelancer.noteapp.noteapp.Database.BankAccount;
+import truelancer.noteapp.noteapp.Database.CallRecording;
 import truelancer.noteapp.noteapp.Database.Contact;
 import truelancer.noteapp.noteapp.Database.Email;
 import truelancer.noteapp.noteapp.Database.Note;
 import truelancer.noteapp.noteapp.EventB;
-import truelancer.noteapp.noteapp.MainActivity;
 import truelancer.noteapp.noteapp.MyApp;
 import truelancer.noteapp.noteapp.R;
 
@@ -67,12 +72,20 @@ public class PopUpService extends Service {
     private int chatHeadIdentifier = 0;
     private WindowManagerContainer windowManagerContainer;
     private Map<String, View> viewCache = new HashMap<>();
-int count =0;
+    int count = 0;
 
     private String calledNumber = "";
     private String calledName = "";
-    private boolean incomingCall,isDone;
+    private boolean incomingCall, isDone;
     private String timeStampMilli = "";
+
+    MediaRecorder mRecorder;
+    boolean isStartRecording = false;
+    String pathToSaveRecordedCalls = null;
+    String directoryNameForStoringRecordedCalls = "Hello-Note";
+    String fileNameOfCallRecording = "Record_HN" + System.currentTimeMillis();// just the initial name
+    String suggestedRecordName;
+    String file_path;
 
 
     public enum CustomPagerEnum {
@@ -110,7 +123,6 @@ int count =0;
         }
 
 
-
         @Override
         public Object instantiateItem(ViewGroup collection, int position) {
 
@@ -120,23 +132,21 @@ int count =0;
             collection.addView(layout);
 
 
+            count++;
 
-count++;
-
-if(count==1){
-    EventBus.getDefault().register(this);
-}
+            if (count == 1) {
+                EventBus.getDefault().register(this);
+            }
             switch (position) {
 
                 case 0:
                     final EditText EditContactName = (EditText) layout.findViewById(R.id.contact_name_et);
                     final EditText EditContactNo = (EditText) layout.findViewById(R.id.contact_no_et);
-                    Log.d("ahaha","ahaha");
+                    Log.d("ahaha", "ahaha");
                     MyApp.editContactNameToSave = EditContactName;
                     MyApp.editContactNumberToSave = EditContactNo;
-                    final ImageView contactTick1 = (ImageView)layout.findViewById(R.id.tick1);
-                    final ImageView contactTick2 = (ImageView)layout.findViewById(R.id.tick2);
-
+                    final ImageView contactTick1 = (ImageView) layout.findViewById(R.id.tick1);
+                    final ImageView contactTick2 = (ImageView) layout.findViewById(R.id.tick2);
 
 
                     TextWatcher textWatcher01 = new TextWatcher() {
@@ -153,9 +163,9 @@ if(count==1){
                                                   int count) {
 
                             MyApp.contactNumber0 = String.valueOf(s);
-                            if(isValidMobile(String.valueOf(s))){
+                            if (isValidMobile(String.valueOf(s))) {
                                 contactTick2.setVisibility(View.VISIBLE);
-                            }else{
+                            } else {
                                 contactTick2.setVisibility(View.INVISIBLE);
                             }
 
@@ -176,9 +186,9 @@ if(count==1){
                                                   int count) {
                             MyApp.contactName0 = String.valueOf(s);
 
-                            if(String.valueOf(s).length()>0){
+                            if (String.valueOf(s).length() > 0) {
                                 contactTick1.setVisibility(View.VISIBLE);
-                            }else{
+                            } else {
                                 contactTick1.setVisibility(View.INVISIBLE);
                             }
                         }
@@ -229,8 +239,8 @@ if(count==1){
                     final EditText ContactName2 = (EditText) layout.findViewById(R.id.contact_name2_et);
                     final EditText EmailID = (EditText) layout.findViewById(R.id.emailId_et);
                     Button saveEmail = (Button) layout.findViewById(R.id.saveemail_btn);
-                    final ImageView emailTick1 = (ImageView)layout.findViewById(R.id.tick1);
-                    final ImageView emailTick2 = (ImageView)layout.findViewById(R.id.tick2);
+                    final ImageView emailTick1 = (ImageView) layout.findViewById(R.id.tick1);
+                    final ImageView emailTick2 = (ImageView) layout.findViewById(R.id.tick2);
 
                     MyApp.editEmailContactNameToSave = ContactName2;
                     MyApp.editEmailAdressToSave = EmailID;
@@ -247,9 +257,9 @@ if(count==1){
                         public void onTextChanged(CharSequence s, int start, int before,
                                                   int count) {
                             MyApp.contactName1 = String.valueOf(s);
-                            if(String.valueOf(s).length()>0){
+                            if (String.valueOf(s).length() > 0) {
                                 emailTick1.setVisibility(View.VISIBLE);
-                            }else{
+                            } else {
                                 emailTick1.setVisibility(View.INVISIBLE);
                             }
                         }
@@ -267,9 +277,9 @@ if(count==1){
                                                   int count) {
                             MyApp.emailId1 = String.valueOf(s);
 
-                            if(isValidEmail(String.valueOf(s))){
+                            if (isValidEmail(String.valueOf(s))) {
                                 emailTick2.setVisibility(View.VISIBLE);
-                            }else{
+                            } else {
                                 emailTick2.setVisibility(View.INVISIBLE);
                             }
                         }
@@ -313,9 +323,9 @@ if(count==1){
                     final EditText AccountNo = (EditText) layout.findViewById(R.id.account_no_et);
                     final EditText Others = (EditText) layout.findViewById(R.id.others_et);
                     Button saveAccount = (Button) layout.findViewById(R.id.saveaccount_btn);
-                    final ImageView bankAccountTick1 = (ImageView)layout.findViewById(R.id.tick1);
-                    final ImageView bankAccountTick2 = (ImageView)layout.findViewById(R.id.tick2);
-                    final ImageView bankAccountTick3 = (ImageView)layout.findViewById(R.id.tick3);
+                    final ImageView bankAccountTick1 = (ImageView) layout.findViewById(R.id.tick1);
+                    final ImageView bankAccountTick2 = (ImageView) layout.findViewById(R.id.tick2);
+                    final ImageView bankAccountTick3 = (ImageView) layout.findViewById(R.id.tick3);
 
                     MyApp.editBankContactNameToSave = ContactName3;
                     MyApp.editBankAccountNoToSave = AccountNo;
@@ -333,9 +343,9 @@ if(count==1){
                         public void onTextChanged(CharSequence s, int start, int before,
                                                   int count) {
                             MyApp.contactName2 = String.valueOf(s);
-                            if(String.valueOf(s).length()>0){
+                            if (String.valueOf(s).length() > 0) {
                                 bankAccountTick1.setVisibility(View.VISIBLE);
-                            }else{
+                            } else {
                                 bankAccountTick1.setVisibility(View.INVISIBLE);
                             }
                         }
@@ -353,9 +363,9 @@ if(count==1){
                         public void onTextChanged(CharSequence s, int start, int before,
                                                   int count) {
                             MyApp.accountNumber2 = String.valueOf(s);
-                            if(String.valueOf(s).length()>0){
+                            if (String.valueOf(s).length() > 0) {
                                 bankAccountTick2.setVisibility(View.VISIBLE);
-                            }else{
+                            } else {
                                 bankAccountTick2.setVisibility(View.INVISIBLE);
                             }
                         }
@@ -373,9 +383,9 @@ if(count==1){
                         public void onTextChanged(CharSequence s, int start, int before,
                                                   int count) {
                             MyApp.ifsc2 = String.valueOf(s);
-                            if(String.valueOf(s).length()>0){
+                            if (String.valueOf(s).length() > 0) {
                                 bankAccountTick3.setVisibility(View.VISIBLE);
-                            }else{
+                            } else {
                                 bankAccountTick3.setVisibility(View.INVISIBLE);
                             }
                         }
@@ -416,10 +426,8 @@ if(count==1){
                 case 3:
 
                     final EditText ContactName4 = (EditText) layout.findViewById(R.id.contact_name4_et);
-                    final  EditText Note1 = (EditText) layout.findViewById(R.id.note_et);
+                    final EditText Note1 = (EditText) layout.findViewById(R.id.note_et);
                     Button saveNote = (Button) layout.findViewById(R.id.savenote_btn);
-
-
 
 
                     TextWatcher textWatcher31 = new TextWatcher() {
@@ -463,7 +471,7 @@ if(count==1){
                                 return;
                             }
 
-                            Note noteN = new Note( note, calledNumber, calledName,  timeStampMilli,incomingCall,isDone);
+                            Note noteN = new Note(note, calledNumber, calledName, timeStampMilli, incomingCall, isDone);
                             noteN.save();
 
                             ContactName4.setText("");
@@ -479,7 +487,6 @@ if(count==1){
 
             return layout;
         }
-
 
 
         @Override
@@ -504,51 +511,49 @@ if(count==1){
         }
 
         @Subscribe
-        public void onEvent(EventB event){
+        public void onEvent(EventB event) {
             // your implementation
 
 
-
-            if(event.getMessage().equals("0")){
-                if(TextUtils.isEmpty(MyApp.editContactNameToSave.getText().toString())){
+            if (event.getMessage().equals("0")) {
+                if (TextUtils.isEmpty(MyApp.editContactNameToSave.getText().toString())) {
                     MyApp.editContactNameToSave.setError(mContext.getString(R.string.hint_contact_name));
 
-                }else if(!isValidMobile(MyApp.editContactNumberToSave.getText().toString())){
+                } else if (!isValidMobile(MyApp.editContactNumberToSave.getText().toString())) {
                     MyApp.editContactNumberToSave.setError(mContext.getString(R.string.hint_contact_number));
-                }else{
+                } else {
                     Contact contact = new Contact(MyApp.editContactNameToSave.getText().toString(), MyApp.editContactNumberToSave.getText().toString(), calledNumber, calledName, incomingCall, timeStampMilli);
                     contact.save();
-                    Toast.makeText(mContext,"Sucessfully Saved",Toast.LENGTH_LONG).show();
+                    Toast.makeText(mContext, "Sucessfully Saved", Toast.LENGTH_LONG).show();
                     MyApp.editContactNameToSave.setText(null);
                     MyApp.editContactNumberToSave.setText(null);
                 }
-            }
-            else if(event.getMessage().equals("1")){
-                    if(TextUtils.isEmpty(MyApp.editEmailContactNameToSave.getText().toString())){
-                        MyApp.editEmailContactNameToSave.setError(mContext.getString(R.string.hint_contact_name));
-                    }else if(!isValidEmail(MyApp.editEmailAdressToSave.getText().toString())){
-                        MyApp.editEmailAdressToSave.setError(mContext.getString(R.string.hint_email));
-                    }else{
-                        Email email = new Email(MyApp.editEmailContactNameToSave.getText().toString(), MyApp.editEmailAdressToSave.getText().toString(), calledNumber, calledName, incomingCall, timeStampMilli);
-                        email.save();
-                        Toast.makeText(mContext,"Sucessfully Saved",Toast.LENGTH_LONG).show();
-                        MyApp.editEmailContactNameToSave.setText(null);
-                        MyApp.editEmailAdressToSave.setText(null);
-                    }
+            } else if (event.getMessage().equals("1")) {
+                if (TextUtils.isEmpty(MyApp.editEmailContactNameToSave.getText().toString())) {
+                    MyApp.editEmailContactNameToSave.setError(mContext.getString(R.string.hint_contact_name));
+                } else if (!isValidEmail(MyApp.editEmailAdressToSave.getText().toString())) {
+                    MyApp.editEmailAdressToSave.setError(mContext.getString(R.string.hint_email));
+                } else {
+                    Email email = new Email(MyApp.editEmailContactNameToSave.getText().toString(), MyApp.editEmailAdressToSave.getText().toString(), calledNumber, calledName, incomingCall, timeStampMilli);
+                    email.save();
+                    Toast.makeText(mContext, "Sucessfully Saved", Toast.LENGTH_LONG).show();
+                    MyApp.editEmailContactNameToSave.setText(null);
+                    MyApp.editEmailAdressToSave.setText(null);
+                }
 
-            }else if(event.getMessage().equals("2")){
-                    if(TextUtils.isEmpty(MyApp.editBankContactNameToSave.getText().toString())){
-                        MyApp.editBankContactNameToSave.setError(mContext.getString(R.string.hint_contact_name));
-                    }else if(TextUtils.isEmpty(MyApp.editBankAccountNoToSave.getText().toString())){
-                        MyApp.editBankAccountNoToSave.setError(mContext.getString(R.string.hint_ac_no));
-                    }else{
-                        BankAccount bankAccount = new BankAccount(MyApp.editBankContactNameToSave.getText().toString(),MyApp.editBankAccountNoToSave.getText().toString(), MyApp.editBankOthersNoToSave.getText().toString(), calledNumber, calledName, incomingCall, timeStampMilli);
-                        bankAccount.save();
-                        Toast.makeText(mContext,"Sucessfully Saved",Toast.LENGTH_LONG).show();
-                        MyApp.editBankContactNameToSave.setText(null);
-                        MyApp.editBankAccountNoToSave.setText(null);
-                        MyApp.editBankOthersNoToSave.setText(null);
-                    }
+            } else if (event.getMessage().equals("2")) {
+                if (TextUtils.isEmpty(MyApp.editBankContactNameToSave.getText().toString())) {
+                    MyApp.editBankContactNameToSave.setError(mContext.getString(R.string.hint_contact_name));
+                } else if (TextUtils.isEmpty(MyApp.editBankAccountNoToSave.getText().toString())) {
+                    MyApp.editBankAccountNoToSave.setError(mContext.getString(R.string.hint_ac_no));
+                } else {
+                    BankAccount bankAccount = new BankAccount(MyApp.editBankContactNameToSave.getText().toString(), MyApp.editBankAccountNoToSave.getText().toString(), MyApp.editBankOthersNoToSave.getText().toString(), calledNumber, calledName, incomingCall, timeStampMilli);
+                    bankAccount.save();
+                    Toast.makeText(mContext, "Sucessfully Saved", Toast.LENGTH_LONG).show();
+                    MyApp.editBankContactNameToSave.setText(null);
+                    MyApp.editBankAccountNoToSave.setText(null);
+                    MyApp.editBankOthersNoToSave.setText(null);
+                }
             }
 
 
@@ -563,11 +568,9 @@ if(count==1){
     }
 
 
-
     @Override
     public void onCreate() {
         super.onCreate();
-
 
 
         windowManagerContainer = new WindowManagerContainer(this);
@@ -592,18 +595,21 @@ if(count==1){
                     final SmartTabLayout viewPagerTab = (SmartTabLayout) view.findViewById(R.id.viewPagerTab);
                     viewPagerTab.setViewPager(pager);
 
+                    /*Make a directory with the varable name directoryNameForStoringRecordedCalls
+                     * to store the recorded calls */
+                    makeDirectory();
 
 
-                    Button b1 = (Button)view.findViewById(R.id.goToAppButton);
-
-                    Button save = (Button)view.findViewById(R.id.save);
+                    Button b1 = (Button) view.findViewById(R.id.goToAppButton);
+                    final Button recordCall = (Button) view.findViewById(R.id.callRecordButton);
+                    Button save = (Button) view.findViewById(R.id.save);
 
 
                     save.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
-                           Log.d("booh",""+pager.getCurrentItem());
-                            EventBus.getDefault().post(new EventB(""+pager.getCurrentItem()));
+                            Log.d("booh", "" + pager.getCurrentItem());
+                            EventBus.getDefault().post(new EventB("" + pager.getCurrentItem()));
                         }
                     });
 
@@ -612,9 +618,29 @@ if(count==1){
                         public void onClick(View v) {
 
 
-                          //  Intent launchApp = getPackageManager().getLaunchIntentForPackage("truelancer.noteapp.noteapp");
-                           // startActivity(launchApp);
-                        //    minimize();
+                            //  Intent launchApp = getPackageManager().getLaunchIntentForPackage("truelancer.noteapp.noteapp");
+                            // startActivity(launchApp);
+                            //    minimize();
+                        }
+                    });
+
+                    recordCall.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+
+                            Toast.makeText(PopUpService.this, "record call : " + recordCall.getText().toString(), Toast.LENGTH_SHORT).show();
+
+                            if (isStartRecording) {
+                                recordCall.setText(getString(R.string.call_record_start));
+                                stopRecording();
+                            } else {
+                                recordCall.setText(getString(R.string.call_record_stop));
+                                startRecording();
+                            }
+                            isStartRecording = !isStartRecording;
+
+
+
                         }
                     });
 
@@ -633,7 +659,6 @@ if(count==1){
                     parent.removeView(cachedView);
                 }
             }
-
 
 
             @Override
@@ -833,6 +858,100 @@ if(count==1){
     //Email validation
     public final static boolean isValidEmail(String target) {
         return (!TextUtils.isEmpty(target) && Patterns.EMAIL_ADDRESS.matcher(target).matches());
+    }
+
+    public void startRecording() {
+
+        mRecorder = new MediaRecorder();
+        mRecorder.setAudioSource(MediaRecorder.AudioSource.VOICE_COMMUNICATION);//voice call to be used
+        mRecorder.setOutputFormat(MediaRecorder.OutputFormat.AMR_NB);
+        mRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB);
+        mRecorder.setOutputFile(pathToSaveRecordedCalls + File.separator + fileNameOfCallRecording + ".amr");
+
+        Log.e(TAG, "path : " + pathToSaveRecordedCalls + fileNameOfCallRecording);
+
+        try {
+            mRecorder.prepare();
+            mRecorder.start();
+        } catch (Exception e) {
+            e.printStackTrace();
+            Log.e(TAG, "prepare() failed");
+        }
+
+
+    }
+
+    public void stopRecording() {
+        mRecorder.stop();
+        mRecorder.release();
+        mRecorder = null;
+
+        file_path = Environment.getExternalStorageDirectory().getPath()
+                + File.separator + directoryNameForStoringRecordedCalls
+                + File.separator + fileNameOfCallRecording + ".amr";
+
+        final EditText usersRecordName = new EditText(this);
+        suggestedRecordName = "Record_" + calledName;
+        usersRecordName.setText(suggestedRecordName);
+        usersRecordName.setTextColor(getResources().getColor(R.color.black));
+        AlertDialog alertDialog = new AlertDialog.Builder(this, R.style.myDialog)
+                .setTitle("Recording Name")
+                .setView(usersRecordName)
+                .setCancelable(false)
+                .setPositiveButton("Save", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+                        if (usersRecordName.getText().toString().length() <= 0) {
+                            usersRecordName.setError("Enter recording name");
+
+                        } else {
+                            CallRecording callRecording = new CallRecording(suggestedRecordName, file_path, calledNumber, calledName, incomingCall, timeStampMilli);
+                            callRecording.save();
+                        }
+
+                    }
+                })
+                .setNegativeButton("Delete", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+                        File file = new File(file_path).getAbsoluteFile();
+                        boolean deleted = file.delete();
+                        Log.d("shower", "" + file_path + " deleted: " + deleted);
+                        dialog.dismiss();
+
+                    }
+                })
+                .create();
+
+
+        alertDialog.getWindow().setType(WindowManager.LayoutParams.TYPE_SYSTEM_ALERT);
+        alertDialog.show();
+
+
+        List<CallRecording> callRecordings = CallRecording.listAll(CallRecording.class);
+        Collections.reverse(callRecordings);
+
+        for (int i = 0; i < callRecordings.size(); i++) {
+            CallRecording callRecording1 = callRecordings.get(i);
+            Log.d("logitech1", "" + callRecording1.getRecordName());
+            Log.d("logitech2", "" + callRecording1.getRecordPath());
+        }
+
+
+    }
+
+    private void makeDirectory() {
+        pathToSaveRecordedCalls = Environment.getExternalStorageDirectory() + File.separator + directoryNameForStoringRecordedCalls;
+        File dir = new File(pathToSaveRecordedCalls);
+
+        if (dir.exists() && dir.isDirectory()) {
+            //exists
+        } else {
+            //Not exists
+            dir.mkdir();
+        }
     }
 
 }

@@ -26,9 +26,11 @@
 
     </style>
 
+    <style name="myDialog" parent="Theme.AppCompat.Light.Dialog">
+        <item name="android:windowNoTitle">true</item>
+        <item name="editTextColor">@color/black</item>
 
-
-
+    </style>
 
 
 </resources>

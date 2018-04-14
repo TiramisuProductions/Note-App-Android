@@ -117,12 +117,12 @@ public class EmailAdapter extends RecyclerView.Adapter<EmailAdapter.MyView> {
                                     + "Contact Name : " + emails.get(position).getName() + "\n"
                                     + "Email Id : " + emails.get(position).getEmailId();
 
-                            Intent whatsappIntent = new Intent(Intent.ACTION_SEND);
-                            whatsappIntent.setType("text/plain");
-                            whatsappIntent.setPackage("com.whatsapp");
-                            whatsappIntent.putExtra(Intent.EXTRA_TEXT, "" + shareText);
+                            Intent shareIntent = new Intent(Intent.ACTION_SEND);
+                            shareIntent.setType("text/plain");
+                            shareIntent.putExtra(Intent.EXTRA_TEXT, "" + shareText);
+
                             try {
-                                activity.startActivity(whatsappIntent);
+                                activity.startActivity(Intent.createChooser(shareIntent,activity.getResources().getText(R.string.send_to)));
                             } catch (Exception e) {
                                 e.printStackTrace();
                             }

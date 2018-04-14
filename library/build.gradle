@@ -32,10 +32,11 @@ buildscript {
         maven { url 'https://plugins.gradle.org/m2/' }
         maven { url 'http://repo1.maven.org/maven2' }
         maven { url 'http://artifactory.nm.flipkart.com:8081/artifactory/libs-release-local' }
+        google()
     }
 
     dependencies {
-        classpath 'com.android.tools.build:gradle:2.0.0-alpha1'
+        classpath 'com.android.tools.build:gradle:3.1.1'
         classpath 'com.github.dcendents:android-maven-plugin:1.+'
         classpath 'org.jfrog.buildinfo:build-info-extractor-gradle:2.2.3'
         classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.5'

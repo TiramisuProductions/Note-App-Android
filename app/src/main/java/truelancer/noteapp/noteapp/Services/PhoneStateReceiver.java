@@ -27,6 +27,7 @@ import truelancer.noteapp.noteapp.MyApp;
 public class PhoneStateReceiver extends BroadcastReceiver {
 
     public static MyApp app;
+    public boolean wasHookedup = false;
 
     @Override
     public void onReceive(Context context, Intent intent) {
@@ -80,10 +81,16 @@ public class PhoneStateReceiver extends BroadcastReceiver {
 
         if ((state.equals(TelephonyManager.EXTRA_STATE_OFFHOOK))) {
             //Toast.makeText(context, "Received State Hookup", Toast.LENGTH_SHORT).show();
+            wasHookedup = true;
         }
 
         if (state.equals(TelephonyManager.EXTRA_STATE_IDLE)) {
             //Toast.makeText(context, "Idle State", Toast.LENGTH_SHORT).show();
+            if (wasHookedup) {
+                app.popUpService.stopRecording();
+                wasHookedup = false;
+
+            }
         }
 
     }

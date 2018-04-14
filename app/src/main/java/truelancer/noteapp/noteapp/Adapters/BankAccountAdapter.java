@@ -107,12 +107,12 @@ public class BankAccountAdapter extends RecyclerView.Adapter<BankAccountAdapter.
                                     + "Account Number : " + bankAccounts.get(position).getAccountNo() + "\n"
                                     + "IFSC Number : " + bankAccounts.get(position).getIfscCode();
 
-                            Intent whatsappIntent = new Intent(Intent.ACTION_SEND);
-                            whatsappIntent.setType("text/plain");
-                            whatsappIntent.setPackage("com.whatsapp");
-                            whatsappIntent.putExtra(Intent.EXTRA_TEXT, "" + shareText);
+                            Intent shareIntent = new Intent(Intent.ACTION_SEND);
+                            shareIntent.setType("text/plain");
+                            shareIntent.putExtra(Intent.EXTRA_TEXT, "" + shareText);
+
                             try {
-                                activity.startActivity(whatsappIntent);
+                                activity.startActivity(Intent.createChooser(shareIntent,activity.getResources().getText(R.string.send_to)));
                             } catch (Exception e) {
                                 e.printStackTrace();
                             }
