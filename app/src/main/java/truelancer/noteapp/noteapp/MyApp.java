@@ -26,6 +26,7 @@ public class MyApp extends SugarApp {
     static public boolean toSave;
     String defaultValue = "default";
     public boolean firstRun = true;
+    public static boolean defaultTheme = true;
     public static EditText editContactNameToSave, editContactNumberToSave,editEmailContactNameToSave,editEmailAdressToSave,editBankContactNameToSave,editBankAccountNoToSave,editBankOthersNoToSave;
 
 

@@ -74,7 +74,7 @@ public class SettingsAdapter extends RecyclerView.Adapter<SettingsAdapter.MyView
     public SettingsAdapter(Context context1) {
         this.context = context1;
         settingsListdata();
-        pref = context.getSharedPreferences(SHARED_PREF_NAME, Context.MODE_PRIVATE);
+        pref = context.getSharedPreferences(context1.getString(R.string.shared_pref), Context.MODE_PRIVATE);
         editor = pref.edit();
 
     }
@@ -132,12 +132,13 @@ public class SettingsAdapter extends RecyclerView.Adapter<SettingsAdapter.MyView
                 switch (which) {
                     case 0://default
                         //Toast.makeText(context, "" +which, Toast.LENGTH_SHORT).show();
-                        editor.putBoolean("darkTheme", false);
+                        editor.putBoolean(context.getString(R.string.defaulttheme), true);
                         editor.apply();
+
 
                         break;
                     case 1://dark
-                        editor.putBoolean("darkTheme", true);
+                        editor.putBoolean(context.getString(R.string.defaulttheme), false);
                         editor.apply();
 
                         break;

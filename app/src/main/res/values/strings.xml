@@ -20,6 +20,7 @@
     <string name="accounts">Account</string>
     <string name="notes">Notes</string>
 
+
     <string name="saved_details">
          <u>Saved Details</u>
     </string>
@@ -61,6 +62,8 @@
 
     <string name="shared_pref">hello_note_shared_pref</string>
     <string name="shared_pref_first_time">first_time</string>
+    <string name="darktheme">darktheme</string>
+    <string name="defaulttheme">defaulttheme</string>
 
 
 </resources>

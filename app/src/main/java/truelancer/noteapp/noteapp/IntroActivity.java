@@ -19,6 +19,8 @@ public class IntroActivity extends AppIntro {
         SharedPreferences pref = getApplicationContext().getSharedPreferences(getString(R.string.shared_pref), 0); // 0 - for private mode
         editor = pref.edit();
 
+       MyApp.defaultTheme= pref.getBoolean(getString(R.string.defaulttheme),true);
+
        if( pref.getBoolean(getString(R.string.shared_pref_first_time),true))
         {
             addSlide(AppIntroFragment.newInstance("Thanks For Downloading Hello Note", "", (R.drawable.ic_logo), getResources().getColor(R.color.colorPrimary)));

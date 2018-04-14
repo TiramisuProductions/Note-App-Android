@@ -5,6 +5,8 @@
     <!--<color name="colorAccent">#42A5F5</color>-->
     <color name="colorAccent">#0091ea</color>
     <color name="black">#000</color>
+    <color name="dark">#212121</color>
+    <color name="darker_card">#424242</color>
     <color name="textColorPrimary">#FFFFFF</color>
     <color name="windowBackground">#FFFFFF</color>
     <color name="navigationBarColor">#000000</color>

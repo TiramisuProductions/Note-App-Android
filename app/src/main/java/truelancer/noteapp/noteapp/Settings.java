@@ -26,11 +26,9 @@ public class Settings extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        pref = getApplicationContext().getSharedPreferences(SHARED_PREF_NAME,MODE_PRIVATE);
+        pref = getApplicationContext().getSharedPreferences(getString(R.string.shared_pref),MODE_PRIVATE);
 
-        if(pref.getBoolean("darkTheme",false)){
-            setTheme(R.style.MyMaterialThemeDark);
-        }
+
 
         setContentView(R.layout.activity_settings);
         context = getApplicationContext();

@@ -6,6 +6,7 @@
     import android.app.Activity;
     import android.app.Dialog;
     import android.content.Intent;
+    import android.content.SharedPreferences;
     import android.content.pm.PackageManager;
     import android.content.pm.ResolveInfo;
     import android.database.Cursor;
@@ -31,6 +32,7 @@
     import android.support.v7.widget.SearchView;
     import android.support.v7.widget.Toolbar;
     import android.text.Editable;
+    import android.text.Html;
     import android.text.TextUtils;
     import android.text.TextWatcher;
     import android.util.Log;
@@ -155,57 +157,14 @@
         private DriveResourceClient mDriveResourceClient;
         String jsonString = "";
         String TAG ="MainActivity";
+        SharedPreferences pref;
 
 
 
 
 
 
-        @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
-        public void circleReveal(int viewID, int posFromRight, boolean containsOverflow, final boolean isShow)
-        {
-            final View myView = findViewById(viewID);
 
-            int width=myView.getWidth();
-
-            if(posFromRight>0)
-                width-=(posFromRight*getResources().getDimensionPixelSize(R.dimen.abc_action_button_min_width_material))-(getResources().getDimensionPixelSize(R.dimen.abc_action_button_min_width_material)/ 2);
-            if(containsOverflow)
-                width-=getResources().getDimensionPixelSize(R.dimen.abc_action_button_min_width_overflow_material);
-
-            int cx=width;
-            int cy=myView.getHeight()/2;
-
-            Animator anim;
-            if(isShow)
-                anim = ViewAnimationUtils.createCircularReveal(myView, cx, cy, 0,(float)width);
-            else
-                anim = ViewAnimationUtils.createCircularReveal(myView, cx, cy, (float)width, 0);
-
-            anim.setDuration((long)220);
-
-            // make the view invisible when the animation is done
-            anim.addListener(new AnimatorListenerAdapter() {
-                @Override
-                public void onAnimationEnd(Animator animation) {
-                    if(!isShow)
-                    {
-                        super.onAnimationEnd(animation);
-                        myView.setVisibility(View.INVISIBLE);
-                        homeTabLayout.setVisibility(View.VISIBLE);
-                    }
-                }
-            });
-
-            // make the view visible and start the animation
-            if(isShow)
-                myView.setVisibility(View.VISIBLE);
-
-            // start the animation
-            anim.start();
-
-
-        }
 
 
         
@@ -213,9 +172,26 @@
         @Override
         protected void onCreate(Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
-setTheme(R.style.MyMaterialThemeDark);
+
             setContentView(R.layout.activity_main);
-        ButterKnife.bind(this);
+            ButterKnife.bind(this);
+            pref = getApplicationContext().getSharedPreferences(getString(R.string.shared_pref),MODE_PRIVATE);
+
+           if( MyApp.defaultTheme)
+           {
+               Toast.makeText(this,"Default Theme",Toast.LENGTH_LONG).show();
+
+
+           }
+           else{
+               Toast.makeText(this,"Dark Theme",Toast.LENGTH_LONG).show();
+
+           }
+
+
+
+
+
             setSearchtollbar();
             contactFab.setOnClickListener(this);
             emailFab.setOnClickListener(this);
@@ -232,8 +208,11 @@ setTheme(R.style.MyMaterialThemeDark);
 
             for(int i=0;i<homeTabLayout.getTabCount();i++){
                 TabLayout.Tab tab = homeTabLayout.getTabAt(i);
+                Log.d("yoyo",""+tab);
                // AppCompatTextView textView = (AppCompatTextView)tab.getCustomView().findViewById(R.id.tab);
-                Log.d("lolwa",""+tab.getCustomView());
+
+//                AppCompatTextView textView = (AppCompatTextView)tab.getCustomView().findViewById(R.id.tab);
+
 
             }
 
@@ -412,6 +391,54 @@ setTheme(R.style.MyMaterialThemeDark);
             RecyclerView.LayoutManager mLayoutManager4 = new LinearLayoutManager(getApplicationContext());
 
             noteSearchRecycler.setLayoutManager(mLayoutManager4);
+        }
+
+
+
+        @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+        public void circleReveal(int viewID, int posFromRight, boolean containsOverflow, final boolean isShow)
+        {
+            final View myView = findViewById(viewID);
+
+            int width=myView.getWidth();
+
+            if(posFromRight>0)
+                width-=(posFromRight*getResources().getDimensionPixelSize(R.dimen.abc_action_button_min_width_material))-(getResources().getDimensionPixelSize(R.dimen.abc_action_button_min_width_material)/ 2);
+            if(containsOverflow)
+                width-=getResources().getDimensionPixelSize(R.dimen.abc_action_button_min_width_overflow_material);
+
+            int cx=width;
+            int cy=myView.getHeight()/2;
+
+            Animator anim;
+            if(isShow)
+                anim = ViewAnimationUtils.createCircularReveal(myView, cx, cy, 0,(float)width);
+            else
+                anim = ViewAnimationUtils.createCircularReveal(myView, cx, cy, (float)width, 0);
+
+            anim.setDuration((long)220);
+
+            // make the view invisible when the animation is done
+            anim.addListener(new AnimatorListenerAdapter() {
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    if(!isShow)
+                    {
+                        super.onAnimationEnd(animation);
+                        myView.setVisibility(View.INVISIBLE);
+                        homeTabLayout.setVisibility(View.VISIBLE);
+                    }
+                }
+            });
+
+            // make the view visible and start the animation
+            if(isShow)
+                myView.setVisibility(View.VISIBLE);
+
+            // start the animation
+            anim.start();
+
+
         }
 
 

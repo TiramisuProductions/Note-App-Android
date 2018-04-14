@@ -18,6 +18,7 @@ import java.util.List;
 import truelancer.noteapp.noteapp.Adapters.NoteAdapter;
 import truelancer.noteapp.noteapp.Adapters.noteDoneAdapter;
 import truelancer.noteapp.noteapp.Database.Note;
+import truelancer.noteapp.noteapp.MyApp;
 import truelancer.noteapp.noteapp.R;
 
 
@@ -44,11 +45,20 @@ public class NoteFragment extends Fragment {
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getActivity());
         RecyclerView.LayoutManager mLayoutManager2 = new LinearLayoutManager(getActivity());
 
+
+
+
         mRecyclerView = (RecyclerView) rootView.findViewById(R.id.recycler_note);
         mRecyclerView2 = (RecyclerView) rootView.findViewById(R.id.recycler_note2);
 
         mRecyclerView.setLayoutManager(mLayoutManager);
         mRecyclerView2.setLayoutManager(mLayoutManager2);
+
+        if(!MyApp.defaultTheme){
+            mRecyclerView.setBackgroundColor(getResources().getColor(R.color.dark));
+            mRecyclerView2.setBackgroundColor(getResources().getColor(R.color.dark));
+            rootView.setBackgroundColor(getResources().getColor(R.color.dark));
+        }
 
         List<Note> notes = Note.listAll(Note.class);
         Collections.reverse(notes);

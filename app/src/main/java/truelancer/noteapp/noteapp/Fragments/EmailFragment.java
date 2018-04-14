@@ -18,6 +18,7 @@ import java.util.List;
 import truelancer.noteapp.noteapp.Adapters.EmailAdapter;
 import truelancer.noteapp.noteapp.Database.Email;
 import truelancer.noteapp.noteapp.EventB;
+import truelancer.noteapp.noteapp.MyApp;
 import truelancer.noteapp.noteapp.R;
 
 /**
@@ -46,9 +47,16 @@ public class EmailFragment extends Fragment {
             EventBus.getDefault().register(this);
         }
 
+
+
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getActivity());
         mRecyclerView = (RecyclerView) rootView.findViewById(R.id.recycler_email);
         mRecyclerView.setLayoutManager(mLayoutManager);
+
+        if(!MyApp.defaultTheme){
+            mRecyclerView.setBackgroundColor(getResources().getColor(R.color.dark));
+            rootView.setBackgroundColor(getResources().getColor(R.color.dark));
+        }
 
         List<Email> emails = Email.listAll(Email.class);
         Collections.reverse(emails);

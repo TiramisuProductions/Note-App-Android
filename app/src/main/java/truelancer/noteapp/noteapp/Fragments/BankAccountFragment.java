@@ -20,6 +20,7 @@ import truelancer.noteapp.noteapp.Adapters.ContactAdapter;
 import truelancer.noteapp.noteapp.Database.BankAccount;
 import truelancer.noteapp.noteapp.Database.Contact;
 import truelancer.noteapp.noteapp.EventB;
+import truelancer.noteapp.noteapp.MyApp;
 import truelancer.noteapp.noteapp.R;
 
 /**
@@ -47,7 +48,10 @@ public class BankAccountFragment extends Fragment {
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getActivity());
         mRecycleView = (RecyclerView) rootView.findViewById(R.id.recycler_bank);
         mRecycleView.setLayoutManager(mLayoutManager);
-
+        if(!MyApp.defaultTheme){
+            mRecycleView.setBackgroundColor(getResources().getColor(R.color.dark));
+            rootView.setBackgroundColor(getResources().getColor(R.color.dark));
+        }
         List<BankAccount> bankAccounts = BankAccount.listAll(BankAccount.class);
         Collections.reverse(bankAccounts);
 

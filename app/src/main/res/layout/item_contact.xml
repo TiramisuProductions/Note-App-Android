@@ -69,7 +69,7 @@
             card_view:layout_constraintTop_toBottomOf="@+id/callText" />
 
         <TextView
-            android:id="@+id/tempo"
+            android:id="@+id/saved_details"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_below="@+id/called_contact"
@@ -86,20 +86,20 @@
             android:id="@+id/contact_id"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/tempo"
+            android:layout_below="@+id/saved_details"
             android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
             android:text="@string/card_contact_name"
             android:textColor="@color/black"
             card_view:layout_constraintStart_toStartOf="parent"
-            card_view:layout_constraintTop_toBottomOf="@+id/tempo" />
+            card_view:layout_constraintTop_toBottomOf="@+id/saved_details" />
 
 
         <TextView
             android:id="@+id/contact_name"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/tempo"
+            android:layout_below="@+id/saved_details"
             android:layout_marginEnd="8dp"
             android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
@@ -107,7 +107,7 @@
             android:textColor="@color/black"
             card_view:layout_constraintEnd_toEndOf="parent"
             card_view:layout_constraintStart_toEndOf="@+id/contact_id"
-            card_view:layout_constraintTop_toBottomOf="@+id/tempo" />
+            card_view:layout_constraintTop_toBottomOf="@+id/saved_details" />
 
         <TextView
             android:id="@+id/contact_id2"

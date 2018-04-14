@@ -37,6 +37,7 @@ import java.util.List;
 import truelancer.noteapp.noteapp.Database.Contact;
 import truelancer.noteapp.noteapp.EventB;
 import truelancer.noteapp.noteapp.MainActivity;
+import truelancer.noteapp.noteapp.MyApp;
 import truelancer.noteapp.noteapp.R;
 import truelancer.noteapp.noteapp.Utils;
 
@@ -77,7 +78,7 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.MyView> 
     }
 
     public class MyView extends RecyclerView.ViewHolder {
-        public TextView contactName, contactNum, calledName, calledNumber, call_txt, date_time;
+        public TextView contactName, contactNum, calledName, calledNumber, call_txt, date_time,savedDetails,contactId1,contactId2;
         public CardView contactCardView;
         public ImageView overflow, state_of_call;
 
@@ -93,6 +94,10 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.MyView> 
             state_of_call = (ImageView) itemView.findViewById(R.id.stateOfCall);
             date_time = (TextView) itemView.findViewById(R.id.date_time_txt);
             overflow = (ImageView) itemView.findViewById(R.id.overflow);
+            savedDetails =(TextView)itemView.findViewById(R.id.saved_details);
+            contactId1 = (TextView)itemView.findViewById(R.id.contact_id);
+            contactId2 =(TextView)itemView.findViewById(R.id.contact_id2);
+
             itemContext = itemView.getContext();
         }
     }
@@ -121,6 +126,22 @@ inout="Saved From App";
                 inout = "Call By";
             }
         }
+
+        if(!MyApp.defaultTheme){
+            holder.contactCardView.setCardBackgroundColor(itemContext.getResources().getColor(R.color.darker_card));
+            holder.call_txt.setTextColor(itemContext.getResources().getColor(R.color.white));
+            holder.calledName.setTextColor(itemContext.getResources().getColor(R.color.white));
+            holder.calledNumber.setTextColor(itemContext.getResources().getColor(R.color.white));
+            holder.contactName.setTextColor(itemContext.getResources().getColor(R.color.white));
+            holder.contactNum.setTextColor(itemContext.getResources().getColor(R.color.white));
+            holder.date_time.setTextColor(itemContext.getResources().getColor(R.color.white));
+            holder.savedDetails.setTextColor(itemContext.getResources().getColor(R.color.white));
+            holder.contactId1.setTextColor(itemContext.getResources().getColor(R.color.white));
+            holder.contactId2.setTextColor(itemContext.getResources().getColor(R.color.white));
+            holder.overflow.setColorFilter(itemContext.getResources().getColor(R.color.white));
+
+        }
+
 
 
 
