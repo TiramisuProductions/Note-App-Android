@@ -640,7 +640,6 @@ public class PopUpService extends Service {
                             isStartRecording = !isStartRecording;
 
 
-
                         }
                     });
 
@@ -894,7 +893,7 @@ public class PopUpService extends Service {
         suggestedRecordName = "Record_" + calledName;
         usersRecordName.setText(suggestedRecordName);
         usersRecordName.setTextColor(getResources().getColor(R.color.black));
-        AlertDialog alertDialog = new AlertDialog.Builder(this, R.style.myDialog)
+        final AlertDialog alertDialog = new AlertDialog.Builder(this, R.style.myDialog)
                 .setTitle("Recording Name")
                 .setView(usersRecordName)
                 .setCancelable(false)
@@ -902,13 +901,13 @@ public class PopUpService extends Service {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
 
-                        if (usersRecordName.getText().toString().length() <= 0) {
+                       /* if (usersRecordName.getText().toString().length() <= 0) {
                             usersRecordName.setError("Enter recording name");
 
                         } else {
-                            CallRecording callRecording = new CallRecording(suggestedRecordName, file_path, calledNumber, calledName, incomingCall, timeStampMilli);
-                            callRecording.save();
-                        }
+                           *//* CallRecording callRecording = new CallRecording(suggestedRecordName, file_path, calledNumber, calledName, incomingCall, timeStampMilli);
+                            callRecording.save();*//*
+                        }*/
 
                     }
                 })
@@ -928,6 +927,25 @@ public class PopUpService extends Service {
 
         alertDialog.getWindow().setType(WindowManager.LayoutParams.TYPE_SYSTEM_ALERT);
         alertDialog.show();
+
+        alertDialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                String nameByUser = usersRecordName.getText().toString().trim();
+
+                if (nameByUser.length() > 0) {
+                    CallRecording callRecording = new CallRecording(nameByUser, file_path, calledNumber, calledName, incomingCall, timeStampMilli);
+                    callRecording.save();
+                    alertDialog.dismiss();
+                } else {
+                    Toast.makeText(PopUpService.this, "Enter Recording Name", Toast.LENGTH_SHORT).show();
+
+                }
+
+
+            }
+        });
 
 
         List<CallRecording> callRecordings = CallRecording.listAll(CallRecording.class);
