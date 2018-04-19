@@ -5,8 +5,11 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Rect;
+import android.media.MediaMetadataRetriever;
 import android.media.MediaPlayer;
 import android.net.Uri;
+import android.os.Handler;
 import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.CardView;
@@ -18,12 +21,17 @@ import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.SeekBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.io.File;
 import java.text.SimpleDateFormat;
@@ -46,6 +54,14 @@ public class RecordingAdapter extends RecyclerView.Adapter<RecordingAdapter.MyVi
     SimpleDateFormat simpleDateFormat = new SimpleDateFormat("h:mm dd-MM-yyyy");
     boolean isPlaying = false;
     MediaPlayer mp;
+    boolean wasPaused = false;
+
+    MediaPlayer mediaPlayer;
+    final Handler handler = new Handler();
+    Runnable run;
+    long finalTime;
+    double startTime;
+    int pausedLocation;
     String directoryNameForStoringRecordedCalls = "Hello-Note";
 
     public RecordingAdapter(Activity activity1, List<CallRecording> callRecordings1) {
@@ -119,7 +135,6 @@ public class RecordingAdapter extends RecyclerView.Adapter<RecordingAdapter.MyVi
         holder.call_txt.setText(inout);
         timeStampString = getDate(tsLong);
         holder.date_time.setText(timeStampString);
-
         holder.calledName.setText(callRecordings.get(position).getCalledName());
         holder.calledNumber.setText(callRecordings.get(position).getCalledNumber());
         holder.RecordName.setText(callRecordings.get(position).getRecordName());
@@ -128,7 +143,7 @@ public class RecordingAdapter extends RecyclerView.Adapter<RecordingAdapter.MyVi
             @Override
             public void onClick(View v) {
 
-                if (isPlaying) {
+                /*if (isPlaying) {
                     Log.d("buds", "Inside isplaying if");
                     stop(position, holder);
 
@@ -136,7 +151,173 @@ public class RecordingAdapter extends RecyclerView.Adapter<RecordingAdapter.MyVi
                     Log.d("buds", "Inside else");
                     play(position, holder);
                 }
-                isPlaying = !isPlaying;
+                isPlaying = !isPlaying;*/
+
+                final Dialog dialog = new Dialog(itemContext);
+                dialog.setContentView(R.layout.dialog_media_player);
+                dialog.setTitle("Title...");
+                dialog.setCanceledOnTouchOutside(true);
+
+                final ImageView play, stop;
+                final TextView recordName, startTimeTXT, finalTimeTXT;
+                final SeekBar seekBar;
+
+                play = (ImageView)dialog.findViewById(R.id.play);
+                stop = (ImageView) dialog.findViewById(R.id.stop);
+                seekBar = (SeekBar) dialog.findViewById(R.id.seekBar);
+                recordName = (TextView) dialog.findViewById(R.id.record_name);
+                startTimeTXT = (TextView) dialog.findViewById(R.id.start_time);
+                finalTimeTXT = (TextView) dialog.findViewById(R.id.final_time);
+
+                startTimeTXT.setText("0:00");
+                recordName.setText(callRecordings.get(position).getRecordName());
+
+
+                Uri uri = Uri.parse(callRecordings.get(position).getRecordPath());
+                MediaMetadataRetriever mmr = new MediaMetadataRetriever();
+                mmr.setDataSource(activity, uri);
+                String durationStr = mmr.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION);
+                finalTime = Long.parseLong(durationStr);
+                finalTimeTXT.setText(milliSecondsToTimer(finalTime));
+
+
+
+                play.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+
+                        if (isPlaying) {//not playing
+                            play.setImageResource(R.drawable.ic_play);
+                            if (mediaPlayer != null) {
+                                wasPaused = true;
+                                Log.d("pause", "onPause: " + mediaPlayer.getCurrentPosition());
+                                pausedLocation = mediaPlayer.getCurrentPosition();
+                                mediaPlayer.pause();
+                            }
+
+                        } else {//playing
+                            play.setImageResource(R.drawable.ic_pause);
+                            if (wasPaused) {
+                                Toast.makeText(activity, "was Paused", Toast.LENGTH_SHORT).show();
+                                mediaPlayer = new MediaPlayer();
+                                try {
+                                    mediaPlayer.setDataSource(callRecordings.get(position).getRecordPath());
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                }
+                                try {
+                                    mediaPlayer.prepare();
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                }
+                                mediaPlayer.seekTo(pausedLocation);
+                                mediaPlayer.start();
+
+                                seekBar.setMax(mediaPlayer.getDuration());
+
+                                run = new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        if (mediaPlayer != null) {
+
+                                            seekBar.setProgress(mediaPlayer.getCurrentPosition());
+                                        } else {
+
+                                        }
+                                        handler.postDelayed(this, 500);
+                                    }
+                                };
+                                handler.postDelayed(run, 500);
+
+                                wasPaused = false;
+                            } else {
+
+                                mediaPlayer = new MediaPlayer();
+                                try {
+                                    mediaPlayer.setDataSource(callRecordings.get(position).getRecordPath());
+                                    mediaPlayer.prepare();
+                                    mediaPlayer.start();
+                                    finalTimeTXT.setText(milliSecondsToTimer(mediaPlayer.getDuration()));
+                                    seekBar.setMax(mediaPlayer.getDuration());
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                }
+
+                                run = new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        if (mediaPlayer != null) {
+                                            seekBar.setProgress(mediaPlayer.getCurrentPosition());
+                                            startTimeTXT.setText(milliSecondsToTimer(mediaPlayer.getCurrentPosition()));
+                                        }
+
+                                        handler.postDelayed(this, 500);
+                                    }
+                                };
+                                handler.postDelayed(run, 500);
+                            }
+                        }
+
+                        isPlaying = !isPlaying;
+
+                    }
+                });
+
+                stop.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        if (mediaPlayer != null) {
+                            startTimeTXT.setText("0:00");
+                            seekBar.setProgress(0);
+                            mediaPlayer.stop();
+                            //pausedLocation = 0000000000000;
+                            play.setImageResource(R.drawable.ic_play);
+                            isPlaying=false;
+                            wasPaused = false;
+                            handler.removeCallbacks(run);
+                            handler.removeCallbacksAndMessages(null);
+
+                        }
+                    }
+                });
+
+                seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+                    @Override
+                    public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                        if (mediaPlayer != null && fromUser) {
+                            mediaPlayer.seekTo(progress);
+                        }
+                    }
+
+                    @Override
+                    public void onStartTrackingTouch(SeekBar seekBar) {
+
+                    }
+
+                    @Override
+                    public void onStopTrackingTouch(SeekBar seekBar) {
+
+                    }
+                });
+
+                dialog.setOnCancelListener(new DialogInterface.OnCancelListener() {
+                    @Override
+                    public void onCancel(DialogInterface dialog) {
+                        if (mediaPlayer != null) {
+                            mediaPlayer.stop();
+                            startTimeTXT.setText("0:00");
+                            mediaPlayer = null;
+                            seekBar.setProgress(0);
+                            handler.removeCallbacks(run);
+                            handler.removeCallbacksAndMessages(null);
+                            if (run != null) {
+                                run = null;
+                            }
+                        }
+                    }
+                });
+
+                dialog.show();
             }
         });
 
@@ -301,10 +482,11 @@ public class RecordingAdapter extends RecyclerView.Adapter<RecordingAdapter.MyVi
             mp.setDataSource(callRecordings.get(position).getRecordPath());
             mp.prepare();
             mp.start();
+            Log.d("jeans", ""+callRecordings.get(position).getRecordPath());
 
-            Log.d("done1234", "play: " + callRecordings.get(position).getRecordPath() + ".amr");
+
         } catch (Exception e) {
-            Log.d("Done123", "not done " + e.getMessage());
+
             e.printStackTrace();
         }
 
@@ -316,6 +498,36 @@ public class RecordingAdapter extends RecyclerView.Adapter<RecordingAdapter.MyVi
 
             }
         });
+    }
+
+    /**
+     * Function to convert milliseconds time to Timer Format
+     * Hours:Minutes:Seconds
+     */
+    public String milliSecondsToTimer(long milliseconds) {
+        String finalTimerString = "";
+        String secondsString = "";
+
+        // Convert total duration into time
+        int hours = (int) (milliseconds / (1000 * 60 * 60));
+        int minutes = (int) (milliseconds % (1000 * 60 * 60)) / (1000 * 60);
+        int seconds = (int) ((milliseconds % (1000 * 60 * 60)) % (1000 * 60) / 1000);
+        // Add hours if there
+        if (hours > 0) {
+            finalTimerString = hours + ":";
+        }
+
+        // Prepending 0 to seconds if it is one digit
+        if (seconds < 10) {
+            secondsString = "0" + seconds;
+        } else {
+            secondsString = "" + seconds;
+        }
+
+        finalTimerString = finalTimerString + minutes + ":" + secondsString;
+
+        // return timer string
+        return finalTimerString;
     }
 
 }
