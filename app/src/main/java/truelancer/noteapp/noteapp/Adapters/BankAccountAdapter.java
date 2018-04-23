@@ -36,7 +36,7 @@ public class BankAccountAdapter extends RecyclerView.Adapter<BankAccountAdapter.
     String timeStampString;
     SimpleDateFormat simpleDateFormat = new SimpleDateFormat("h:mm dd-MM-yyyy");
     Context itemContext;
-    String inout ="";
+    String inout = "";
 
     public BankAccountAdapter(FragmentActivity activity, List<BankAccount> bankAccounts) {
         this.bankAccounts = bankAccounts;
@@ -52,6 +52,7 @@ public class BankAccountAdapter extends RecyclerView.Adapter<BankAccountAdapter.
 
     @Override
     public void onBindViewHolder(final MyView holder, final int position) {
+
 
         if(!MyApp.defaultTheme){
             holder.bankCardView.setCardBackgroundColor(itemContext.getResources().getColor(R.color.darker_card));
@@ -70,6 +71,7 @@ public class BankAccountAdapter extends RecyclerView.Adapter<BankAccountAdapter.
             holder.contactId2.setTextColor(itemContext.getResources().getColor(R.color.white));
             holder.contactId3.setTextColor(itemContext.getResources().getColor(R.color.white));
         }
+
 
 
         if (!bankAccounts.get(position).isIncoming()) {
@@ -129,53 +131,48 @@ public class BankAccountAdapter extends RecyclerView.Adapter<BankAccountAdapter.
                             shareIntent.putExtra(Intent.EXTRA_TEXT, "" + shareText);
 
                             try {
-                                activity.startActivity(Intent.createChooser(shareIntent,activity.getResources().getText(R.string.send_to)));
+                                activity.startActivity(Intent.createChooser(shareIntent, activity.getResources().getText(R.string.send_to)));
                             } catch (Exception e) {
                                 e.printStackTrace();
                             }
 
-                        }else if(temp.equals("Edit")){
+                        } else if (temp.equals("Edit")) {
                             final Dialog dialog = new Dialog(itemContext);
                             dialog.setContentView(R.layout.edit_dialog);
                             dialog.setTitle("Title...");
                             dialog.setCancelable(false);
-                            final EditText contactName = (EditText)dialog.findViewById(R.id.editContactName);
-                            final EditText contactAccountNo = (EditText)dialog.findViewById(R.id.editContactNumber);
-                            final EditText contactIFSC = (EditText)dialog.findViewById(R.id.editContactIFSC);
-                            final EditText calledName =(EditText)dialog.findViewById(R.id.editCalledName);
-                            final EditText calledNumber = (EditText)dialog.findViewById(R.id.editCalledNumber);
-                            final Spinner calledState =(Spinner)dialog.findViewById(R.id.callstate);
-                            Button btnDone = (Button)dialog.findViewById(R.id.btnSelect);
-                            Button btnCancel = (Button)dialog.findViewById(R.id.btnCancel);
-                            String options[] = {"Incoming","Outgoing"};
-                            ArrayAdapter<String> adminSpinnerArrayAdapter = new ArrayAdapter<String>(itemContext,   android.R.layout.simple_spinner_item, options);
+                            final EditText contactName = (EditText) dialog.findViewById(R.id.editContactName);
+                            final EditText contactAccountNo = (EditText) dialog.findViewById(R.id.editContactNumber);
+                            final EditText contactIFSC = (EditText) dialog.findViewById(R.id.editContactIFSC);
+                            final EditText calledName = (EditText) dialog.findViewById(R.id.editCalledName);
+                            final EditText calledNumber = (EditText) dialog.findViewById(R.id.editCalledNumber);
+                            final Spinner calledState = (Spinner) dialog.findViewById(R.id.callstate);
+                            Button btnDone = (Button) dialog.findViewById(R.id.btnSelect);
+                            Button btnCancel = (Button) dialog.findViewById(R.id.btnCancel);
+                            String options[] = {"Incoming", "Outgoing"};
+                            ArrayAdapter<String> adminSpinnerArrayAdapter = new ArrayAdapter<String>(itemContext, android.R.layout.simple_spinner_item, options);
                             adminSpinnerArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item); // The drop down view
                             calledState.setAdapter(adminSpinnerArrayAdapter);
 
-                            if(bankAccounts.get(position).isIncoming()){
+                            if (bankAccounts.get(position).isIncoming()) {
                                 calledState.setSelection(0);
-                            }
-                            else {
+                            } else {
                                 calledState.setSelection(1);
                             }
-
-
-
 
 
                             btnDone.setOnClickListener(new View.OnClickListener() {
 
                                 public void onClick(View view) {
-                                    BankAccount bankAccount =  BankAccount.findById(BankAccount.class,bankAccounts.get(position).getId());
+                                    BankAccount bankAccount = BankAccount.findById(BankAccount.class, bankAccounts.get(position).getId());
                                     bankAccount.setAccountNo(contactAccountNo.getText().toString());
                                     bankAccount.setIfscCode(contactIFSC.getText().toString());
                                     bankAccount.setName(contactName.getText().toString());
                                     bankAccount.setCalledName(calledName.getText().toString());
                                     bankAccount.setCalledNumber(calledNumber.getText().toString());
-                                    if(calledState.getSelectedItemPosition()==0){
+                                    if (calledState.getSelectedItemPosition() == 0) {
                                         bankAccount.setIncoming(true);
-                                    }
-                                    else {
+                                    } else {
                                         bankAccount.setIncoming(false);
                                     }
                                     bankAccount.save();
@@ -197,9 +194,7 @@ public class BankAccountAdapter extends RecyclerView.Adapter<BankAccountAdapter.
                             calledName.setText(bankAccounts.get(position).getCalledName());
                             calledNumber.setText(bankAccounts.get(position).getCalledNumber());
                             dialog.show();
-                        }
-
-                         else {//Delete
+                        } else {//Delete
                             AlertDialog.Builder builder = new AlertDialog.Builder(itemContext);
 
                             builder.setTitle("You want to delete");
@@ -248,7 +243,7 @@ public class BankAccountAdapter extends RecyclerView.Adapter<BankAccountAdapter.
     public class MyView extends RecyclerView.ViewHolder {
         private TextView contactName, accountName, others, calledName, calledNumber, call_txt, date_time,savedDetails,contactId1,contactId2,contactId3;
         private CardView bankCardView;
-        private ImageView state_of_call,overflow;
+        private ImageView state_of_call, overflow;
 
         public MyView(View itemView) {
             super(itemView);
