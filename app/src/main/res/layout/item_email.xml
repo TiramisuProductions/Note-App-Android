@@ -65,7 +65,7 @@
 
 
         <TextView
-            android:id="@+id/tempoEmail"
+            android:id="@+id/saved_details"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginEnd="8dp"
@@ -85,7 +85,7 @@
             android:text="@string/card_contact_name"
             android:textColor="@color/black"
             card_view:layout_constraintStart_toStartOf="parent"
-            card_view:layout_constraintTop_toBottomOf="@+id/tempoEmail" />
+            card_view:layout_constraintTop_toBottomOf="@+id/saved_details" />
 
         <TextView
             android:id="@+id/contact_nameEmail"
@@ -98,7 +98,7 @@
             card_view:layout_constraintEnd_toEndOf="parent"
             card_view:layout_constraintHorizontal_bias="0.0"
             card_view:layout_constraintStart_toEndOf="@+id/contact_idEmail"
-            card_view:layout_constraintTop_toBottomOf="@+id/tempoEmail" />
+            card_view:layout_constraintTop_toBottomOf="@+id/saved_details" />
 
         <TextView
             android:id="@+id/contact_id2Email"

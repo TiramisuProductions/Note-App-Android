@@ -45,6 +45,7 @@ import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.ScrollView;
 import android.widget.Spinner;
@@ -152,6 +153,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     TextView banktxt;
     @BindView(R.id.notetxt)
     TextView notetxt;
+    @BindView(R.id.mainactivity) FrameLayout mainActivity;
     private ContactAdapter contactSearchAdapter;
     private EmailAdapter emailSearchAdapter;
     private BankAccountAdapter bankSearchAdapter;
@@ -177,6 +179,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     SharedPreferences pref;
 
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -186,11 +189,18 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         pref = getApplicationContext().getSharedPreferences(getString(R.string.shared_pref), MODE_PRIVATE);
 
         if (MyApp.defaultTheme) {
-            Toast.makeText(this, "Default Theme", Toast.LENGTH_LONG).show();
+
 
 
         } else {
-            Toast.makeText(this, "Dark Theme", Toast.LENGTH_LONG).show();
+            Toast.makeText(this, "Default Theme", Toast.LENGTH_LONG).show();
+            searchToolbar.setBackgroundColor(getResources().getColor(R.color.dark));
+            mainActivity.setBackgroundColor(getResources().getColor(R.color.dark));
+            searchScrollView.setBackgroundColor(getResources().getColor(R.color.dark));
+            bankSearchRecycler.setBackgroundColor(getResources().getColor(R.color.dark));
+            emailSearchRecycler.setBackgroundColor(getResources().getColor(R.color.dark));
+            noteSearchRecycler.setBackgroundColor(getResources().getColor(R.color.dark));
+            bankSearchRecycler.setBackgroundColor(getResources().getColor(R.color.dark));
 
         }
 
@@ -507,6 +517,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         Log.d(TAG, "SearchView");
         final SearchView searchView =
                 (SearchView) search_menu.findItem(R.id.action_filter_search).getActionView();
+
+        if(!MyApp.defaultTheme){
+
+        }
 
         // Enable/Disable Submit button in the keyboard
 

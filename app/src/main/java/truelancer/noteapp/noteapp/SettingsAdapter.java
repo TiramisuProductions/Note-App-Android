@@ -125,6 +125,9 @@ public class SettingsAdapter extends RecyclerView.Adapter<SettingsAdapter.MyView
     private void themeDialogBox(View v) {
         AlertDialog.Builder builder = new AlertDialog.Builder(v.getRootView().getContext());
         builder.setTitle("Select Theme");
+        final Intent i = context.getPackageManager()
+                .getLaunchIntentForPackage( context.getPackageName() );
+        i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         builder.setSingleChoiceItems(themes, -1, new DialogInterface.OnClickListener() {
 
             @Override
@@ -135,24 +138,20 @@ public class SettingsAdapter extends RecyclerView.Adapter<SettingsAdapter.MyView
                         editor.putBoolean(context.getString(R.string.defaulttheme), true);
                         editor.apply();
 
+                        context.startActivity(i);
+
 
                         break;
                     case 1://dark
                         editor.putBoolean(context.getString(R.string.defaulttheme), false);
                         editor.apply();
+                        context.startActivity(i);
 
                         break;
                 }
             }
         });
-        builder.setPositiveButton("Done", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                Toast.makeText(context, "Done", Toast.LENGTH_SHORT).show();
-                context.setTheme(R.style.MyMaterialThemeDark);
 
-            }
-        });
         AlertDialog alert = builder.create();
         alert.show();
     }

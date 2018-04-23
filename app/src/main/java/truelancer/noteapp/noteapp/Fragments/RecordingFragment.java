@@ -14,6 +14,7 @@ import java.util.Collections;
 import java.util.List;
 
 import truelancer.noteapp.noteapp.Database.CallRecording;
+import truelancer.noteapp.noteapp.MyApp;
 import truelancer.noteapp.noteapp.R;
 import truelancer.noteapp.noteapp.Adapters.RecordingAdapter;
 
@@ -38,10 +39,17 @@ public class RecordingFragment extends Fragment {
         // Inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.fragment_recording, container, false);
 
+
+
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getActivity());
         mRecyclerView = (RecyclerView) rootView.findViewById(R.id.recycler_recording);
         mRecyclerView.setLayoutManager(mLayoutManager);
 
+
+        if(!MyApp.defaultTheme){
+            mRecyclerView.setBackgroundColor(getResources().getColor(R.color.dark));
+            rootView.setBackgroundColor(getResources().getColor(R.color.dark));
+        }
         List<CallRecording> callRecordings = CallRecording.listAll(CallRecording.class);
         Collections.reverse(callRecordings);
 

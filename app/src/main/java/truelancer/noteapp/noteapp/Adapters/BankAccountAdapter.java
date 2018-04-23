@@ -27,6 +27,7 @@ import java.util.Calendar;
 import java.util.List;
 
 import truelancer.noteapp.noteapp.Database.BankAccount;
+import truelancer.noteapp.noteapp.MyApp;
 import truelancer.noteapp.noteapp.R;
 
 public class BankAccountAdapter extends RecyclerView.Adapter<BankAccountAdapter.MyView> {
@@ -52,7 +53,23 @@ public class BankAccountAdapter extends RecyclerView.Adapter<BankAccountAdapter.
     @Override
     public void onBindViewHolder(final MyView holder, final int position) {
 
-
+        if(!MyApp.defaultTheme){
+            holder.bankCardView.setCardBackgroundColor(itemContext.getResources().getColor(R.color.darker_card));
+            holder.call_txt.setTextColor(itemContext.getResources().getColor(R.color.white));
+            holder.calledName.setTextColor(itemContext.getResources().getColor(R.color.white));
+            holder.calledNumber.setTextColor(itemContext.getResources().getColor(R.color.white));
+            holder.contactName.setTextColor(itemContext.getResources().getColor(R.color.white));
+            holder.accountName.setTextColor(itemContext.getResources().getColor(R.color.white));
+            holder.others.setTextColor(itemContext.getResources().getColor(R.color.white));
+            holder.date_time.setTextColor(itemContext.getResources().getColor(R.color.white));
+            holder.savedDetails.setTextColor(itemContext.getResources().getColor(R.color.white));
+            holder.contactId1.setTextColor(itemContext.getResources().getColor(R.color.white));
+            holder.contactId2.setTextColor(itemContext.getResources().getColor(R.color.white));
+            holder.overflow.setColorFilter(itemContext.getResources().getColor(R.color.white));
+            holder.contactId1.setTextColor(itemContext.getResources().getColor(R.color.white));
+            holder.contactId2.setTextColor(itemContext.getResources().getColor(R.color.white));
+            holder.contactId3.setTextColor(itemContext.getResources().getColor(R.color.white));
+        }
 
 
         if (!bankAccounts.get(position).isIncoming()) {
@@ -229,7 +246,7 @@ public class BankAccountAdapter extends RecyclerView.Adapter<BankAccountAdapter.
     }
 
     public class MyView extends RecyclerView.ViewHolder {
-        private TextView contactName, accountName, others, calledName, calledNumber, call_txt, date_time;
+        private TextView contactName, accountName, others, calledName, calledNumber, call_txt, date_time,savedDetails,contactId1,contactId2,contactId3;
         private CardView bankCardView;
         private ImageView state_of_call,overflow;
 
@@ -245,6 +262,11 @@ public class BankAccountAdapter extends RecyclerView.Adapter<BankAccountAdapter.
             state_of_call = (ImageView) itemView.findViewById(R.id.stateofcallB);
             date_time = (TextView) itemView.findViewById(R.id.date_time_txt);
             overflow = (ImageView) itemView.findViewById(R.id.overflow);
+            savedDetails = (TextView)itemView.findViewById(R.id.saved_details);
+            contactId1 = (TextView)itemView.findViewById(R.id.contact_idB);
+            contactId2 = (TextView)itemView.findViewById(R.id.contact_id2B);
+            contactId3 = (TextView)itemView.findViewById(R.id.contact_id3B);
+
             itemContext = itemView.getContext();
         }
     }

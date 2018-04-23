@@ -4,6 +4,7 @@ import android.app.Service;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.media.MediaRecorder;
@@ -55,6 +56,7 @@ import java.util.Map;
 import java.util.Random;
 import java.util.regex.Pattern;
 
+import truelancer.noteapp.noteapp.CustomChatHeadConfig;
 import truelancer.noteapp.noteapp.Database.BankAccount;
 import truelancer.noteapp.noteapp.Database.CallRecording;
 import truelancer.noteapp.noteapp.Database.Contact;
@@ -73,7 +75,7 @@ public class PopUpService extends Service {
     private WindowManagerContainer windowManagerContainer;
     private Map<String, View> viewCache = new HashMap<>();
     int count = 0;
-
+    private CustomChatHeadConfig customChatHeadConfig;
     private String calledNumber = "";
     private String calledName = "";
     private boolean incomingCall, isDone;
@@ -86,6 +88,7 @@ public class PopUpService extends Service {
     String fileNameOfCallRecording = "Record_HN" + System.currentTimeMillis();// just the initial name
     String suggestedRecordName;
     String file_path;
+    SharedPreferences pref;
 
 
     public enum CustomPagerEnum {
@@ -572,9 +575,29 @@ public class PopUpService extends Service {
     public void onCreate() {
         super.onCreate();
 
-
+        pref = getBaseContext().getSharedPreferences(getBaseContext().getString(R.string.shared_pref), Context.MODE_PRIVATE);
         windowManagerContainer = new WindowManagerContainer(this);
         chatHeadManager = new DefaultChatHeadManager<String>(this, windowManagerContainer);
+
+        String bubbleLocation =  pref.getString(getBaseContext().getString(R.string.bubblelocation),"top");
+
+        switch (bubbleLocation){
+            case "top":
+                customChatHeadConfig = new CustomChatHeadConfig(getBaseContext(),100,200);
+                break;
+            case "centre":
+                Log.d("cemtre","centre");
+                customChatHeadConfig = new CustomChatHeadConfig(getBaseContext(),800,800);
+                break;
+            case "bottom":
+                customChatHeadConfig = new CustomChatHeadConfig(getBaseContext(),100,1500);
+                break;
+        }
+
+
+
+
+        chatHeadManager.setConfig(customChatHeadConfig);
 
         // The view adapter is invoked when someone clicks a chat head.
         chatHeadManager.setViewAdapter(new ChatHeadViewAdapter<String>() {
@@ -583,6 +606,8 @@ public class PopUpService extends Service {
             public View attachView(final String key, ChatHead chatHead, ViewGroup parent) {
                 // You can return the view which is shown when the arrangement changes to maximized.
                 // The passed "key" param is the same key which was used when adding the chat head.
+
+
 
 
                 View cachedView = viewCache.get(key);
@@ -676,6 +701,7 @@ public class PopUpService extends Service {
                 return PopUpService.this.getChatHeadDrawable(key);
             }
         });
+
 
         chatHeadManager.setListener(new ChatHeadListener() {
             @Override
@@ -787,6 +813,8 @@ public class PopUpService extends Service {
          * You can instead attach any custom object, for e.g a Conversation object to denote each chat head.
          * This object will represent a chat head uniquely and will be passed back in all callbacks.
          */
+
+
         chatHeadManager.addChatHead(String.valueOf(chatHeadIdentifier), false, true);
         chatHeadManager.bringToFront(chatHeadManager.findChatHeadByKey(String.valueOf(chatHeadIdentifier)));
     }
@@ -862,7 +890,13 @@ public class PopUpService extends Service {
     public void startRecording() {
 
         mRecorder = new MediaRecorder();
-        mRecorder.setAudioSource(MediaRecorder.AudioSource.VOICE_COMMUNICATION);//voice call to be used
+
+        if(pref.getBoolean(getBaseContext().getString(R.string.voicecall),true)){
+            mRecorder.setAudioSource(MediaRecorder.AudioSource.VOICE_CALL);
+        }else{
+            mRecorder.setAudioSource(MediaRecorder.AudioSource.VOICE_COMMUNICATION);
+        }
+        //voice call to be used
         mRecorder.setOutputFormat(MediaRecorder.OutputFormat.AMR_NB);
         mRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB);
         mRecorder.setOutputFile(pathToSaveRecordedCalls + File.separator + fileNameOfCallRecording + ".amr");

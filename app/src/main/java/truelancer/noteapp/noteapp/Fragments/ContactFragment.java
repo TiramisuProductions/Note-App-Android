@@ -46,9 +46,7 @@ public class ContactFragment extends Fragment {
             EventBus.getDefault().register(this);
         }
 
-        if(!MyApp.defaultTheme){
 
-        }
 
 
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getActivity());

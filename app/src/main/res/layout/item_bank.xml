@@ -63,7 +63,7 @@
                 android:textColor="@color/black" />
 
             <TextView
-                android:id="@+id/tempoB"
+                android:id="@+id/saved_details"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/called_contactB"
@@ -73,7 +73,7 @@
                 android:id="@+id/contact_idB"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/tempoB"
+                android:layout_below="@+id/saved_details"
                 android:text="Contact Name : "
                 android:textColor="@color/black" />
 
@@ -81,7 +81,7 @@
                 android:id="@+id/contact_nameB"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/tempoB"
+                android:layout_below="@+id/saved_details"
                 android:layout_toRightOf="@id/contact_idB"
                 android:textColor="@color/black" />
 

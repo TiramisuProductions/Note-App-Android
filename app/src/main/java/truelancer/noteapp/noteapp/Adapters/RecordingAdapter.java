@@ -31,6 +31,7 @@ import java.util.Calendar;
 import java.util.List;
 
 import truelancer.noteapp.noteapp.Database.CallRecording;
+import truelancer.noteapp.noteapp.MyApp;
 import truelancer.noteapp.noteapp.R;
 
 /**
@@ -54,7 +55,7 @@ public class RecordingAdapter extends RecyclerView.Adapter<RecordingAdapter.MyVi
     }
 
     public class MyView extends RecyclerView.ViewHolder {
-        public TextView RecordName, calledName, calledNumber, call_txt, date_time;
+        public TextView recordName, calledName, calledNumber, call_txt, date_time,savedDetails,recordId;
         public CardView recordCardView;
         public ImageView overflow, state_of_call, playStopbtn;
 
@@ -62,7 +63,7 @@ public class RecordingAdapter extends RecyclerView.Adapter<RecordingAdapter.MyVi
         public MyView(View itemView) {
             super(itemView);
 
-            RecordName = (TextView) itemView.findViewById(R.id.record_name);
+            recordName = (TextView) itemView.findViewById(R.id.record_name);
             playStopbtn = (ImageView) itemView.findViewById(R.id.play_puase_btn);
             call_txt = (TextView) itemView.findViewById(R.id.callText);
             recordCardView = (CardView) itemView.findViewById(R.id.record_cardView);
@@ -71,6 +72,9 @@ public class RecordingAdapter extends RecyclerView.Adapter<RecordingAdapter.MyVi
             state_of_call = (ImageView) itemView.findViewById(R.id.stateOfCall);
             date_time = (TextView) itemView.findViewById(R.id.date_time_txt);
             overflow = (ImageView) itemView.findViewById(R.id.overflow);
+            savedDetails = (TextView)itemView.findViewById(R.id.saved_details);
+            recordId = (TextView)itemView.findViewById(R.id.record_id);
+
             itemContext = itemView.getContext();
 
 
@@ -104,6 +108,22 @@ public class RecordingAdapter extends RecyclerView.Adapter<RecordingAdapter.MyVi
 
     private void executeit(final MyView holder, final int position) {
 
+
+        if(!MyApp.defaultTheme){
+            holder.recordCardView.setCardBackgroundColor(itemContext.getResources().getColor(R.color.darker_card));
+            holder.call_txt.setTextColor(itemContext.getResources().getColor(R.color.white));
+            holder.calledName.setTextColor(itemContext.getResources().getColor(R.color.white));
+            holder.calledNumber.setTextColor(itemContext.getResources().getColor(R.color.white));
+            holder.recordName.setTextColor(itemContext.getResources().getColor(R.color.white));
+            holder.date_time.setTextColor(itemContext.getResources().getColor(R.color.white));
+            holder.savedDetails.setTextColor(itemContext.getResources().getColor(R.color.white));
+            holder.recordId.setTextColor(itemContext.getResources().getColor(R.color.white));
+            holder.overflow.setColorFilter(itemContext.getResources().getColor(R.color.white));
+
+        }
+
+
+
         if (!callRecordings.get(position).isIncoming()) {
 
             holder.state_of_call.setImageResource(R.drawable.ic_outgoing);
@@ -122,7 +142,7 @@ public class RecordingAdapter extends RecyclerView.Adapter<RecordingAdapter.MyVi
 
         holder.calledName.setText(callRecordings.get(position).getCalledName());
         holder.calledNumber.setText(callRecordings.get(position).getCalledNumber());
-        holder.RecordName.setText(callRecordings.get(position).getRecordName());
+        holder.recordName.setText(callRecordings.get(position).getRecordName());
 
         holder.playStopbtn.setOnClickListener(new View.OnClickListener() {
             @Override

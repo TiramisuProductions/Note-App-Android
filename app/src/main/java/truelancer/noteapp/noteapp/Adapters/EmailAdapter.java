@@ -29,6 +29,7 @@ import java.util.List;
 
 import truelancer.noteapp.noteapp.Database.Email;
 import truelancer.noteapp.noteapp.MainActivity;
+import truelancer.noteapp.noteapp.MyApp;
 import truelancer.noteapp.noteapp.R;
 
 public class EmailAdapter extends RecyclerView.Adapter<EmailAdapter.MyView> {
@@ -56,6 +57,22 @@ public class EmailAdapter extends RecyclerView.Adapter<EmailAdapter.MyView> {
 
     @Override
     public void onBindViewHolder(final MyView holder, final int position) {
+
+
+        if(!MyApp.defaultTheme){
+            holder.emailCardView.setCardBackgroundColor(itemContext.getResources().getColor(R.color.darker_card));
+            holder.call_txt.setTextColor(itemContext.getResources().getColor(R.color.white));
+            holder.calledName.setTextColor(itemContext.getResources().getColor(R.color.white));
+            holder.calledNumber.setTextColor(itemContext.getResources().getColor(R.color.white));
+            holder.contactName.setTextColor(itemContext.getResources().getColor(R.color.white));
+            holder.emailId.setTextColor(itemContext.getResources().getColor(R.color.white));
+            holder.date_time.setTextColor(itemContext.getResources().getColor(R.color.white));
+            holder.savedDetails.setTextColor(itemContext.getResources().getColor(R.color.white));
+            holder.contactId1.setTextColor(itemContext.getResources().getColor(R.color.white));
+            holder.contactId2.setTextColor(itemContext.getResources().getColor(R.color.white));
+            holder.overflow.setColorFilter(itemContext.getResources().getColor(R.color.white));
+
+        }
 
 
 
@@ -239,7 +256,7 @@ public class EmailAdapter extends RecyclerView.Adapter<EmailAdapter.MyView> {
     }
 
     public class MyView extends RecyclerView.ViewHolder {
-        private TextView contactName, emailId, call_txt, calledName, calledNumber, date_time;
+        private TextView contactName, emailId, call_txt, calledName, calledNumber, date_time,savedDetails,contactId1,contactId2;
         private CardView emailCardView;
         private ImageView state_of_call, overflow;
 
@@ -256,6 +273,9 @@ public class EmailAdapter extends RecyclerView.Adapter<EmailAdapter.MyView> {
             state_of_call = (ImageView) itemView.findViewById(R.id.stateOfCallEmail);
             date_time = (TextView) itemView.findViewById(R.id.date_time_txt);
             overflow = (ImageView) itemView.findViewById(R.id.overflow);
+            savedDetails = (TextView)itemView.findViewById(R.id.saved_details);
+            contactId1 = (TextView)itemView.findViewById(R.id.contact_idEmail);
+            contactId2 = (TextView)itemView.findViewById(R.id.contact_id2Email);
             itemContext = itemView.getContext();
         }
     }

@@ -65,6 +65,8 @@
     <string name="shared_pref_first_time">first_time</string>
     <string name="darktheme">darktheme</string>
     <string name="defaulttheme">defaulttheme</string>
+    <string name="bubblelocation">bubblelocation</string>
+    <string name="voicecall">voicecall</string>
 
 
     <string name="send_to">Send To</string>
