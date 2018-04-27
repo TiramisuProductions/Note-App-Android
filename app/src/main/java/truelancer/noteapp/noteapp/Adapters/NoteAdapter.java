@@ -5,6 +5,7 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.provider.CalendarContract;
 import android.support.v4.app.FragmentActivity;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.CardView;
@@ -23,12 +24,16 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.List;
 
 import truelancer.noteapp.noteapp.Database.Note;
+import truelancer.noteapp.noteapp.Database.Task;
+import truelancer.noteapp.noteapp.MyApp;
+import truelancer.noteapp.noteapp.NoteActivity;
 import truelancer.noteapp.noteapp.R;
 
 import static com.orm.SugarRecord.findById;
@@ -42,6 +47,9 @@ public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.MyView> {
     SimpleDateFormat simpleDateFormat = new SimpleDateFormat("h:mm dd-MM-yyyy");
     Context itemContext;
     String inout = "";
+
+
+
 
     public NoteAdapter(FragmentActivity activity, List<Note> not) {
         this.activity = activity;
@@ -58,29 +66,77 @@ public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.MyView> {
     @Override
     public void onBindViewHolder(final MyView holder, final int position) {
 
-        if (!notes.get(position).isIncoming()) {
-            holder.call_txt.setText("Call To");
-            holder.state_of_call.setImageResource(R.drawable.ic_outgoing);
-            inout = "Call To";
+        if(!MyApp.defaultTheme){
+            holder.noteCardView.setCardBackgroundColor(itemContext.getResources().getColor(R.color.darker_card));
+            holder.noteText.setTextColor(itemContext.getResources().getColor(R.color.white));
+            holder.calledName.setTextColor(itemContext.getResources().getColor(R.color.white));
+            holder.calledNumber.setTextColor(itemContext.getResources().getColor(R.color.white));
+            holder.date_time.setTextColor(itemContext.getResources().getColor(R.color.white));
+            holder.savedDetails.setTextColor(itemContext.getResources().getColor(R.color.white));
+            holder.noOfTasks.setTextColor(itemContext.getResources().getColor(R.color.white));
+            holder.call_text.setTextColor(itemContext.getResources().getColor(R.color.white));
+            holder.contactId2.setTextColor(itemContext.getResources().getColor(R.color.white));
+            holder.overflow.setColorFilter(itemContext.getResources().getColor(R.color.white));
 
-        } else {
-            inout = "Call By";
+
+
         }
 
+
+        if(notes.get(position).isSavedFromApp()){
+            holder.state_of_call.setImageResource(R.drawable.ic_saved_from_app);
+            inout="Saved From App";
+        }else{
+            if (!notes.get(position).isIncoming()) {
+
+                inout = "Call To";
+                holder.state_of_call.setImageResource(R.drawable.ic_outgoing);
+            } else {
+                holder.state_of_call.setImageResource(R.drawable.ic_incoming);
+                inout = "Call By";
+            }
+        }
         String tsMilli = notes.get(position).getTsMilli();
         long tsLong = Long.parseLong(tsMilli);
         timeStampString = getDate(tsLong);
 
+
+        holder.call_text.setText(inout);
         holder.date_time.setText("" + timeStampString);
-        holder.note2.setText(notes.get(position).getNote());
+        holder.noteText.setText(notes.get(position).getNote());
         holder.calledName.setText(notes.get(position).getCalledName());
         holder.calledNumber.setText(notes.get(position).getCalledNumber());
+
+        List<Task> tasks=Task.findWithQuery(Task.class,"Select * from Task where note_id=?",notes.get(position).getId().toString());
+
+        if(tasks.size()!=0){
+            holder.noOfTasks.setText(tasks.size()+" Tasks");
+        }else{
+            holder.noOfTasks.setText("No Tasks");
+        }
+
+
 
         holder.noteCardView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
+                Intent intent = new Intent(activity, NoteActivity.class);
+                intent.putExtra("noteText", notes.get(position).getNote());
 
+                intent.putExtra("calledName", notes.get(position).getCalledName());
+                intent.putExtra("calledNumber", notes.get(position).getCalledNumber());
+                intent.putExtra("noteId",""+notes.get(position).getId());
+
+                String income = "" + notes.get(position).isIncoming();
+                intent.putExtra("incoming", income);
+
+                String tsMilli = notes.get(position).getTsMilli();
+                long tsLong = Long.parseLong(tsMilli);
+                String timeStampString2 = getDate(tsLong);
+                intent.putExtra("timestamp", timeStampString2);
+                Toast.makeText(activity, "Contact timestamp: " + timeStampString2, Toast.LENGTH_SHORT).show();
+                activity.startActivity(intent);
             }
         });
 
@@ -216,16 +272,31 @@ public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.MyView> {
             }
         });
 
-        holder.checkBox.setChecked(false);
-        holder.checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-              if(isChecked)
-              {
-                  Note note= Note.findById(Note.class,1);
-                  Log.d("chubby",""+note);
+        //  holder.checkBox.setChecked(false);
 
-              }
+        holder.sync.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+               // Intent intent=new Intent(activity, CalendarActivity.class);
+               // activity.startActivity(intent);
+
+
+                Intent intent = new Intent(Intent.ACTION_INSERT);
+                intent.setType("vnd.android.cursor.item/event");
+
+                Calendar cal = Calendar.getInstance();
+                long startTime = cal.getTimeInMillis();
+                long endTime = cal.getTimeInMillis() + 60 * 60 * 1000;
+
+                intent.putExtra(CalendarContract.EXTRA_EVENT_BEGIN_TIME, startTime);
+                intent.putExtra(CalendarContract.EXTRA_EVENT_END_TIME, endTime);
+                intent.putExtra(CalendarContract.EXTRA_EVENT_ALL_DAY, true);
+
+                intent.putExtra(CalendarContract.Events.TITLE, notes.get(position).getNote());
+                intent.putExtra(CalendarContract.Events.RRULE, "FREQ=YEARLY");
+
+                itemContext.startActivity(intent);
+
             }
         });
     }
@@ -233,30 +304,36 @@ public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.MyView> {
     @Override
     public int getItemCount() {
         return notes.size();
+
+
     }
 
 
     public class MyView extends RecyclerView.ViewHolder {
-        private TextView contactName, note2, calledName, calledNumber, call_txt, date_time;
+        private TextView  noteText, calledName, calledNumber, call_text, date_time,savedDetails,contactId1,contactId2,noOfTasks;
         private CardView noteCardView;
         private CheckBox checkBox;
         private ImageView state_of_call, overflow;
+        private Button sync;
 
         public MyView(View itemView) {
             super(itemView);
-            this.setIsRecyclable(false);
 
 
-            /*contactName = (TextView) itemView.findViewById(R.id.contact_nameN);
-            note2 = (TextView) itemView.findViewById(R.id.noteit);
+
+            noteText = (TextView) itemView.findViewById(R.id.noteTitle);
             noteCardView = (CardView) itemView.findViewById(R.id.note_cardView);
-            calledName = (TextView) itemView.findViewById(R.id.called_contactN);
-            calledNumber = (TextView) itemView.findViewById(R.id.called_numberN);
-            call_txt = (TextView) itemView.findViewById(R.id.calltxt);
-            state_of_call = (ImageView) itemView.findViewById(R.id.stateofcallN);
+            calledName = (TextView) itemView.findViewById(R.id.called_contactNote);
+            calledNumber = (TextView) itemView.findViewById(R.id.called_numberNote);
+            call_text = (TextView) itemView.findViewById(R.id.callText);
+            state_of_call = (ImageView) itemView.findViewById(R.id.stateOfCallNote);
             date_time = (TextView) itemView.findViewById(R.id.date_time_txt);
             overflow = (ImageView) itemView.findViewById(R.id.overflow);
-            checkBox=(CheckBox) itemView.findViewById(R.id.checkBoxNote);*/
+            sync=(Button)itemView.findViewById(R.id.calendarSync);
+            savedDetails =(TextView)itemView.findViewById(R.id.saved_details);
+            contactId2 =(TextView)itemView.findViewById(R.id.contact_id2Note);
+            noOfTasks = (TextView)itemView.findViewById(R.id.nooftasks);
+
             itemContext = itemView.getContext();
         }
     }

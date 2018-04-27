@@ -11,21 +11,24 @@ import android.view.View;
 import android.view.ViewGroup;
 
 
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import truelancer.noteapp.noteapp.Adapters.EmailAdapter;
 import truelancer.noteapp.noteapp.Adapters.NoteAdapter;
-import truelancer.noteapp.noteapp.Adapters.noteDoneAdapter;
+import truelancer.noteapp.noteapp.Database.Email;
 import truelancer.noteapp.noteapp.Database.Note;
-import truelancer.noteapp.noteapp.MyApp;
+import truelancer.noteapp.noteapp.EventB;
 import truelancer.noteapp.noteapp.R;
 
 
 public class NoteFragment extends Fragment {
     private RecyclerView mRecyclerView, mRecyclerView2;
     private NoteAdapter mAdapter;
-    private noteDoneAdapter mAdapter2;
     private ArrayList<Note> noteDoneList = new ArrayList<>();
     private ArrayList<Note> noteNotDoneList = new ArrayList<>();
 
@@ -42,23 +45,18 @@ public class NoteFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_last_note, container, false);
 
+
+        if(!EventBus.getDefault().isRegistered(this)){
+            EventBus.getDefault().register(this);
+        }
+
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getActivity());
         RecyclerView.LayoutManager mLayoutManager2 = new LinearLayoutManager(getActivity());
 
-
-
-
         mRecyclerView = (RecyclerView) rootView.findViewById(R.id.recycler_note);
-        mRecyclerView2 = (RecyclerView) rootView.findViewById(R.id.recycler_note2);
 
         mRecyclerView.setLayoutManager(mLayoutManager);
-        mRecyclerView2.setLayoutManager(mLayoutManager2);
 
-        if(!MyApp.defaultTheme){
-            mRecyclerView.setBackgroundColor(getResources().getColor(R.color.dark));
-            mRecyclerView2.setBackgroundColor(getResources().getColor(R.color.dark));
-            rootView.setBackgroundColor(getResources().getColor(R.color.dark));
-        }
 
         List<Note> notes = Note.listAll(Note.class);
         Collections.reverse(notes);
@@ -70,6 +68,19 @@ public class NoteFragment extends Fragment {
         return rootView;
     }
 
+
+    @Subscribe
+    public void onEvent(EventB event){
+        // your implementation
+        if(event.getMessage().equals("4")){
+            mAdapter.notifyDataSetChanged();
+            List<Note> emails = Note.listAll(Note.class);
+            Collections.reverse(emails);
+            mAdapter = new NoteAdapter(getActivity(), emails);
+            mRecyclerView.setAdapter(mAdapter);
+        }
+    }
+
     @Override
     public void onResume() {
         super.onResume();
@@ -78,9 +89,5 @@ public class NoteFragment extends Fragment {
         Collections.reverse(emails);
         mAdapter = new NoteAdapter(getActivity(), emails);
         mRecyclerView.setAdapter(mAdapter);
-    }
-
-    public void getNote() {
-
     }
 }

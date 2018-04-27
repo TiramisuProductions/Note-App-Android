@@ -153,7 +153,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     TextView banktxt;
     @BindView(R.id.notetxt)
     TextView notetxt;
-    @BindView(R.id.mainactivity) FrameLayout mainActivity;
+    @BindView(R.id.mainactivity)
+    FrameLayout mainActivity;
     private ContactAdapter contactSearchAdapter;
     private EmailAdapter emailSearchAdapter;
     private BankAccountAdapter bankSearchAdapter;
@@ -179,7 +180,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     SharedPreferences pref;
 
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -189,7 +189,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         pref = getApplicationContext().getSharedPreferences(getString(R.string.shared_pref), MODE_PRIVATE);
 
         if (MyApp.defaultTheme) {
-
 
 
         } else {
@@ -518,7 +517,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         final SearchView searchView =
                 (SearchView) search_menu.findItem(R.id.action_filter_search).getActionView();
 
-        if(!MyApp.defaultTheme){
+        if (!MyApp.defaultTheme) {
 
         }
 
@@ -1493,6 +1492,78 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
             case R.id.fab_last_notes: {
                 // do something for button 2 click
+                final Dialog dialog = new Dialog(this);
+                dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                dialog.setContentView(R.layout.add_contact_dialog);
+                TextInputLayout field1 = (TextInputLayout) dialog.findViewById(R.id.field_layout_1);
+                TextInputLayout field2 = (TextInputLayout) dialog.findViewById(R.id.field_layout_2);
+                final ImageView tick1 = (ImageView) dialog.findViewById(R.id.tick1);
+                final ImageView tick2 = (ImageView) dialog.findViewById(R.id.tick2);
+                Button save = (Button) dialog.findViewById(R.id.save);
+                Button cancel = (Button) dialog.findViewById(R.id.cancel);
+                final TextInputEditText noteEdittext = (TextInputEditText) dialog.findViewById(R.id.field_1);
+                field1.setHint(getString(R.string.hint_note));
+                tick2.setVisibility(View.GONE);
+                field2.setVisibility(View.GONE);
+
+
+
+                final TextWatcher textWatcher01 = new TextWatcher() {
+
+                    public void afterTextChanged(Editable s) {
+                        //if (s.toString() != "") {MyApp.toSave = true;}
+                    }
+
+                    public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+                    }
+
+                    public void onTextChanged(CharSequence s, int start, int before,
+                                              int count) {
+
+                        if (!TextUtils.isEmpty(String.valueOf(s))) {
+                            tick1.setVisibility(View.VISIBLE);
+                        } else {
+                            tick1.setVisibility(View.INVISIBLE);
+                        }
+
+
+                    }
+                };
+
+                noteEdittext.addTextChangedListener(textWatcher01);
+
+
+                cancel.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        dialog.dismiss();
+                    }
+                });
+
+                save.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+
+
+                        if (TextUtils.isEmpty(noteEdittext.getText().toString())) {
+                            noteEdittext.setError(getString(R.string.hint_note));
+                        }  else {
+                            Note note = new Note(noteEdittext.getText().toString(), tsMilli, true);
+                            note.save();
+                            dialog.dismiss();
+
+                            EventBus.getDefault().post(new EventB("4"));
+                        }
+
+
+                    }
+                });
+
+
+                dialog.show();
+
+
                 break;
             }
 

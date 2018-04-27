@@ -6,7 +6,7 @@
 
 
     <TextView
-        android:id="@+id/textView"
+        android:id="@+id/contactLabel1"
         android:padding="10dp"
         android:text="Select Your Option"
         android:layout_width="wrap_content"
@@ -15,7 +15,7 @@
 
     <Spinner
         android:padding="10dp"
-        android:layout_below="@id/textView"
+        android:layout_below="@id/contactLabel1"
         android:id="@+id/admin_chooser"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"></Spinner>

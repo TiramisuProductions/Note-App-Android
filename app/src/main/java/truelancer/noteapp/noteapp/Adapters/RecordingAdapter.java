@@ -201,6 +201,31 @@ public class RecordingAdapter extends RecyclerView.Adapter<RecordingAdapter.MyVi
                 finalTimeTXT.setText(milliSecondsToTimer(finalTime));
 
 
+                mediaPlayer = new MediaPlayer();
+                try {
+                    mediaPlayer.setDataSource(callRecordings.get(position).getRecordPath());
+                    mediaPlayer.prepare();
+                    mediaPlayer.start();
+                    finalTimeTXT.setText(milliSecondsToTimer(mediaPlayer.getDuration()));
+                    seekBar.setMax(mediaPlayer.getDuration());
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
+                run = new Runnable() {
+                    @Override
+                    public void run() {
+                        if (mediaPlayer != null) {
+                            seekBar.setProgress(mediaPlayer.getCurrentPosition());
+                            startTimeTXT.setText(milliSecondsToTimer(mediaPlayer.getCurrentPosition()));
+                        }
+
+                        handler.postDelayed(this, 500);
+                    }
+                };
+                handler.postDelayed(run, 500);
+                play.setImageResource(R.drawable.ic_pause);
+                isPlaying = !isPlaying;
 
                 play.setOnClickListener(new View.OnClickListener() {
                     @Override

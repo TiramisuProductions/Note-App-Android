@@ -60,6 +60,7 @@
         <service android:name=".Services.PopUpService" />
 
         <activity android:name=".Search" />
+        <activity android:name=".NoteActivity"></activity>
     </application>
 
 </manifest>
