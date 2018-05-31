@@ -44,7 +44,7 @@ public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.MyView> {
     List<Note> notes;
     Activity activity;
     String timeStampString;
-    SimpleDateFormat simpleDateFormat = new SimpleDateFormat("h:mm dd-MM-yyyy");
+    SimpleDateFormat simpleDateFormat = new SimpleDateFormat("HH:mm:ss dd-MM-yyyy");
     Context itemContext;
     String inout = "";
 

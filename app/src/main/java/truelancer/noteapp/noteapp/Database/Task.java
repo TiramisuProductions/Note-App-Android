@@ -13,13 +13,13 @@ public class Task extends SugarRecord {
     public boolean isDone;
 
 
+    public Task() {
+    }
 
-    public Task(){}
-
-    public Task(String taskText,String noteId,boolean isDone){
-        this.taskText=taskText;
-        this.noteId=noteId;
-        this.isDone=isDone;
+    public Task(String taskText, String noteId, boolean isDone) {
+        this.taskText = taskText;
+        this.noteId = noteId;
+        this.isDone = isDone;
     }
 
     public String getTaskText() {
@@ -30,14 +30,21 @@ public class Task extends SugarRecord {
         this.taskText = taskText;
     }
 
-    public String getNoteId() {return noteId;}
+    public String getNoteId() {
+        return noteId;
+    }
 
-    public void setNoteId(String noteId) {this.noteId = noteId;}
+    public void setNoteId(String noteId) {
+        this.noteId = noteId;
+    }
 
-    public boolean isDone() {return isDone;}
+    public boolean isDone() {
+        return isDone;
+    }
 
-    public void setDone(boolean done) {isDone = done;}
-
+    public void setDone(boolean done) {
+        isDone = done;
+    }
 
 
 }

@@ -52,7 +52,7 @@ public class RecordingAdapter extends RecyclerView.Adapter<RecordingAdapter.MyVi
     Context activity, itemContext;
     String timeStampString;
     String inout = "";
-    SimpleDateFormat simpleDateFormat = new SimpleDateFormat("h:mm dd-MM-yyyy");
+    SimpleDateFormat simpleDateFormat = new SimpleDateFormat("HH:mm:ss dd-MM-yyyy");
     boolean isPlaying = false;
     MediaPlayer mp;
     boolean wasPaused = false;

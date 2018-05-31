@@ -49,7 +49,7 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.MyView> 
     String timeStampString;
     String inout = "";
 
-    SimpleDateFormat simpleDateFormat = new SimpleDateFormat("h:mm dd-MM-yyyy");
+    SimpleDateFormat simpleDateFormat = new SimpleDateFormat("HH:mm:ss dd-MM-yyyy");
 
     static final int RESULT_PICK_CONTACT = 4;
 

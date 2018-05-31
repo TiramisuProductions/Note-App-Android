@@ -7,7 +7,7 @@ import truelancer.noteapp.noteapp.Database.BankAccount;
 import truelancer.noteapp.noteapp.Database.Contact;
 import truelancer.noteapp.noteapp.Database.Email;
 import truelancer.noteapp.noteapp.Database.Note;
-
+import truelancer.noteapp.noteapp.Database.Task;
 
 
 public class Modelgson {
@@ -15,14 +15,16 @@ public class Modelgson {
     List<Email> elist;
     List<BankAccount> blist;
     List<Note> nlist;
+    List<Task> tList;
 
     public Modelgson() {}
 
-    public Modelgson(List<Contact> clist, List<Email> elist, List<BankAccount> blist, List<Note> nlist) {
+    public Modelgson(List<Contact> clist, List<Email> elist, List<BankAccount> blist, List<Note> nlist, List<Task> tList) {
         this.clist = clist;
         this.elist = elist;
         this.blist = blist;
         this.nlist = nlist;
+        this.tList = tList;
     }
 
     public List<Contact> getClist() {
@@ -55,5 +57,13 @@ public class Modelgson {
 
     public void setNlist(List<Note> nlist) {
         this.nlist = nlist;
+    }
+
+    public List<Task> gettList() {
+        return tList;
+    }
+
+    public void settList(List<Task> tList) {
+        this.tList = tList;
     }
 }
