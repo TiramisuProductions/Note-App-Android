@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="350dp"
+    android:orientation="vertical"
+    android:padding="20dp"
+    android:layout_height="wrap_content">
+
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:orientation="horizontal"
+        android:weightSum="5"
+
+        android:layout_height="45dp">
+
+    <android.support.design.widget.TextInputLayout
+        android:layout_width="fill_parent"
+        android:layout_weight="4"
+        android:padding="1dp"
+        android:layout_height="match_parent">
+    <EditText
+        android:id="@+id/editContactName"
+        android:hint="Contact Name"
+        android:layout_gravity="center"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+</android.support.design.widget.TextInputLayout>
+
+        <ImageView
+            android:layout_weight="1"
+            android:paddingTop="10dp"
+            android:layout_width="wrap_content"
+            android:src="@drawable/ic_tick"
+            android:layout_height="wrap_content" />
+
+    </LinearLayout>
+
+<LinearLayout
+    android:layout_width="match_parent"
+    android:weightSum="5"
+    android:orientation="horizontal"
+    android:layout_height="45dp">
+    <android.support.design.widget.TextInputLayout
+        android:layout_width="match_parent"
+        android:layout_weight="4"
+        android:padding="1dp"
+        android:layout_height="match_parent">
+        <EditText
+            android:id="@+id/editContactNumber"
+            android:layout_gravity="center"
+            android:hint="Contact Number"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+    </android.support.design.widget.TextInputLayout>
+
+    <ImageView
+        android:layout_weight="1"
+        android:paddingTop="10dp"
+        android:layout_width="wrap_content"
+        android:src="@drawable/ic_tick"
+        android:layout_height="wrap_content" />
+
+</LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_weight="5"
+        android:orientation="horizontal"
+        android:layout_height="45dp">
+    <android.support.design.widget.TextInputLayout
+        android:layout_width="match_parent"
+        android:layout_weight="4"
+        android:padding="1dp"
+        android:layout_height="match_parent">
+        <EditText
+            android:id="@+id/editCalledNumber"
+            android:hint="Called Number"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+    </android.support.design.widget.TextInputLayout>
+        <ImageView
+            android:layout_weight="1"
+            android:paddingTop="10dp"
+            android:layout_width="wrap_content"
+            android:src="@drawable/ic_tick"
+            android:layout_height="wrap_content" />
+
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_weight="5"
+        android:orientation="horizontal"
+        android:layout_height="45dp">
+
+    <android.support.design.widget.TextInputLayout
+        android:layout_width="match_parent"
+        android:layout_weight="4"
+        android:padding="1dp"
+        android:layout_height="match_parent">
+        <EditText
+            android:id="@+id/editCalledName"
+            android:hint="Called Name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+    </android.support.design.widget.TextInputLayout>
+
+        <ImageView
+            android:layout_weight="1"
+            android:paddingTop="10dp"
+            android:layout_width="wrap_content"
+            android:src="@drawable/ic_tick"
+            android:layout_height="wrap_content" />
+
+
+
+    </LinearLayout>
+
+
+
+
+    <Spinner
+        android:id="@+id/callstate"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"></Spinner>
+
+    <Button
+        android:id="@+id/btnSelect"
+        android:text="Done"
+        android:layout_margin="10dp"
+        android:background="@color/colorPrimary"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+    <Button
+        android:id="@+id/btnCancel"
+        android:text="Cancel"
+        android:layout_margin="10dp"
+        android:background="@color/red"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+
+
+
+
+
+</LinearLayout>

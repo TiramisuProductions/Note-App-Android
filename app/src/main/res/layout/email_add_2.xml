@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <TextView
+            android:layout_marginTop="8dp"
+            android:id="@+id/contactLabel1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Contact Name"
+            android:textColor="#000"
+            android:textSize="20dp"
+            android:gravity="center_horizontal"
+            />
+
+
+        <EditText
+            android:layout_below="@id/contactLabel1"
+            android:layout_width="match_parent"
+            android:id="@+id/contact_name2_et"
+            android:backgroundTint="@color/colorPrimaryDark"
+            android:layout_marginLeft="50dp"
+            android:layout_marginRight="50dp"
+            android:layout_marginTop="8dp"
+            android:textColor="#000"
+            android:layout_height="wrap_content" />
+
+
+        <ImageView
+            android:id="@+id/tick1"
+            android:visibility="invisible"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_above="@+id/contactLabel2"
+            android:layout_alignParentEnd="true"
+            android:layout_marginEnd="16dp"
+            android:src="@drawable/ic_tick" />
+
+
+        <TextView
+            android:layout_below="@+id/contact_name2_et"
+            android:id="@+id/contactLabel2"
+            android:layout_marginTop="8dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Email"
+            android:textColor="#000"
+            android:textSize="20dp"
+            android:gravity="center_horizontal"
+            />
+
+
+        <EditText
+            android:id="@+id/emailId_et"
+            android:backgroundTint="@color/colorPrimaryDark"
+            android:layout_below="@id/contactLabel2"
+            android:layout_marginLeft="50dp"
+            android:layout_marginRight="50dp"
+            android:gravity="center_horizontal"
+            android:textColor="#000"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+
+        <ImageView
+            android:id="@+id/tick2"
+            android:visibility="invisible"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/contactLabel2"
+            android:layout_alignParentEnd="true"
+            android:layout_marginEnd="16dp"
+            android:src="@drawable/ic_tick"
+            />
+    </RelativeLayout>
+
+</ScrollView>

@@ -1,0 +1,106 @@
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:id="@+id/layout"
+    android:background="#FFFFFF">
+
+
+    <android.support.v4.view.ViewPager
+        android:id="@+id/viewPager"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_below="@id/viewPagerTab"
+        android:layout_marginBottom="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        app:layout_constraintBottom_toTopOf="@+id/save"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.49"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/viewPagerTab"
+        app:layout_constraintVertical_bias="0.0">
+
+    </android.support.v4.view.ViewPager>
+
+    <Button
+        android:id="@+id/save"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/viewPager"
+        android:layout_marginBottom="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:text="@string/save"
+        android:background="@color/colorPrimary"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/goToAppButton"
+        app:layout_constraintStart_toEndOf="@+id/callRecordButton" />
+
+    <Button
+        android:id="@+id/callRecordButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/viewPager"
+        android:layout_marginBottom="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_toRightOf="@+id/save"
+        android:text="@string/call_record_start"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <Button
+        android:id="@+id/goToAppButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_below="@+id/viewPager"
+        android:layout_marginBottom="8dp"
+        android:layout_marginEnd="8dp"
+        android:background="#757575"
+        android:drawableRight="@drawable/ic_go_to_app"
+        android:padding="10dp"
+        android:text="Go to app "
+        android:textColor="#ffffff"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <com.ogaclejapan.smarttablayout.SmartTabLayout
+        android:id="@+id/viewPagerTab"
+        android:layout_width="0dp"
+        android:layout_height="50dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:stl_clickable="true"
+        app:stl_defaultTabBackground="?attr/selectableItemBackground"
+        app:stl_defaultTabTextAllCaps="true"
+        app:stl_defaultTabTextColor="#000000"
+        app:stl_defaultTabTextHorizontalPadding="16dp"
+        app:stl_defaultTabTextMinWidth="0dp"
+        app:stl_defaultTabTextSize="12sp"
+        app:stl_distributeEvenly="false"
+        app:stl_dividerColor="#4D000000"
+        app:stl_dividerThickness="1dp"
+        app:stl_drawDecorationAfterTab="false"
+        app:stl_indicatorAlwaysInCenter="false"
+        app:stl_indicatorColor="#42A5F5"
+        app:stl_indicatorCornerRadius="2dp"
+        app:stl_indicatorGravity="bottom"
+        app:stl_indicatorInFront="false"
+        app:stl_indicatorInterpolation="smart"
+        app:stl_indicatorThickness="4dp"
+        app:stl_indicatorWidth="auto"
+        app:stl_indicatorWithoutPadding="false"
+        app:stl_overlineColor="#4D000000"
+        app:stl_overlineThickness="0dp"
+        app:stl_titleOffset="24dp"
+        app:stl_underlineColor="#4D000000"
+        app:stl_underlineThickness="1dp" />
+
+</android.support.constraint.ConstraintLayout>

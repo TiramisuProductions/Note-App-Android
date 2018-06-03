@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/bank_cardView"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    card_view:cardElevation="4dp"
+    card_view:cardUseCompatPadding="true">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:padding="10dp">
+
+        <TextView
+            android:id="@+id/date_time_txt"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:text="12:10, 3 dec 2017" />
+
+        <View
+            android:id="@+id/anchorB"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_centerInParent="true"
+            android:layout_marginLeft="-70dp"
+            android:layout_marginRight="80dp" />
+
+        <RelativeLayout
+            android:id="@+id/left_side"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:layout_marginTop="0dip"
+            android:layout_toLeftOf="@+id/anchorB"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/calltxt"
+                android:visibility="gone"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Call By" />
+
+            <TextView
+                android:id="@+id/called_contactB"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/calltxt"
+                android:text="Cell"
+                android:textColor="@color/black" />
+
+            <TextView
+                android:id="@+id/called_numberB"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/calltxt"
+                android:layout_toRightOf="@+id/called_contactB"
+                android:paddingLeft="15dp"
+                android:text="Cell"
+                android:textColor="@color/black" />
+
+            <TextView
+                android:id="@+id/saved_details"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/called_contactB"
+                android:text="Saved Details" />
+
+            <TextView
+                android:id="@+id/contact_idB"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/saved_details"
+                android:text="Contact Name : "
+                android:textColor="@color/black" />
+
+            <TextView
+                android:id="@+id/contact_nameB"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/saved_details"
+                android:layout_toRightOf="@id/contact_idB"
+                android:textColor="@color/black" />
+
+            <TextView
+                android:id="@+id/contact_id2B"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/contact_idB"
+                android:text="Account Number : "
+                android:textColor="@color/black" />
+
+            <TextView
+                android:id="@+id/acc_no"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/contact_idB"
+                android:layout_toRightOf="@id/contact_id2B"
+                android:textColor="@color/black" />
+
+            <TextView
+                android:id="@+id/contact_id3B"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/contact_id2B"
+                android:text="IFSC Code :  "
+                android:textColor="@color/black" />
+
+            <TextView
+                android:id="@+id/ifsc"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/acc_no"
+                android:layout_toRightOf="@id/contact_id3B"
+                android:textColor="@color/black" />
+
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/right_side"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:layout_marginTop="0dip"
+            android:layout_toRightOf="@+id/left_side"
+            android:orientation="vertical"
+            android:padding="0dp"
+            android:text="Right Side">
+
+            <ImageView
+                android:id="@+id/stateofcallB"
+                android:layout_width="50dp"
+                android:layout_height="25dp"
+                android:layout_margin="10dp"
+                android:src="@drawable/ic_incoming" />
+
+            <ImageView
+                android:id="@+id/overflow"
+                android:layout_width="50dp"
+                android:layout_height="35dp"
+                android:layout_marginTop="5dp"
+                android:layout_toRightOf="@+id/stateofcallB"
+                android:adjustViewBounds="true"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:scaleType="centerCrop"
+                android:src="@drawable/ic_overflow" />
+        </RelativeLayout>
+    </RelativeLayout>
+
+
+</android.support.v7.widget.CardView>
