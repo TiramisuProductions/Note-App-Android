@@ -20,9 +20,7 @@ import java.util.List;
 import truelancer.noteapp.noteapp.Adapters.TaskAdapter;
 import truelancer.noteapp.noteapp.Database.Task;
 
-/**
- * Created by sarveshpalav on 23/04/18.
- */
+
 
 public class NoteActivity extends AppCompatActivity {
 
@@ -30,8 +28,8 @@ public class NoteActivity extends AppCompatActivity {
     private EditText addTaskEditText;
     private View seprator;
     private FloatingActionButton addTaskButton;
-    private RecyclerView mRecyclerView1;
-    private TaskAdapter mAdapter2;
+    private RecyclerView mRecyclerView1,mRecyclerView2;
+    private TaskAdapter mAdapter1,mAdapter2;
     private ConstraintLayout layout;
     private ArrayList<Task> taskDone = new ArrayList<>();
     // GoogleAccountCredential mCredential;
@@ -55,6 +53,8 @@ public class NoteActivity extends AppCompatActivity {
         addTaskEditText = (EditText) findViewById(R.id.editTextTask);
         addTaskButton = (FloatingActionButton) findViewById(R.id.add_task_button);
         mRecyclerView1 = (RecyclerView) findViewById(R.id.recyclerViewNoteTask1);
+        mRecyclerView2 = (RecyclerView) findViewById(R.id.recyclerViewNoteTask2);
+
         layout = (ConstraintLayout) findViewById(R.id.layout);
         seprator = (View) findViewById(R.id.seprator);
 
@@ -139,8 +139,10 @@ public class NoteActivity extends AppCompatActivity {
         }
 
 
+        mAdapter1 = new TaskAdapter(NoteActivity.this, taskDone);
+        mRecyclerView1.setAdapter(mAdapter1);
         mAdapter2 = new TaskAdapter(NoteActivity.this, taskDone);
-        mRecyclerView1.setAdapter(mAdapter2);
+        mRecyclerView2.setAdapter(mAdapter2);
 
     }
 }

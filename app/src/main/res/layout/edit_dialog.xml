@@ -1,150 +1,221 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="350dp"
-    android:orientation="vertical"
-    android:padding="20dp"
-    android:layout_height="wrap_content">
-
-
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:orientation="horizontal"
-        android:weightSum="5"
-
-        android:layout_height="45dp">
-
-    <android.support.design.widget.TextInputLayout
-        android:layout_width="fill_parent"
-        android:layout_weight="4"
-        android:padding="1dp"
-        android:layout_height="match_parent">
-    <EditText
-        android:id="@+id/editContactName"
-        android:hint="Contact Name"
-        android:layout_gravity="center"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
-</android.support.design.widget.TextInputLayout>
-
-        <ImageView
-            android:layout_weight="1"
-            android:paddingTop="10dp"
-            android:layout_width="wrap_content"
-            android:src="@drawable/ic_tick"
-            android:layout_height="wrap_content" />
-
-    </LinearLayout>
-
-<LinearLayout
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:weightSum="5"
-    android:orientation="horizontal"
-    android:layout_height="45dp">
-    <android.support.design.widget.TextInputLayout
+    android:layout_height="match_parent">
+
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_weight="4"
-        android:padding="1dp"
-        android:layout_height="match_parent">
-        <EditText
-            android:id="@+id/editContactNumber"
+        android:layout_height="match_parent"
+        android:layout_marginBottom="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <android.support.constraint.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
             android:layout_gravity="center"
-            android:hint="Contact Number"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
-    </android.support.design.widget.TextInputLayout>
+            android:layout_marginBottom="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
 
-    <ImageView
-        android:layout_weight="1"
-        android:paddingTop="10dp"
-        android:layout_width="wrap_content"
-        android:src="@drawable/ic_tick"
-        android:layout_height="wrap_content" />
+            <android.support.design.widget.TextInputLayout
+                android:id="@+id/field1"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+                app:layout_constraintEnd_toStartOf="@+id/tick_1"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
 
-</LinearLayout>
+                <android.support.design.widget.TextInputEditText
+                    android:id="@+id/editContactName"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/hint_contact_number"
+                    android:inputType="textPersonName"
+                    android:singleLine="true" />
+            </android.support.design.widget.TextInputLayout>
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_weight="5"
-        android:orientation="horizontal"
-        android:layout_height="45dp">
-    <android.support.design.widget.TextInputLayout
-        android:layout_width="match_parent"
-        android:layout_weight="4"
-        android:padding="1dp"
-        android:layout_height="match_parent">
-        <EditText
-            android:id="@+id/editCalledNumber"
-            android:hint="Called Number"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
-    </android.support.design.widget.TextInputLayout>
-        <ImageView
-            android:layout_weight="1"
-            android:paddingTop="10dp"
-            android:layout_width="wrap_content"
-            android:src="@drawable/ic_tick"
-            android:layout_height="wrap_content" />
+            <ImageView
+                android:id="@+id/tick_1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginTop="8dp"
+                android:visibility="invisible"
+                app:layout_constraintBottom_toTopOf="@+id/field2"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:srcCompat="@drawable/ic_tick" />
+
+            <android.support.design.widget.TextInputLayout
+                android:id="@+id/field2"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+                app:layout_constraintEnd_toStartOf="@+id/tick_2"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/field1">
+
+                <android.support.design.widget.TextInputEditText
+                    android:id="@+id/editContactNumber"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/hint_contact_number"
+                    android:inputType="number"
+                    android:singleLine="true" />
+            </android.support.design.widget.TextInputLayout>
+
+            <ImageView
+                android:id="@+id/tick_3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginTop="8dp"
+                android:visibility="invisible"
+                app:layout_constraintBottom_toTopOf="@+id/field4"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tick_2"
+                app:srcCompat="@drawable/ic_tick" />
+
+            <ImageView
+                android:id="@+id/tick_2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginTop="8dp"
+                android:visibility="invisible"
+                app:layout_constraintBottom_toTopOf="@+id/field3"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tick_1"
+                app:srcCompat="@drawable/ic_tick" />
+
+            <android.support.design.widget.TextInputLayout
+                android:id="@+id/field3"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+                app:layout_constraintEnd_toStartOf="@+id/tick_3"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/field2">
+
+                <android.support.design.widget.TextInputEditText
+                    android:id="@+id/editCalledName"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/hint_called_name"
+                    android:inputType="textPersonName"
+                    android:singleLine="true" />
+            </android.support.design.widget.TextInputLayout>
+
+            <android.support.design.widget.TextInputLayout
+                android:id="@+id/field4"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+                app:layout_constraintEnd_toStartOf="@+id/tick_4"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/field3">
+
+                <android.support.design.widget.TextInputEditText
+                    android:id="@+id/editCalledNumber"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/hint_called_number"
+                    android:inputType="number"
+                    android:singleLine="true" />
+            </android.support.design.widget.TextInputLayout>
+
+            <ImageView
+                android:id="@+id/tick_4"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginTop="8dp"
+                android:visibility="invisible"
+                app:layout_constraintBottom_toTopOf="@+id/textView2"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tick_3"
+                app:srcCompat="@drawable/ic_tick" />
 
 
-    </LinearLayout>
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_weight="5"
-        android:orientation="horizontal"
-        android:layout_height="45dp">
+            <Spinner
+                android:id="@+id/callstate"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="100dp"
+                android:layout_marginStart="10dp"
+                android:layout_marginTop="8dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/textView2" />
 
-    <android.support.design.widget.TextInputLayout
-        android:layout_width="match_parent"
-        android:layout_weight="4"
-        android:padding="1dp"
-        android:layout_height="match_parent">
-        <EditText
-            android:id="@+id/editCalledName"
-            android:hint="Called Name"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
-    </android.support.design.widget.TextInputLayout>
+            <TextView
+                android:id="@+id/textView2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+                android:text="@string/hint_input_call"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.038"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/field4" />
 
-        <ImageView
-            android:layout_weight="1"
-            android:paddingTop="10dp"
-            android:layout_width="wrap_content"
-            android:src="@drawable/ic_tick"
-            android:layout_height="wrap_content" />
+            <Button
+                android:id="@+id/button_done"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:layout_marginEnd="16dp"
+                android:layout_marginTop="8dp"
+                android:background="@color/colorPrimary"
+                android:text="@string/done"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/callstate" />
 
-
-
-    </LinearLayout>
-
-
-
-
-    <Spinner
-        android:id="@+id/callstate"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"></Spinner>
-
-    <Button
-        android:id="@+id/btnSelect"
-        android:text="Done"
-        android:layout_margin="10dp"
-        android:background="@color/colorPrimary"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent" />
-
-    <Button
-        android:id="@+id/btnCancel"
-        android:text="Cancel"
-        android:layout_margin="10dp"
-        android:background="@color/red"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
-
-
-
-
-
-
-</LinearLayout>
+            <Button
+                android:id="@+id/btnCancel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="8dp"
+                android:background="@color/red"
+                android:text="@string/cancel"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/button_done"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/callstate" />
+        </android.support.constraint.ConstraintLayout>
+    </ScrollView>
+</android.support.constraint.ConstraintLayout>

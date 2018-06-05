@@ -6,11 +6,15 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.FragmentActivity;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
+import android.text.Editable;
+import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -22,11 +26,15 @@ import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import org.greenrobot.eventbus.EventBus;
+
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.List;
 
 import truelancer.noteapp.noteapp.Database.BankAccount;
+import truelancer.noteapp.noteapp.EventB;
+import truelancer.noteapp.noteapp.MainActivity;
 import truelancer.noteapp.noteapp.MyApp;
 import truelancer.noteapp.noteapp.R;
 
@@ -34,7 +42,7 @@ public class BankAccountAdapter extends RecyclerView.Adapter<BankAccountAdapter.
     List<BankAccount> bankAccounts;
     Activity activity;
     String timeStampString;
-    SimpleDateFormat simpleDateFormat = new SimpleDateFormat("HH:mm:ss dd-MM-yyyy");
+    SimpleDateFormat simpleDateFormat = new SimpleDateFormat(" dd-MM-yyyy HH:mm:ss");
     Context itemContext;
     String inout = "";
 
@@ -73,25 +81,27 @@ public class BankAccountAdapter extends RecyclerView.Adapter<BankAccountAdapter.
         }
 
 
-
-        if (!bankAccounts.get(position).isIncoming()) {
-            holder.call_txt.setText("Call To");
-            inout = "Call To";
-            holder.state_of_call.setImageResource(R.drawable.ic_outgoing);
-        } else {
-            inout = "Call By";
+        if(bankAccounts.get(position).isSavedFromApp()){
+            inout="Saved From App";
+            holder.state_of_call.setImageResource(R.drawable.ic_saved_from_app);
+            }
+        else {
+            if (!bankAccounts.get(position).isIncoming()) {
+                inout = "Call To";
+                holder.state_of_call.setImageResource(R.drawable.ic_outgoing);
+            } else {
+                inout = "Call By";
+                holder.state_of_call.setImageResource(R.drawable.ic_incoming);
+            }
         }
-
         String tsMilli = bankAccounts.get(position).getTsMilli();
         long tsLong = Long.parseLong(tsMilli);
         timeStampString = getDate(tsLong);
-
+        holder.call_txt.setText(inout);
         holder.date_time.setText("" + timeStampString);
-
         holder.contactName.setText(bankAccounts.get(position).getName());
         holder.accountName.setText(bankAccounts.get(position).getAccountNo());
         holder.others.setText(bankAccounts.get(position).getIfscCode());
-
         holder.calledName.setText(bankAccounts.get(position).getCalledName());
         holder.calledNumber.setText(bankAccounts.get(position).getCalledNumber());
 
@@ -105,7 +115,7 @@ public class BankAccountAdapter extends RecyclerView.Adapter<BankAccountAdapter.
         holder.overflow.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                MainActivity.floatingActionMenu.close(true);
                 PopupMenu popup_overflow = new PopupMenu(activity, holder.overflow);
                 popup_overflow.getMenuInflater().inflate(R.menu.menu_overflow, popup_overflow.getMenu());
                 popup_overflow.getMenu().findItem(R.id.save).setVisible(false);
@@ -117,93 +127,239 @@ public class BankAccountAdapter extends RecyclerView.Adapter<BankAccountAdapter.
                         String temp = item.getTitle().toString();
                         if (temp.equals("Share")) {//Share
 
+                           if (holder.calledNumber.getText().length()==0 && holder.calledNumber.getText().length()==0) {
+                               String shareText = "Date&Time: [" + timeStampString + "]\n"
+                                       + inout +"\n"
+                                       + "Saved Details\n"
+                                       + "Contact Name : " + bankAccounts.get(position).getName() + "\n"
+                                       + "Account Number : " + bankAccounts.get(position).getAccountNo() + "\n"
+                                       + "IFSC Number : " + bankAccounts.get(position).getIfscCode();
 
-                            String shareText = "DateTime: [" + timeStampString + "]\n"
-                                    + inout + " " + bankAccounts.get(position).getCalledName() + "\n"
-                                    + bankAccounts.get(position).getCalledNumber() + "\n"
-                                    + "Saved Details\n\n"
-                                    + "Contact Name : " + bankAccounts.get(position).getName() + "\n"
-                                    + "Account Number : " + bankAccounts.get(position).getAccountNo() + "\n"
-                                    + "IFSC Number : " + bankAccounts.get(position).getIfscCode();
+                               Intent shareIntent = new Intent(Intent.ACTION_SEND);
+                               shareIntent.setType("text/plain");
+                               shareIntent.putExtra(Intent.EXTRA_TEXT, "" + shareText);
 
-                            Intent shareIntent = new Intent(Intent.ACTION_SEND);
-                            shareIntent.setType("text/plain");
-                            shareIntent.putExtra(Intent.EXTRA_TEXT, "" + shareText);
+                               try {
+                                   activity.startActivity(Intent.createChooser(shareIntent, activity.getResources().getText(R.string.send_to)));
+                               } catch (Exception e) {
+                                   e.printStackTrace();
+                               }
+                           }
+                           else {
+                               if (!bankAccounts.get(position).isIncoming()) {
+                                   inout = "Call To";
+                                   holder.state_of_call.setImageResource(R.drawable.ic_outgoing);
+                               }
+                               else {
+                                   inout = "Call By";
+                                   holder.state_of_call.setImageResource(R.drawable.ic_incoming);
+                               }
+                               String shareText = "Date&Time: [" + timeStampString + "]\n"
+                                       + inout + "\n" + bankAccounts.get(position).getCalledName() + ":  "
+                                       + bankAccounts.get(position).getCalledNumber() + "\n"
+                                       + "Saved Details\n"
+                                       + "Contact Name : " + bankAccounts.get(position).getName() + "\n"
+                                       + "Account Number : " + bankAccounts.get(position).getAccountNo() + "\n"
+                                       + "IFSC Number : " + bankAccounts.get(position).getIfscCode();
 
-                            try {
-                                activity.startActivity(Intent.createChooser(shareIntent, activity.getResources().getText(R.string.send_to)));
-                            } catch (Exception e) {
-                                e.printStackTrace();
-                            }
+                               Intent shareIntent = new Intent(Intent.ACTION_SEND);
+                               shareIntent.setType("text/plain");
+                               shareIntent.putExtra(Intent.EXTRA_TEXT, "" + shareText);
 
-                        } else if (temp.equals("Edit")) {
+                               try {
+                                   activity.startActivity(Intent.createChooser(shareIntent, activity.getResources().getText(R.string.send_to)));
+                               } catch (Exception e) {
+                                   e.printStackTrace();
+                               }
+                               }
+
+
+                        } else if (temp.equals("Edit")) {//Overflow Edit
                             final Dialog dialog = new Dialog(itemContext);
-                            dialog.setContentView(R.layout.edit_dialog);
+                            dialog.setContentView(R.layout.edit_dialog_bank);
                             dialog.setTitle("Title...");
                             dialog.setCancelable(false);
+                            final TextInputLayout contactNameTextInputLayout=(TextInputLayout)dialog.findViewById(R.id.field1);//Edit Dialog Contact Name
+                            final TextInputLayout accountTextInputLayout=(TextInputLayout)dialog.findViewById(R.id.field2);//Edit Dialog Account No
+                            final TextInputLayout othersTextInputLayout=(TextInputLayout)dialog.findViewById(R.id.field3);//Edit Dialog ifsc Others
+                            final TextInputLayout calledNameTextInputLayout=(TextInputLayout)dialog.findViewById(R.id.field4);//Edit Dialog Called Name
+                            final TextInputLayout calledNumberTextInputLayout=(TextInputLayout)dialog.findViewById(R.id.field5);//Edit Dialog Called Number
                             final EditText contactName = (EditText) dialog.findViewById(R.id.editContactName);
-                            final EditText contactAccountNo = (EditText) dialog.findViewById(R.id.editContactNumber);
+                            final EditText contactAccountNo = (EditText) dialog.findViewById(R.id.editContactAccountNumber);
                             final EditText contactIFSC = (EditText) dialog.findViewById(R.id.editContactIFSC);
                             final EditText calledName = (EditText) dialog.findViewById(R.id.editCalledName);
                             final EditText calledNumber = (EditText) dialog.findViewById(R.id.editCalledNumber);
                             final Spinner calledState = (Spinner) dialog.findViewById(R.id.callstate);
-                            Button btnDone = (Button) dialog.findViewById(R.id.btnSelect);
+                            final ImageView tick1 = (ImageView)dialog.findViewById(R.id.tick_1);//Edit Dialog Contact Name
+                            final ImageView tick2 = (ImageView)dialog.findViewById(R.id.tick_2);//Edit Dialog Account No
+                            final ImageView tick3 = (ImageView)dialog.findViewById(R.id.tick_3);//Edit Dialog IFSC No and others
+                            final ImageView tick4 = (ImageView)dialog.findViewById(R.id.tick_4);//Edit Dialog Called Name
+                            final ImageView tick5 = (ImageView)dialog.findViewById(R.id.tick_5);//Edit Dialog Called Number
+                            Button btnDone = (Button) dialog.findViewById(R.id.button_done);
                             Button btnCancel = (Button) dialog.findViewById(R.id.btnCancel);
                             String options[] = {"Incoming", "Outgoing"};
                             ArrayAdapter<String> adminSpinnerArrayAdapter = new ArrayAdapter<String>(itemContext, android.R.layout.simple_spinner_item, options);
                             adminSpinnerArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item); // The drop down view
-                            calledState.setAdapter(adminSpinnerArrayAdapter);
+                            //Dialog EditText change
+                            contactName.addTextChangedListener(new TextWatcher() {
+                                @Override
+                                public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
+                                }
+                                @Override
+                                public void onTextChanged(CharSequence s, int start, int before, int count) {
+                                  if(String.valueOf(s).length()>0){
+                                    tick1.setVisibility(View.VISIBLE);
+                                    contactNameTextInputLayout.setError(null);
+                                  }
+                                  else { tick2.setVisibility(View.INVISIBLE);
+                                  }
+                                }
+                                @Override
+                                public void afterTextChanged(Editable s) {
+
+                                }
+                            });
+
+                            contactAccountNo.addTextChangedListener(new TextWatcher() {
+                                @Override
+                                public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+                                }
+                                @Override
+                                public void onTextChanged(CharSequence s, int start, int before, int count) {
+                                    if (String.valueOf(s).length()>0){
+                                        tick2.setVisibility(View.VISIBLE);
+                                        accountTextInputLayout.setError(null);
+                                    }
+                                    else {
+                                        tick2.setVisibility(View.INVISIBLE);
+                                    }
+                                }
+                                @Override
+                                public void afterTextChanged(Editable s) {
+
+                                }
+                            });
+
+                            contactIFSC.addTextChangedListener(new TextWatcher() {
+                                @Override
+                                public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+                                }
+                                @Override
+                                public void onTextChanged(CharSequence s, int start, int before, int count) {
+                                    if (String.valueOf(s).length()>0){
+                                        tick3.setVisibility(View.VISIBLE);
+                                        othersTextInputLayout.setError(null);
+                                    }
+                                    else {
+                                        tick3.setVisibility(View.INVISIBLE);
+                                    }
+                                }
+                                @Override
+                                public void afterTextChanged(Editable s) {
+
+                                }
+                            });
+
+                            calledName.addTextChangedListener(new TextWatcher() {
+                                @Override
+                                public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+                                }
+                                @Override
+                                public void onTextChanged(CharSequence s, int start, int before, int count) {
+                                    if (String.valueOf(s).length()>0){
+                                        tick4.setVisibility(View.VISIBLE);
+                                        calledNameTextInputLayout.setError(null);
+                                    }
+                                    else {
+                                        tick4.setVisibility(View.INVISIBLE);
+                                    }
+                                }
+                                @Override
+                                public void afterTextChanged(Editable s) {
+
+                                }
+                            });
+
+                            calledNumber.addTextChangedListener(new TextWatcher() {
+                                @Override
+                                public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+                                }
+                                @Override
+                                public void onTextChanged(CharSequence s, int start, int before, int count) {
+                                    if (String.valueOf(s).length()>0){
+                                        tick5.setVisibility(View.VISIBLE);
+                                        calledNumberTextInputLayout.setError(null);
+                                    }
+                                    else {
+                                        tick5.setVisibility(View.INVISIBLE);
+                                    }
+                                }
+                                @Override
+                                public void afterTextChanged(Editable s) {
+
+                                }
+                            });
+
+                            calledState.setAdapter(adminSpinnerArrayAdapter);
+                            //Edit dialog set spinner
                             if (bankAccounts.get(position).isIncoming()) {
                                 calledState.setSelection(0);
                             } else {
                                 calledState.setSelection(1);
                             }
 
-
+                            //Edit dialog done button
                             btnDone.setOnClickListener(new View.OnClickListener() {
-
                                 public void onClick(View view) {
-                                    BankAccount bankAccount = BankAccount.findById(BankAccount.class, bankAccounts.get(position).getId());
-                                    bankAccount.setAccountNo(contactAccountNo.getText().toString());
-                                    bankAccount.setIfscCode(contactIFSC.getText().toString());
-                                    bankAccount.setName(contactName.getText().toString());
-                                    bankAccount.setCalledName(calledName.getText().toString());
-                                    bankAccount.setCalledNumber(calledNumber.getText().toString());
-                                    if (calledState.getSelectedItemPosition() == 0) {
-                                        bankAccount.setIncoming(true);
-                                    } else {
-                                        bankAccount.setIncoming(false);
+                                    if (TextUtils.isEmpty(contactName.getText().toString())){
+                                        contactNameTextInputLayout.setError(itemContext.getString(R.string.hint_contact_number));
+                                    }else if (contactAccountNo.getText().toString().length()<=0){
+                                        accountTextInputLayout.setError(itemContext.getString(R.string.hint_ac_no));
                                     }
-                                    bankAccount.save();
-                                    dialog.dismiss();
+                                    else {
+                                        BankAccount bankAccount = BankAccount.findById(BankAccount.class, bankAccounts.get(position).getId());
+                                        bankAccount.setAccountNo(contactAccountNo.getText().toString());
+                                        bankAccount.setIfscCode(contactIFSC.getText().toString());
+                                        bankAccount.setName(contactName.getText().toString());
+                                        bankAccount.setCalledName(calledName.getText().toString());
+                                        bankAccount.setCalledNumber(calledNumber.getText().toString());
+                                        if (calledState.getSelectedItemPosition() == 0) {
+                                            bankAccount.setIncoming(true);
+                                        } else {
+                                            bankAccount.setIncoming(false);
+                                        }
+                                        bankAccount.save();
+                                        EventBus.getDefault().post(new EventB("3"));
+                                        dialog.dismiss();
+                                    }
                                 }
                             });
-
+                            //Edit dialog cancel button
                             btnCancel.setOnClickListener(new View.OnClickListener() {
                                 @Override
                                 public void onClick(View view) {
                                     dialog.dismiss();
                                 }
                             });
-
-
                             contactName.setText(bankAccounts.get(position).getName());
                             contactAccountNo.setText(bankAccounts.get(position).getAccountNo());
                             contactIFSC.setText(bankAccounts.get(position).getIfscCode());
                             calledName.setText(bankAccounts.get(position).getCalledName());
                             calledNumber.setText(bankAccounts.get(position).getCalledNumber());
                             dialog.show();
-                        } else {//Delete
+                        } else {// Overflow Delete
                             AlertDialog.Builder builder = new AlertDialog.Builder(itemContext);
 
                             builder.setTitle("You want to delete");
                             builder.setMessage("Are you sure?");
 
                             builder.setPositiveButton("YES", new DialogInterface.OnClickListener() {
-
                                 public void onClick(DialogInterface dialog, int which) {
-
                                     bankAccounts.get(position).getId();
                                     BankAccount bankAccount = BankAccount.findById(BankAccount.class, bankAccounts.get(position).getId());
                                     bankAccount.delete();
@@ -214,13 +370,11 @@ public class BankAccountAdapter extends RecyclerView.Adapter<BankAccountAdapter.
                             });
 
                             builder.setNegativeButton("NO", new DialogInterface.OnClickListener() {
-
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
                                     dialog.dismiss();
                                 }
                             });
-
                             AlertDialog alert = builder.create();
                             alert.show();
                         }

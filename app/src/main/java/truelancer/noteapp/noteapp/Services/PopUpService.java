@@ -86,7 +86,6 @@ public class PopUpService extends Service {
     private String calledName = "";
     private boolean incomingCall, isDone;
     private String timeStampMilli = "";
-
     MediaRecorder mRecorder;
     boolean isStartRecording = false;
     String pathToSaveRecordedCalls = null;
@@ -99,9 +98,9 @@ public class PopUpService extends Service {
 
     public enum CustomPagerEnum {
 
-        CONTACT(R.string.contact, R.layout.contact_add_2),
-        EMAIL(R.string.email, R.layout.email_add_2),
-        ACCOUNT(R.string.account, R.layout.account_add_2),
+        CONTACT(R.string.contact, R.layout.contact_add),
+        EMAIL(R.string.email, R.layout.email_add),
+        ACCOUNT(R.string.account, R.layout.account_add),
         NOTE(R.string.notes, R.layout.notes_add);
 
         private int mTitleResId;
@@ -537,7 +536,7 @@ public class PopUpService extends Service {
                 if(TextUtils.isEmpty(MyApp.editNoteToSave.getText().toString())){
                  MyApp.editNoteToSave.setError(mContext.getString(R.string.hint_note));
                 }else {
-                    Note noteN = new Note(MyApp.editNoteToSave.getText().toString(), calledNumber, calledName, timeStampMilli, incomingCall, isDone);
+                    Note noteN = new Note(MyApp.editNoteToSave.getText().toString(), calledName, calledNumber, timeStampMilli, incomingCall, isDone);
                     noteN.save();
                     Toast.makeText(mContext, "Sucessfully Saved", Toast.LENGTH_LONG).show();
                     MyApp.editNoteToSave.setText(null);

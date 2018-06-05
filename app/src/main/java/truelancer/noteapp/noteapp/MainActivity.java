@@ -133,11 +133,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private static final int REQUEST_CODE_CAPTURE_IMAGE = 1;
     private static final int RequestPermissionCode = 3;
     public static String dataFromAdapter;
+    public static FloatingActionMenu floatingActionMenu;
+
     @BindView(R.id.fab_contact) com.github.clans.fab.FloatingActionButton contactFab;
     @BindView(R.id.fab_email) com.github.clans.fab.FloatingActionButton emailFab;
     @BindView(R.id.fab_bank_account) com.github.clans.fab.FloatingActionButton bankAccountFab;
     @BindView(R.id.fab_last_notes) com.github.clans.fab.FloatingActionButton lastNoteFab;
-    @BindView(R.id.fab_menu) FloatingActionMenu floatingActionMenu;
+    //@BindView(R.id.fab_menu) FloatingActionMenu floatingActionMenu;
     @BindView(R.id.search_scrollview) ScrollView searchScrollView;
     @BindView(R.id.viewpager) ViewPager homeViewPager;
     @BindView(R.id.tabs) TabLayout homeTabLayout;
@@ -164,7 +166,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     GoogleSignInClient mGoogleSignInClient;
     String jsonString = "";
     String TAG = "MainActivity";
-
     SharedPreferences pref;
     private ContactAdapter contactSearchAdapter;
     private EmailAdapter emailSearchAdapter;
@@ -186,6 +187,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         ButterKnife.bind(this);
          inputMethodManager = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);//Controls keyboard
         pref = getApplicationContext().getSharedPreferences(getString(R.string.shared_pref), MODE_PRIVATE);
+        floatingActionMenu=(FloatingActionMenu)findViewById(R.id.fab_menu);
         floatingActionMenu.setVisibility(View.VISIBLE);
         if (MyApp.defaultTheme) {
 
@@ -203,6 +205,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
 
 
+
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL);
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_WATCH_OUTSIDE_TOUCH);
         setSearchToolbar();
         contactFab.setOnClickListener(this);
         emailFab.setOnClickListener(this);
@@ -1133,18 +1138,16 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
                 dialog.setContentView(R.layout.add_contact_dialog);
                 dialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);//Puts dialog on top of keyboard
-                final TextInputLayout field1 = (TextInputLayout) dialog.findViewById(R.id.field_layout_1);
-                final TextInputLayout field2 = (TextInputLayout) dialog.findViewById(R.id.field_layout_2);
-                final ImageView tick1 = (ImageView) dialog.findViewById(R.id.tick1);
-                final ImageView tick2 = (ImageView) dialog.findViewById(R.id.tick2);
+                dialog.setCanceledOnTouchOutside(false);
+                final TextInputLayout field1 = (TextInputLayout) dialog.findViewById(R.id.field_layout_1);//Add Dialog Contact Name
+                final TextInputLayout field2 = (TextInputLayout) dialog.findViewById(R.id.field_layout_2);//Add Dialog Contact Number
+                final ImageView tick1 = (ImageView) dialog.findViewById(R.id.tick1);//Add Dialog Contact Name
+                final ImageView tick2 = (ImageView) dialog.findViewById(R.id.tick2);//Add Dialog Contact Number
                 Button save = (Button) dialog.findViewById(R.id.save);
                 Button cancel = (Button) dialog.findViewById(R.id.cancel);
-                final TextInputEditText contactName = (TextInputEditText) dialog.findViewById(R.id.field_1);
-                final TextInputEditText contactNumber = (TextInputEditText) dialog.findViewById(R.id.field_2);
-                field1.setHint(getString(R.string.hint_contact_name));
-                field2.setHint(getString(R.string.hint_contact_number));
+                final TextInputEditText contactName = (TextInputEditText) dialog.findViewById(R.id.field_1);//Add Dialog Contact Name
+                final TextInputEditText contactNumber = (TextInputEditText) dialog.findViewById(R.id.field_2);//Add Dialog Contact Number
 
-                contactName.setSingleLine(true);
                 //Watches changes in contactName editText
                 final TextWatcher textWatcher01 = new TextWatcher() {
                     public void afterTextChanged(Editable s) {
@@ -1161,7 +1164,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         }
                     }
                 };
-
 
                 final TextWatcher textWatcher02 = new TextWatcher() {
                     public void afterTextChanged(Editable s) {
@@ -1205,7 +1207,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                             contact.save();
                             inputMethodManager.hideSoftInputFromWindow(contactNumber.getWindowToken(),0);
                             dialog.dismiss();
-
                             EventBus.getDefault().post(new EventB("1"));
                         }
                     }
@@ -1222,19 +1223,16 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
                 dialog.setContentView(R.layout.add_email_dailog);
                 dialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);//Puts dialog on top of keyboard
-
-                final TextInputLayout field1 = (TextInputLayout) dialog.findViewById(R.id.field_layout_1);
-                final TextInputLayout field2 = (TextInputLayout) dialog.findViewById(R.id.field_layout_2);
-                final ImageView tick1 = (ImageView) dialog.findViewById(R.id.tick1);
-                final ImageView tick2 = (ImageView) dialog.findViewById(R.id.tick2);
+                dialog.setCanceledOnTouchOutside(false);
+                final TextInputLayout field1 = (TextInputLayout) dialog.findViewById(R.id.field_layout_1);//Add Dialog Contact Name
+                final TextInputLayout field2 = (TextInputLayout) dialog.findViewById(R.id.field_layout_2);//Add Dialog Contact email
+                final ImageView tick1 = (ImageView) dialog.findViewById(R.id.tick1);//Add Dialog Contact Name
+                final ImageView tick2 = (ImageView) dialog.findViewById(R.id.tick2);//Add Dialog Contact email
                 Button save = (Button) dialog.findViewById(R.id.save);
                 Button cancel = (Button) dialog.findViewById(R.id.cancel);
-                final TextInputEditText contactName = (TextInputEditText) dialog.findViewById(R.id.field_1);
-                final TextInputEditText contactEmail = (TextInputEditText) dialog.findViewById(R.id.field_2);
-                field1.setHint(getString(R.string.hint__name));
-                field2.setHint(getString(R.string.hint_email));
+                final TextInputEditText contactName = (TextInputEditText) dialog.findViewById(R.id.field_1);//Add Dialog Contact Name
+                final TextInputEditText contactEmail = (TextInputEditText) dialog.findViewById(R.id.field_2);//Add Dialog Contact email
 
-                contactName.setSingleLine(true);
                 //Watches change in EditText
                 final TextWatcher textWatcher01 = new TextWatcher() {
                     public void afterTextChanged(Editable s) {
@@ -1304,6 +1302,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 });
                 dialog.show();
                 break;
+
             }
 
             //Add bank account dialog
@@ -1314,25 +1313,18 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
                 dialog.setContentView(R.layout.add_bank_account_dialog);
                 dialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);//Puts dialog on top of keyboard
-
-                final TextInputLayout field1 = (TextInputLayout) dialog.findViewById(R.id.field_layout_1);
-                final TextInputLayout field2 = (TextInputLayout) dialog.findViewById(R.id.field_layout_2);
-                final TextInputLayout field3 = (TextInputLayout) dialog.findViewById(R.id.field_layout_3);
-                final ImageView tick1 = (ImageView) dialog.findViewById(R.id.tick1);
-                final ImageView tick2 = (ImageView) dialog.findViewById(R.id.tick2);
-                final ImageView tick3 = (ImageView) dialog.findViewById(R.id.tick3);
-
-                final TextInputEditText contactName = (TextInputEditText) dialog.findViewById(R.id.field_1);
-                final TextInputEditText contactAccountNo = (TextInputEditText) dialog.findViewById(R.id.field_2);
-                final TextInputEditText contactIFSC = (TextInputEditText) dialog.findViewById(R.id.field_3);
+                dialog.setCanceledOnTouchOutside(false);
+                final TextInputLayout field1 = (TextInputLayout) dialog.findViewById(R.id.field_layout_1);//Add Dialog Contact Name
+                final TextInputLayout field2 = (TextInputLayout) dialog.findViewById(R.id.field_layout_2);//Add Dialog Account No
+                final TextInputLayout field3 = (TextInputLayout) dialog.findViewById(R.id.field_layout_3);//Add Dialog IFSC
+                final ImageView tick1 = (ImageView) dialog.findViewById(R.id.tick1);//Add Dialog Contact Name
+                final ImageView tick2 = (ImageView) dialog.findViewById(R.id.tick2);//Add Dialog Account No
+                final ImageView tick3 = (ImageView) dialog.findViewById(R.id.tick3);//Add Dialog IFSC
+                final TextInputEditText contactName = (TextInputEditText) dialog.findViewById(R.id.field_1);//Add Dialog Contact Name
+                final TextInputEditText contactAccountNo = (TextInputEditText) dialog.findViewById(R.id.field_2);//Add Dialog Account No
+                final TextInputEditText contactIFSC = (TextInputEditText) dialog.findViewById(R.id.field_3);//Add Dialog IFSC
                 Button save = (Button) dialog.findViewById(R.id.save);
                 Button cancel = (Button) dialog.findViewById(R.id.cancel);
-                field1.setHint(getString(R.string.hint_contact_name));
-                field2.setHint(getString(R.string.hint_ac_no));
-                field3.setHint(getString(R.string.hint_Others));
-
-                contactName.setSingleLine(true);
-                contactAccountNo.setSingleLine(true);
 
                 final TextWatcher textWatcher01 = new TextWatcher() {
                     public void afterTextChanged(Editable s) {
@@ -1384,14 +1376,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         }
                     }
                 };
-
-
                 contactName.addTextChangedListener(textWatcher01);
                 contactAccountNo.addTextChangedListener(textWatcher02);
                 contactIFSC.addTextChangedListener(textWatcher03);
-
-
                 dialog.show();
+
                 save.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -1408,7 +1397,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                             bankAccount.save();
                             inputMethodManager.hideSoftInputFromWindow(contactIFSC.getWindowToken(),0);
                             dialog.dismiss();
-
                             EventBus.getDefault().post(new EventB("3"));
                         }
                     }
@@ -1432,18 +1420,17 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
                 dialog.setContentView(R.layout.add_contact_dialog);
                 dialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);//Puts dialog on top of keyboard
-
-                final TextInputLayout field1 = (TextInputLayout) dialog.findViewById(R.id.field_layout_1);
+                dialog.setCanceledOnTouchOutside(false);
+                final TextInputLayout field1 = (TextInputLayout) dialog.findViewById(R.id.field_layout_1);//Add Dialog Note
                 TextInputLayout field2 = (TextInputLayout) dialog.findViewById(R.id.field_layout_2);
-                final ImageView tick1 = (ImageView) dialog.findViewById(R.id.tick1);
+                final ImageView tick1 = (ImageView) dialog.findViewById(R.id.tick1);//Add Dialog Note
                 final ImageView tick2 = (ImageView) dialog.findViewById(R.id.tick2);
                 Button save = (Button) dialog.findViewById(R.id.save);
                 Button cancel = (Button) dialog.findViewById(R.id.cancel);
-                final TextInputEditText noteEdittext = (TextInputEditText) dialog.findViewById(R.id.field_1);
+                final TextInputEditText noteEditText = (TextInputEditText) dialog.findViewById(R.id.field_1);//Add Dialog Note
                 field1.setHint(getString(R.string.hint_note));
                 tick2.setVisibility(View.GONE);
                 field2.setVisibility(View.GONE);
-
 
                 final TextWatcher textWatcher01 = new TextWatcher() {
                     public void afterTextChanged(Editable s) {
@@ -1462,7 +1449,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     }
                 };
 
-                noteEdittext.addTextChangedListener(textWatcher01);
+                noteEditText.addTextChangedListener(textWatcher01);
 
 
                 cancel.setOnClickListener(new View.OnClickListener() {
@@ -1475,14 +1462,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 save.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        if (TextUtils.isEmpty(noteEdittext.getText().toString())) {
+                        if (TextUtils.isEmpty(noteEditText.getText().toString())) {
                             field1.setError(getString(R.string.hint_note));
-                            inputMethodManager.hideSoftInputFromWindow(noteEdittext.getWindowToken(),InputMethodManager.RESULT_UNCHANGED_SHOWN);
+                            inputMethodManager.hideSoftInputFromWindow(noteEditText.getWindowToken(),InputMethodManager.RESULT_UNCHANGED_SHOWN);
                         } else {
-                            Note note = new Note(noteEdittext.getText().toString(), tsMilli, true);
+                            Note note = new Note(noteEditText.getText().toString(), tsMilli, true);
                             note.save();
+                            inputMethodManager.hideSoftInputFromWindow(noteEditText.getWindowToken(),0);
                             dialog.dismiss();
-                            inputMethodManager.hideSoftInputFromWindow(noteEdittext.getWindowToken(),0);
 
                             EventBus.getDefault().post(new EventB("4"));
                         }
@@ -1553,9 +1540,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             boolean exists = false;
 
             for (int i = 0; i < notes.size(); i++) {
-
                 String tsMilli_fromLocalDb = notes.get(i).getTsMilli();
-
                 if (tsMilli_fromBackup.equals(tsMilli_fromLocalDb)) {
                     return true;
                 }
@@ -1580,6 +1565,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public void HideProgressDialog() {
         b.dismiss();
     }
+
+
 
 }
 

@@ -5,7 +5,6 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Rect;
 import android.media.MediaMetadataRetriever;
 import android.media.MediaPlayer;
 import android.net.Uri;
@@ -21,11 +20,8 @@ import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.Window;
-import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -444,7 +440,7 @@ public class RecordingAdapter extends RecyclerView.Adapter<RecordingAdapter.MyVi
                             final TextInputLayout recordNameTextInputLayout = (TextInputLayout) dialog.findViewById(R.id.recordtextInputLayout);
                             final EditText recordName = (EditText) dialog.findViewById(R.id.editRecordName);
                             final ImageView tick1 = (ImageView) dialog.findViewById(R.id.tick);
-                            Button btnDone = (Button) dialog.findViewById(R.id.btnDone);
+                            Button btnDone = (Button) dialog.findViewById(R.id.button_done);
                             Button btnCancel = (Button) dialog.findViewById(R.id.btnCancel);
 
                             recordNameTextInputLayout.setHint(itemContext.getString(R.string.recording_name));

@@ -43,7 +43,7 @@
 //Hints
     <string name="hint_name">Enter name</string>
     <string name="hint_number">Enter number</string>
-    <string name="hint_ac_no">Enter Ac No</string>
+    <string name="hint_ac_no">Enter Account No</string>
     <string name="hint_Others">Enter IFSC No or Others</string>
     <string name="hint_note">Enter a note</string>
     <string name="hint_add_task">Add task</string>

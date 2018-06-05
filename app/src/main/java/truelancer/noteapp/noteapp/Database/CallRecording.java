@@ -2,9 +2,6 @@ package truelancer.noteapp.noteapp.Database;
 
 import com.orm.SugarRecord;
 
-/**
- * Created by Siddhant Naique on 09-04-2018.
- */
 
 public class CallRecording extends SugarRecord {
     String RecordName;

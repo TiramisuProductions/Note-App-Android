@@ -35,7 +35,9 @@
                 android:id="@+id/field_1"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:inputType="textPersonName" />
+                android:hint="@string/hint_contact_name"
+                android:inputType="textPersonName"
+                android:singleLine="true" />
         </android.support.design.widget.TextInputLayout>
 
         <android.support.design.widget.TextInputLayout
@@ -53,7 +55,9 @@
                 android:id="@+id/field_2"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:inputType="textEmailAddress" />
+                android:hint="@string/hint_email"
+                android:inputType="textEmailAddress"
+                android:singleLine="true" />
         </android.support.design.widget.TextInputLayout>
 
         <Button
@@ -62,7 +66,7 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="8dp"
             android:layout_marginEnd="8dp"
-            android:layout_marginStart="20dp"
+            android:layout_marginStart="16dp"
             android:layout_marginTop="8dp"
             android:background="@drawable/rounded_red"
             android:text="@string/cancel"
@@ -77,7 +81,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginBottom="8dp"
-            android:layout_marginEnd="20dp"
+            android:layout_marginEnd="16dp"
             android:layout_marginTop="8dp"
             android:background="@drawable/rounded_blue"
             android:text="@string/save"
@@ -92,10 +96,9 @@
             android:layout_marginBottom="8dp"
             android:layout_marginTop="8dp"
             android:visibility="invisible"
-            app:layout_constraintBottom_toBottomOf="@+id/field_layout_1"
+            app:layout_constraintBottom_toTopOf="@+id/field_layout_2"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.65"
             app:srcCompat="@drawable/ic_tick" />
 
         <ImageView
@@ -103,9 +106,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="8dp"
-            android:layout_marginTop="40dp"
+            android:layout_marginTop="8dp"
             android:visibility="invisible"
-            app:layout_constraintBottom_toBottomOf="@+id/field_layout_2"
+            app:layout_constraintBottom_toTopOf="@+id/save"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tick1"
             app:srcCompat="@drawable/ic_tick" />

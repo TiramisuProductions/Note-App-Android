@@ -6,11 +6,15 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.provider.CalendarContract;
+import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.FragmentActivity;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
+import android.text.Editable;
+import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -26,12 +30,16 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import org.greenrobot.eventbus.EventBus;
+
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.List;
 
 import truelancer.noteapp.noteapp.Database.Note;
 import truelancer.noteapp.noteapp.Database.Task;
+import truelancer.noteapp.noteapp.EventB;
+import truelancer.noteapp.noteapp.MainActivity;
 import truelancer.noteapp.noteapp.MyApp;
 import truelancer.noteapp.noteapp.NoteActivity;
 import truelancer.noteapp.noteapp.R;
@@ -143,7 +151,7 @@ public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.MyView> {
         holder.overflow.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                MainActivity.floatingActionMenu.close(true);
                 PopupMenu popup_overflow = new PopupMenu(activity, holder.overflow);
                 popup_overflow.getMenuInflater().inflate(R.menu.menu_overflow, popup_overflow.getMenu());
                 popup_overflow.getMenu().findItem(R.id.save).setVisible(false);
@@ -155,77 +163,171 @@ public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.MyView> {
                         String temp = item.getTitle().toString();
                         if (temp.equals("Share")) {//Share
 
+                            if(holder.calledNumber.getText().length()==0 && holder.calledNumber.getText().length()==0) {
+                                String shareText = "DateTime: [" + timeStampString + "]\n"
+                                        + inout + "\n"
+                                        + "Saved Details\n"
+                                        + "Note : " + notes.get(position).getNote();
 
-                            String shareText = "DateTime: [" + timeStampString + "]\n"
-                                    + inout + " " + notes.get(position).getCalledName() + "\n"
-                                    + notes.get(position).getCalledNumber() + "\n"
-                                    + "Saved Details\n\n"
-                                    + "Note : " + notes.get(position).getNote();
+                                Intent shareIntent = new Intent(Intent.ACTION_SEND);
+                                shareIntent.setType("text/plain");
+                                shareIntent.putExtra(Intent.EXTRA_TEXT, "" + shareText);
 
-                            Intent whatsappIntent = new Intent(Intent.ACTION_SEND);
-                            whatsappIntent.setType("text/plain");
-                            whatsappIntent.setPackage("com.whatsapp");
-                            whatsappIntent.putExtra(Intent.EXTRA_TEXT, "" + shareText);
-                            try {
-                                activity.startActivity(whatsappIntent);
-                            } catch (Exception e) {
-                                e.printStackTrace();
+                                try {
+                                    activity.startActivity(Intent.createChooser(shareIntent, activity.getResources().getText(R.string.send_to)));
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                }
+                            }else {
+                                if (!notes.get(position).isIncoming()) {
+                                    inout = "Call To";
+                                    holder.state_of_call.setImageResource(R.drawable.ic_outgoing);
+                                }
+                                else {
+                                    inout = "Call By";
+                                    holder.state_of_call.setImageResource(R.drawable.ic_incoming);
+                                }
+                                String shareText = "DateTime: [" + timeStampString + "]\n"
+                                        + inout + "\n" + notes.get(position).getCalledName() + ": "
+                                        + notes.get(position).getCalledNumber() + "\n"
+                                        + "Saved Details\n"
+                                        + "Note : " + notes.get(position).getNote();
+
+                                Intent shareIntent = new Intent(Intent.ACTION_SEND);
+                                shareIntent.setType("text/plain");
+                                shareIntent.putExtra(Intent.EXTRA_TEXT, "" + shareText);
+
+                                try {
+                                    activity.startActivity(Intent.createChooser(shareIntent, activity.getResources().getText(R.string.send_to)));
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                }
                             }
-
-                        }else if(temp.equals("Edit")){
+                        }//Edit Dialog
+                        else if(temp.equals("Edit")){
                             final Dialog dialog = new Dialog(itemContext);
                             dialog.setContentView(R.layout.edit_dialog_notes);
-                            dialog.setTitle("Title...");
+                            dialog.setTitle("Edit...");
                             dialog.setCancelable(false);
+                            final TextInputLayout noteTextInputLayout=(TextInputLayout)dialog.findViewById(R.id.textInputLayout2);//Edit Dialog Note
+                            final TextInputLayout calledNameTextInputLayout=(TextInputLayout)dialog.findViewById(R.id.textInputLayout3);//Edit Dialog Called Name
+                            final TextInputLayout calledNumberTextInputLayout=(TextInputLayout)dialog.findViewById(R.id.textInputLayout4);//Edit Dialog Called Number
                             final EditText contactName = (EditText)dialog.findViewById(R.id.editContactName);
                             final EditText contactNote = (EditText)dialog.findViewById(R.id.editContactNote);
                             final EditText calledName =(EditText)dialog.findViewById(R.id.editCalledName);
                             final EditText calledNumber = (EditText)dialog.findViewById(R.id.editCalledNumber);
                             final Spinner calledState =(Spinner)dialog.findViewById(R.id.callstate);
-                            Button btnDone = (Button)dialog.findViewById(R.id.btnSelect);
-                            Button btnCancel = (Button)dialog.findViewById(R.id.btnCancel);
+                            final ImageView tick2=(ImageView)dialog.findViewById(R.id.tick2);//Edit Dialog Note
+                            final ImageView tick3=(ImageView)dialog.findViewById(R.id.tick3);//Edit Dialog Called Name
+                            final ImageView tick4=(ImageView)dialog.findViewById(R.id.tick4);//Edit Dialog Called Number
+                            Button btnDone = (Button)dialog.findViewById(R.id.btnSelect);//Edit Dialog Done Button
+                            Button btnCancel = (Button)dialog.findViewById(R.id.btnCancel);//Edit Dialog Cancel Button
                             String options[] = {"Incoming","Outgoing"};
                             ArrayAdapter<String> adminSpinnerArrayAdapter = new ArrayAdapter<String>(itemContext,   android.R.layout.simple_spinner_item, options);
                             adminSpinnerArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item); // The drop down view
                             calledState.setAdapter(adminSpinnerArrayAdapter);
 
+                            //Edit Dialog EditText change watcher
+                            contactNote.addTextChangedListener(new TextWatcher() {
+                                @Override
+                                public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+                                }
+                                @Override
+                                public void onTextChanged(CharSequence s, int start, int before, int count) {
+                                  if (String.valueOf(s).length()>0){
+                                      tick2.setVisibility(View.VISIBLE);
+                                      noteTextInputLayout.setError(null);
+                                  }
+                                  else {
+                                      tick2.setVisibility(View.INVISIBLE);
+                                  }
+                                }
+                                @Override
+                                public void afterTextChanged(Editable s) {
+
+                                }
+                            });
+
+                            calledName.addTextChangedListener(new TextWatcher() {
+                                @Override
+                                public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+                                }
+                                @Override
+                                public void onTextChanged(CharSequence s, int start, int before, int count) {
+                                    if (String.valueOf(s).length()>0){
+                                        tick3.setVisibility(View.VISIBLE);
+                                        calledNameTextInputLayout.setError(null);
+                                    }
+                                    else {
+                                        tick3.setVisibility(View.INVISIBLE);
+                                    }
+                                }
+                                @Override
+                                public void afterTextChanged(Editable s) {
+
+                                }
+                            });
+
+                            calledNumber.addTextChangedListener(new TextWatcher() {
+                                @Override
+                                public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+                                }
+                                @Override
+                                public void onTextChanged(CharSequence s, int start, int before, int count) {
+                                    if (String.valueOf(s).length()>0){
+                                        tick4.setVisibility(View.VISIBLE);
+                                        calledNumberTextInputLayout.setError(null);
+                                    }
+                                    else {
+                                        tick4.setVisibility(View.INVISIBLE);
+                                    }
+                                }
+                                @Override
+                                public void afterTextChanged(Editable s) {
+
+                                }
+                            });
+
+                            //Edit Dialog set spinner
                             if(notes.get(position).isIncoming()){
                                 calledState.setSelection(0);
                             }
                             else {
                                 calledState.setSelection(1);
                             }
-
-
-
-
-
+                            //Edit Dialog Done
                             btnDone.setOnClickListener(new View.OnClickListener() {
 
                                 public void onClick(View view) {
-                                    Note note =  findById(Note.class,notes.get(position).getId());
-                                    note.setNote(contactNote.getText().toString());
-                                    note.setCalledName(calledName.getText().toString());
-                                    note.setCalledNumber(calledNumber.getText().toString());
-                                    if(calledState.getSelectedItemPosition()==0){
-                                        note.setIncoming(true);
+                                    if (TextUtils.isEmpty(contactNote.getText().toString())) {
+                                        noteTextInputLayout.setError(itemContext.getString(R.string.hint_note));
+                                    } else {
+
+                                        Note note = findById(Note.class, notes.get(position).getId());
+                                        note.setNote(contactNote.getText().toString());
+                                        note.setCalledName(calledName.getText().toString());
+                                        note.setCalledNumber(calledNumber.getText().toString());
+                                        if (calledState.getSelectedItemPosition() == 0) {
+                                            note.setIncoming(true);
+                                        } else {
+                                            note.setIncoming(false);
+                                        }
+                                        note.save();
+                                        EventBus.getDefault().post(new EventB("4"));
+                                        dialog.dismiss();
                                     }
-                                    else {
-                                        note.setIncoming(false);
-                                    }
-                                    note.save();
-                                    dialog.dismiss();
                                 }
                             });
-
+                            //Edit Dialog Cancel
                             btnCancel.setOnClickListener(new View.OnClickListener() {
                                 @Override
                                 public void onClick(View view) {
                                     dialog.dismiss();
                                 }
                             });
-
-
                             contactNote.setText(notes.get(position).getNote());
                             calledName.setText(notes.get(position).getCalledName());
                             calledNumber.setText(notes.get(position).getCalledNumber());
@@ -272,15 +374,11 @@ public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.MyView> {
             }
         });
 
-        //  holder.checkBox.setChecked(false);
 
+        //Add to Calendar
         holder.sync.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-               // Intent intent=new Intent(activity, CalendarActivity.class);
-               // activity.startActivity(intent);
-
-
                 Intent intent = new Intent(Intent.ACTION_INSERT);
                 intent.setType("vnd.android.cursor.item/event");
 
@@ -312,7 +410,6 @@ public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.MyView> {
     public class MyView extends RecyclerView.ViewHolder {
         private TextView  noteText, calledName, calledNumber, call_text, date_time,savedDetails,contactId1,contactId2,noOfTasks;
         private CardView noteCardView;
-        private CheckBox checkBox;
         private ImageView state_of_call, overflow;
         private Button sync;
 
