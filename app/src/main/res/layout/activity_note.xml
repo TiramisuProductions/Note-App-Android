@@ -9,8 +9,8 @@
 
 
     <android.support.constraint.ConstraintLayout
-        android:layout_width="match_parent"
         android:id="@+id/layout"
+        android:layout_width="match_parent"
         android:layout_height="match_parent">
 
         <android.support.v7.widget.RecyclerView
@@ -21,9 +21,11 @@
             android:layout_marginStart="8dp"
             android:layout_weight="1"
             android:scrollbars="vertical"
+            app:layout_constraintBottom_toTopOf="@+id/divider"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/recyclerViewNoteTask1">
+            app:layout_constraintTop_toBottomOf="@+id/recyclerViewNoteTask1"
+            app:layout_constraintVertical_bias="0.0">
 
         </android.support.v7.widget.RecyclerView>
 
@@ -56,11 +58,11 @@
             android:id="@+id/seprator"
             android:layout_width="match_parent"
             android:layout_height="2dp"
-            android:background="@color/black"
             android:layout_marginBottom="8dp"
             android:layout_marginEnd="8dp"
             android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
+            android:background="@color/black"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -73,7 +75,6 @@
             android:layout_height="wrap_content"
             android:layout_marginEnd="8dp"
             android:layout_marginStart="8dp"
-            android:layout_marginTop="8dp"
             android:layout_weight="1"
             android:scrollbars="vertical"
             app:layout_constraintEnd_toEndOf="parent"
@@ -81,7 +82,6 @@
             app:layout_constraintTop_toBottomOf="@+id/note_id">
 
         </android.support.v7.widget.RecyclerView>
-
 
 
         <EditText
@@ -112,12 +112,10 @@
             android:layout_marginBottom="8dp"
             android:layout_marginEnd="8dp"
             android:layout_marginStart="8dp"
-            android:layout_marginTop="8dp"
             android:background="?android:attr/listDivider"
             app:layout_constraintBottom_toTopOf="@+id/editTextTask"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/recyclerViewNoteTask2" />
+            app:layout_constraintStart_toStartOf="parent" />
     </android.support.constraint.ConstraintLayout>
 
 

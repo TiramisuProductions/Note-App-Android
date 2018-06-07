@@ -1,11 +1,13 @@
 package truelancer.noteapp.noteapp.Services;
 
+import android.app.Dialog;
 import android.app.Service;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.media.AudioManager;
 import android.media.MediaRecorder;
@@ -13,6 +15,7 @@ import android.os.Binder;
 import android.os.Environment;
 import android.os.IBinder;
 import android.support.constraint.ConstraintLayout;
+import android.support.design.widget.TextInputLayout;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AlertDialog;
@@ -154,9 +157,6 @@ public class PopUpService extends Service {
                     final TextView contactLabel2 = (TextView)layout.findViewById(R.id.contactLabel2);
                     final RelativeLayout relativeLayout =(RelativeLayout)layout.findViewById(R.id.layout);
                     final ScrollView scrollView = (ScrollView)layout.findViewById(R.id.scroll_layout);
-
-
-
                     if(!MyApp.defaultTheme){
                     relativeLayout.setBackgroundColor(getResources().getColor(R.color.dark));
                     scrollView.setBackgroundColor(getResources().getColor(R.color.dark));
@@ -215,8 +215,6 @@ public class PopUpService extends Service {
                                 contactTick1.setVisibility(View.INVISIBLE);
                             }
                         }
-
-
                     };
                     EditContactName.addTextChangedListener(textWatcher02);
 
@@ -237,7 +235,6 @@ public class PopUpService extends Service {
 
 
                     if(!MyApp.defaultTheme){
-
                         ContactName2.setTextColor(getResources().getColor(R.color.white));
                         EmailID.setTextColor(getResources().getColor(R.color.white));
                         emailLabel1.setTextColor(getResources().getColor(R.color.white));
@@ -290,13 +287,12 @@ public class PopUpService extends Service {
 
                 case 2:
 
-                    final TextView accountLabel1 = (TextView)layout.findViewById(R.id.contact_id);
-                    final TextView accountLabel2 = (TextView)layout.findViewById(R.id.contact_id2);
-                    final TextView accountLabel3 = (TextView)layout.findViewById(R.id.contact_id3);
+                    final TextView accountLabel1 = (TextView)layout.findViewById(R.id.contactLabel1);
+                    final TextView accountLabel2 = (TextView)layout.findViewById(R.id.contactLabel2);
+                    final TextView accountLabel3 = (TextView)layout.findViewById(R.id.contactLabel3);
                     final EditText ContactName3 = (EditText) layout.findViewById(R.id.contact_name3_et);
                     final EditText AccountNo = (EditText) layout.findViewById(R.id.account_no_et);
                     final EditText Others = (EditText) layout.findViewById(R.id.others_et);
-                    Button saveAccount = (Button) layout.findViewById(R.id.saveaccount_btn);
                     final ImageView bankAccountTick1 = (ImageView) layout.findViewById(R.id.tick1);
                     final ImageView bankAccountTick2 = (ImageView) layout.findViewById(R.id.tick2);
                     final ImageView bankAccountTick3 = (ImageView) layout.findViewById(R.id.tick3);
@@ -375,36 +371,6 @@ public class PopUpService extends Service {
                         }
                     };
                     Others.addTextChangedListener(textWatcher23);
-
-                    saveAccount.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            String contactName = ContactName3.getText().toString();
-                            String accountNumber = AccountNo.getText().toString();
-                            String others = Others.getText().toString();
-                            if (TextUtils.isEmpty(contactName)) {
-                                ContactName3.setError("Enter name");
-                                return;
-                            }
-                            if (TextUtils.isEmpty(accountNumber)) {
-                                AccountNo.setError("Enter number");
-                                return;
-                            }
-                            if (TextUtils.isEmpty(others)) {
-                                Others.setError("Enter code");
-                                return;
-                            }
-
-                            BankAccount bankAccount = new BankAccount(contactName, accountNumber, others, calledNumber, calledName, incomingCall, timeStampMilli);
-                            bankAccount.save();
-
-                            ContactName3.setText("");
-                            AccountNo.setText("");
-                            Others.setText("");
-                            //List<BankAccount> bankAccounts = BankAccount.listAll(BankAccount.class);
-                            //Toast.makeText(mContext, "" + contactName + " " + accountNumber + " " + others, Toast.LENGTH_SHORT).show();
-                        }
-                    });
                     break;
 
                 case 3:
@@ -491,18 +457,18 @@ public class PopUpService extends Service {
         @Subscribe
         public void onEvent(EventB event) {
             // your implementation
-
-
             if (event.getMessage().equals("0")) {
                 if (TextUtils.isEmpty(MyApp.editContactNameToSave.getText().toString())) {
                     MyApp.editContactNameToSave.setError(mContext.getString(R.string.hint_contact_name));
+                    MyApp.editEmailAdressToSave.setError(null);
 
                 } else if (!isValidMobile(MyApp.editContactNumberToSave.getText().toString())) {
                     MyApp.editContactNumberToSave.setError(mContext.getString(R.string.hint_contact_number));
                 } else {
                     Contact contact = new Contact(MyApp.editContactNameToSave.getText().toString(), MyApp.editContactNumberToSave.getText().toString(), calledNumber, calledName, incomingCall, timeStampMilli);
                     contact.save();
-                    Toast.makeText(mContext, "Sucessfully Saved", Toast.LENGTH_LONG).show();
+                    Toast.makeText(mContext, "Successfully Saved", Toast.LENGTH_LONG).show();
+                    EventBus.getDefault().post(new EventB("1"));
                     MyApp.editContactNameToSave.setText(null);
                     MyApp.editContactNumberToSave.setText(null);
                 }
@@ -514,7 +480,8 @@ public class PopUpService extends Service {
                 } else {
                     Email email = new Email(MyApp.editEmailContactNameToSave.getText().toString(), MyApp.editEmailAdressToSave.getText().toString(), calledNumber, calledName, incomingCall, timeStampMilli);
                     email.save();
-                    Toast.makeText(mContext, "Sucessfully Saved", Toast.LENGTH_LONG).show();
+                    Toast.makeText(mContext, "Successfully Saved", Toast.LENGTH_LONG).show();
+                    EventBus.getDefault().post(new EventB("2"));
                     MyApp.editEmailContactNameToSave.setText(null);
                     MyApp.editEmailAdressToSave.setText(null);
                 }
@@ -527,7 +494,8 @@ public class PopUpService extends Service {
                 } else {
                     BankAccount bankAccount = new BankAccount(MyApp.editBankContactNameToSave.getText().toString(), MyApp.editBankAccountNoToSave.getText().toString(), MyApp.editBankOthersNoToSave.getText().toString(), calledNumber, calledName, incomingCall, timeStampMilli);
                     bankAccount.save();
-                    Toast.makeText(mContext, "Sucessfully Saved", Toast.LENGTH_LONG).show();
+                    Toast.makeText(mContext, "Successfully Saved", Toast.LENGTH_LONG).show();
+                    EventBus.getDefault().post(new EventB("3"));
                     MyApp.editBankContactNameToSave.setText(null);
                     MyApp.editBankAccountNoToSave.setText(null);
                     MyApp.editBankOthersNoToSave.setText(null);
@@ -538,7 +506,8 @@ public class PopUpService extends Service {
                 }else {
                     Note noteN = new Note(MyApp.editNoteToSave.getText().toString(), calledName, calledNumber, timeStampMilli, incomingCall, isDone);
                     noteN.save();
-                    Toast.makeText(mContext, "Sucessfully Saved", Toast.LENGTH_LONG).show();
+                    Toast.makeText(mContext, "Successfully Saved", Toast.LENGTH_LONG).show();
+                    EventBus.getDefault().post(new EventB("4"));
                     MyApp.editNoteToSave.setText(null);
                 }
             }
@@ -623,7 +592,8 @@ public class PopUpService extends Service {
                         @Override
                         public void onClick(View view) {
                             Log.d("booh", "" + pager.getCurrentItem());
-                            EventBus.getDefault().post(new EventB("" + pager.getCurrentItem()));
+                            EventBus.getDefault().post(new EventB(""+ pager.getCurrentItem()));
+
                         }
                     });
 
@@ -934,60 +904,46 @@ public class PopUpService extends Service {
         suggestedRecordName = "Record_" + calledName;
         usersRecordName.setText(suggestedRecordName);
         usersRecordName.setTextColor(getResources().getColor(R.color.black));
-        final AlertDialog alertDialog = new AlertDialog.Builder(this, R.style.myDialog)
+        final AlertDialog alertDialog = new AlertDialog.Builder(this, R.style.CustomDialogTheme)
                 .setTitle("Recording Name")
                 .setView(usersRecordName)
                 .setCancelable(false)
                 .setPositiveButton("Save", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-
-                       /* if (usersRecordName.getText().toString().length() <= 0) {
-                            usersRecordName.setError("Enter recording name");
-
-                        } else {
-                           *//* CallRecording callRecording = new CallRecording(suggestedRecordName, file_path, calledNumber, calledName, incomingCall, timeStampMilli);
-                            callRecording.save();*//*
-                        }*/
-
+               /* if (usersRecordName.getText().toString().length() <= 0) {
+                    usersRecordName.setError("Enter recording name");
+                } else {
+                   *//* CallRecording callRecording = new CallRecording(suggestedRecordName, file_path, calledNumber, calledName, incomingCall, timeStampMilli);
+                    callRecording.save();*//*
+                }*/
                     }
                 })
                 .setNegativeButton("Delete", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-
                         File file = new File(file_path).getAbsoluteFile();
                         boolean deleted = file.delete();
                         Log.d("shower", "" + file_path + " deleted: " + deleted);
                         dialog.dismiss();
-
                     }
                 })
                 .create();
-
-
         alertDialog.getWindow().setType(WindowManager.LayoutParams.TYPE_SYSTEM_ALERT);
         alertDialog.show();
-
         alertDialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
                 String nameByUser = usersRecordName.getText().toString().trim();
-
                 if (nameByUser.length() > 0) {
                     CallRecording callRecording = new CallRecording(nameByUser, file_path, calledNumber, calledName, incomingCall, timeStampMilli);
                     callRecording.save();
                     alertDialog.dismiss();
                 } else {
                     Toast.makeText(PopUpService.this, "Enter Recording Name", Toast.LENGTH_SHORT).show();
-
                 }
-
-
             }
         });
-
 
         List<CallRecording> callRecordings = CallRecording.listAll(CallRecording.class);
         Collections.reverse(callRecordings);

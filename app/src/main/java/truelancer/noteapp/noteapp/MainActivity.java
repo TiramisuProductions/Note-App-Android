@@ -204,10 +204,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         }
 
-
-
-        getWindow().addFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL);
-        getWindow().addFlags(WindowManager.LayoutParams.FLAG_WATCH_OUTSIDE_TOUCH);
         setSearchToolbar();
         contactFab.setOnClickListener(this);
         emailFab.setOnClickListener(this);
@@ -535,7 +531,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         contactSearchAdapter = new ContactAdapter(this, contactFilterList);
         contactSearchRecycler.setAdapter(contactSearchAdapter);
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         List<Email> emails = Email.listAll(Email.class);
         Collections.reverse(emails);
 
@@ -567,7 +562,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         emailSearchAdapter = new EmailAdapter(this, emailFilterList);
         emailSearchRecycler.setAdapter(emailSearchAdapter);
-////////////////////////////////////////////////////////////////////////////////////////////////////////
         List<BankAccount> bankAccounts = BankAccount.listAll(BankAccount.class);
         Collections.reverse(bankAccounts);
 
@@ -602,7 +596,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         bankSearchAdapter = new BankAccountAdapter(this, bankFilterList);
         bankSearchRecycler.setAdapter(bankSearchAdapter);
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         List<Note> notes = Note.listAll(Note.class);
         Collections.reverse(notes);
 
@@ -621,7 +614,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             }
 
         }
-
         noteSearchAdapter = new NoteAdapter(this, noteFilterList);
         noteSearchRecycler.setAdapter(noteSearchAdapter);
 
@@ -1566,7 +1558,20 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         b.dismiss();
     }
 
+    @Override
+    public void onBackPressed() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
+            circleReveal(R.id.toolbar, 1, true, true);
+        else {
+            toolbar.setVisibility(View.VISIBLE);
+        }
+        floatingActionMenu.setVisibility(View.VISIBLE);
+        homeViewPager.setVisibility(View.VISIBLE);
+        searchScrollView.setVisibility(View.GONE);
 
-
+        homeTabLayout.setVisibility(View.VISIBLE);
+        item_search.expandActionView();
+        super.onBackPressed();
+    }
 }
 

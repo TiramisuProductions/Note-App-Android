@@ -22,9 +22,6 @@ import truelancer.noteapp.noteapp.EventB;
 import truelancer.noteapp.noteapp.MyApp;
 import truelancer.noteapp.noteapp.R;
 
-/**
- * Created by sarveshpalav on 23/04/18.
- */
 
 public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.MyView> {
     List<Task> tasks;
@@ -59,7 +56,7 @@ if(!task.isDone){
     holder.checkBoxText.setChecked(false);
     holder.textViewTask.setText(tasks.get(position).getTaskText());
 
-}else{
+}else {
     holder.checkBoxText.setChecked(true);
     holder.textViewTask.setText(tasks.get(position).getTaskText());
     holder.textViewTask.setPaintFlags(holder.textViewTask.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);

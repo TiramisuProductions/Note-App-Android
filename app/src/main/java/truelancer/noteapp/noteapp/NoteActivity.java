@@ -29,7 +29,7 @@ public class NoteActivity extends AppCompatActivity {
     private View seprator;
     private FloatingActionButton addTaskButton;
     private RecyclerView mRecyclerView1,mRecyclerView2;
-    private TaskAdapter mAdapter1,mAdapter2;
+    TaskAdapter mAdapter1;
     private ConstraintLayout layout;
     private ArrayList<Task> taskDone = new ArrayList<>();
     // GoogleAccountCredential mCredential;
@@ -121,16 +121,13 @@ public class NoteActivity extends AppCompatActivity {
 
     public void getTask() {
         taskDone.clear();
-
         List<Task> tasks = Task.findWithQuery(Task.class, "Select * from Task where note_id=?", noteId);
-
         for (Task task : tasks) {
             if (task.isDone) {
                 taskDone.add(task);
             }
 
         }
-
         for (Task task : tasks) {
             if (!task.isDone) {
                 taskDone.add(task);
@@ -138,11 +135,8 @@ public class NoteActivity extends AppCompatActivity {
 
         }
 
-
         mAdapter1 = new TaskAdapter(NoteActivity.this, taskDone);
         mRecyclerView1.setAdapter(mAdapter1);
-        mAdapter2 = new TaskAdapter(NoteActivity.this, taskDone);
-        mRecyclerView2.setAdapter(mAdapter2);
 
     }
 }

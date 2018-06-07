@@ -32,5 +32,22 @@
 
     </style>
 
+    <!--Dialog-->
+    <style name="CustomDialogTheme" parent="Theme.AppCompat.Light.Dialog.Alert">
+        <!--buttons color-->
+        <item name="colorAccent">@android:color/holo_orange_dark</item>
+        <!--title and message color-->
+        <item name="android:textColorPrimary">@android:color/white</item>
+        <!--dialog background-->
+        <item name="android:windowBackground">@drawable/background_dialog</item>
+    </style>
 
+
+<!--Button-->
+    <style name="AppTheme.RoundedCornerMaterialButtonBlue" parent="Widget.AppCompat.Button.Colored">
+        <item name="android:background">@drawable/rounded_button_blue</item>
+    </style>
+    <style name="AppTheme.RoundedCornerMaterialButtonRed" parent="Widget.AppCompat.Button.Colored">
+        <item name="android:background">@drawable/rounded_button_red</item>
+    </style>
 </resources>

@@ -10,7 +10,9 @@
 
     <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:padding="10dp"
+        >
 
         <TextView
             android:id="@+id/date_time_txt"
@@ -72,7 +74,7 @@
             android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
             android:text="Saved Details"
-            card_view:layout_constraintEnd_toEndOf="parent"
+            card_view:layout_constraintEnd_toStartOf="@+id/stateOfCallNote"
             card_view:layout_constraintStart_toStartOf="parent"
             card_view:layout_constraintTop_toBottomOf="@+id/called_contactNote" />
 
@@ -102,45 +104,40 @@
 
         <ImageView
             android:id="@+id/stateOfCallNote"
-            android:layout_width="25dp"
-            android:layout_height="25dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_marginBottom="8dp"
             android:layout_marginEnd="8dp"
-            android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
             android:src="@drawable/ic_incoming"
             card_view:layout_constraintBottom_toTopOf="@+id/noteTitle"
             card_view:layout_constraintEnd_toStartOf="@+id/overflow"
-            card_view:layout_constraintHorizontal_bias="1.0"
-            card_view:layout_constraintStart_toEndOf="@+id/called_numberNote"
-            card_view:layout_constraintTop_toBottomOf="@+id/date_time_txt" />
+            card_view:layout_constraintTop_toBottomOf="@+id/called_numberNote" />
 
         <ImageView
             android:id="@+id/overflow"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginBottom="8dp"
-            android:layout_marginTop="8dp"
             android:adjustViewBounds="true"
             android:background="?attr/selectableItemBackgroundBorderless"
             android:scaleType="centerCrop"
             android:src="@drawable/ic_overflow"
             card_view:layout_constraintBottom_toTopOf="@+id/noteTitle"
             card_view:layout_constraintEnd_toEndOf="parent"
-            card_view:layout_constraintTop_toBottomOf="@+id/date_time_txt" />
+            card_view:layout_constraintTop_toBottomOf="@+id/called_numberNote"
+            card_view:layout_constraintVertical_bias="0.0" />
 
         <Button
             android:id="@+id/calendarSync"
-            android:layout_width="0dp"
+            style="@style/AppTheme.RoundedCornerMaterialButtonBlue"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="8dp"
             android:layout_marginEnd="8dp"
             android:layout_marginTop="8dp"
             android:padding="10dp"
             android:text="Add to Calendar"
             android:textColor="@color/white"
-            android:background="@drawable/rounded_blue"
-            card_view:layout_constraintBottom_toBottomOf="parent"
             card_view:layout_constraintEnd_toEndOf="parent"
             card_view:layout_constraintTop_toBottomOf="@+id/noteTitle" />
 
@@ -148,15 +145,13 @@
             android:id="@+id/nooftasks"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="8dp"
             android:layout_marginEnd="8dp"
             android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
-            card_view:layout_constraintBottom_toBottomOf="parent"
             card_view:layout_constraintEnd_toStartOf="@+id/calendarSync"
-            card_view:layout_constraintHorizontal_bias="0.02"
+            card_view:layout_constraintHorizontal_bias="0.0"
             card_view:layout_constraintStart_toStartOf="parent"
-            card_view:layout_constraintTop_toBottomOf="@+id/contact_id2Note" />
+            card_view:layout_constraintTop_toBottomOf="@+id/noteTitle" />
 
     </android.support.constraint.ConstraintLayout>
 </android.support.v7.widget.CardView>

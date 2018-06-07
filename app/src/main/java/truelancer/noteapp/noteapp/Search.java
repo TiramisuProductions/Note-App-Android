@@ -1,6 +1,7 @@
 package truelancer.noteapp.noteapp;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -63,7 +64,6 @@ public class Search extends AppCompatActivity {
         notetxt = (TextView) findViewById(R.id.notetxt);
         notfoundtxt = (TextView) findViewById(R.id.not_found_txt);
         notfoundimg = (ImageView) findViewById(R.id.not_found_img);
-
         notfoundtxt.setVisibility(View.GONE);
         notfoundimg.setVisibility(View.GONE);
 
@@ -200,10 +200,8 @@ public class Search extends AppCompatActivity {
             }
 
         }
-
         contactSearchAdapter = new ContactAdapter(this, contactFilterList);
         contactSearchRecycler.setAdapter(contactSearchAdapter);
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         List<Email> emails = Email.listAll(Email.class);
         Collections.reverse(emails);
 
@@ -225,10 +223,8 @@ public class Search extends AppCompatActivity {
             }
 
         }
-
         emailSearchAdapter = new EmailAdapter(this, emailFilterList);
         emailSearchRecycler.setAdapter(emailSearchAdapter);
-////////////////////////////////////////////////////////////////////////////////////////////////////////
         List<BankAccount> bankAccounts = BankAccount.listAll(BankAccount.class);
         Collections.reverse(bankAccounts);
 
@@ -253,10 +249,8 @@ public class Search extends AppCompatActivity {
             }
 
         }
-
         bankSearchAdapter = new BankAccountAdapter(this, bankFilterList);
         bankSearchRecycler.setAdapter(bankSearchAdapter);
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         List<Note> notes = Note.listAll(Note.class);
         Collections.reverse(notes);
 
@@ -275,7 +269,6 @@ public class Search extends AppCompatActivity {
             }
 
         }
-
         noteSearchAdapter = new NoteAdapter(this, noteFilterList);
         noteSearchRecycler.setAdapter(noteSearchAdapter);
 
@@ -345,5 +338,14 @@ public class Search extends AppCompatActivity {
         view = this.getCurrentFocus();
         InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
         imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        Intent intent=new Intent(this,MainActivity.class);
+        setResult(RESULT_OK,intent);
+        finish();
+
     }
 }
