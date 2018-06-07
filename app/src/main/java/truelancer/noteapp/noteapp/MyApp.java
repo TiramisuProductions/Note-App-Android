@@ -126,7 +126,7 @@ public class MyApp extends SugarApp {
             if(contactName3.equals("")){contactName3 = defaultValue;}
             if(note3.equals("")){note3 = defaultValue;}
 
-            Note noteN = new Note( note3, calledNumber, calledName,  tsMilli,incomingCall,false);
+            Note noteN = new Note( note3, calledNumber, calledName,  tsMilli,incomingCall);
             noteN.save();
             Log.d(TAG, "checkForDraft: if 3:" + contactName3 + " " + note3);
             contactName3 = "";

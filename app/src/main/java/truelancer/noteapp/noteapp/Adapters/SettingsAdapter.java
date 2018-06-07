@@ -13,9 +13,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import org.greenrobot.eventbus.EventBus;
+
 import java.util.ArrayList;
 
+import truelancer.noteapp.noteapp.AboutUsActivity;
+import truelancer.noteapp.noteapp.EventB;
 import truelancer.noteapp.noteapp.MyApp;
+import truelancer.noteapp.noteapp.OpenSourceLicenceActivity;
 import truelancer.noteapp.noteapp.R;
 
 public class SettingsAdapter extends RecyclerView.Adapter<SettingsAdapter.MyViewHolder> {
@@ -47,14 +52,20 @@ public class SettingsAdapter extends RecyclerView.Adapter<SettingsAdapter.MyView
 
 
     private void themeDialogBox(View v) {
-        final AlertDialog.Builder builder = new AlertDialog.Builder(v.getRootView().getContext());
+        AlertDialog.Builder builder = new AlertDialog.Builder(v.getRootView().getContext());
         builder.setTitle("Select Theme");
 
         final Intent i = context.getPackageManager()
                 .getLaunchIntentForPackage( context.getPackageName() );
         i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 
-        builder.setSingleChoiceItems(themes,0, new DialogInterface.OnClickListener() {
+        int checked =0;
+
+        if(!pref.getBoolean(context.getString(R.string.defaulttheme),true)) {
+            checked = 1;
+        }
+
+        builder.setSingleChoiceItems(themes, checked, new DialogInterface.OnClickListener() {
 
             @Override
             public void onClick(DialogInterface dialog, int which) {
@@ -63,14 +74,26 @@ public class SettingsAdapter extends RecyclerView.Adapter<SettingsAdapter.MyView
                         //Toast.makeText(context, "" +which, Toast.LENGTH_SHORT).show();
                         editor.putBoolean(context.getString(R.string.defaulttheme), true);
                         editor.apply();
-                        context.startActivity(i);
+                        MyApp.defaultTheme=true;
+                        EventBus.getDefault().post(new EventB(context.getString(R.string.themechanged)));
+                        notifyItemChanged(0);
+                        dialog.dismiss();
+                        // context.startActivity(i);
                         break;
                     case 1://dark
                         editor.putBoolean(context.getString(R.string.defaulttheme), false);
                         editor.apply();
-                        context.startActivity(i);
+                        MyApp.defaultTheme = false;
+                        EventBus.getDefault().post(new EventB(context.getString(R.string.themechanged)));
+
+
+                        dialog.dismiss();
+                        //context.startActivity(i);
                         break;
                 }
+                notifyItemChanged(0);
+                notifyItemChanged(1);
+                notifyItemChanged(2);
             }
         });
 
@@ -138,20 +161,7 @@ public class SettingsAdapter extends RecyclerView.Adapter<SettingsAdapter.MyView
         alert.show();
     }
 
-    private void about(View v){
-        AlertDialog.Builder builder = new AlertDialog.Builder(v.getRootView().getContext());
-        builder.setTitle("About the App");
-        builder.setMessage("HelloNote is the name of the app");
 
-        builder.setPositiveButton("Done", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.dismiss();
-            }
-        });
-        AlertDialog alert = builder.create();
-        alert.show();
-    }
 
     @Override
     public void onBindViewHolder(final SettingsAdapter.MyViewHolder holder, final int position) {
@@ -189,26 +199,22 @@ public class SettingsAdapter extends RecyclerView.Adapter<SettingsAdapter.MyView
 
 
 
-           holder.itemLayout.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    switch (position) {
-                        case 0://Theme
-                            themeDialogBox(view);
-                            break;
-                        case 1://Bubble Location
-                            bubbleDialogBox(view);
-                            break;
-                        case 2://Call Record
-                            callRecordDialog(view);
+        holder.itemLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                switch (position) {
+                    case 0://Theme
+                        themeDialogBox(view);
+                        break;
 
-                            break;
-                        case 3://About
-                            about(view);
-                            break;
-                    }
+                    case 1://About
+                        context.startActivity(new Intent(context, AboutUsActivity.class));
+                        break;
+                    case 2:
+                        context.startActivity(new Intent(context, OpenSourceLicenceActivity.class));
                 }
-            });
+            }
+        });
 
 
     }

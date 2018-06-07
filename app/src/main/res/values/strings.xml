@@ -90,4 +90,8 @@
     <string name="go_to_app">Go To App</string>
 
 
+    <!--Keys-->
+    <string name="themechanged">themechanged</string>
+
+
 </resources>

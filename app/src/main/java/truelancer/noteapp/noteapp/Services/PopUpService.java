@@ -504,7 +504,7 @@ public class PopUpService extends Service {
                 if(TextUtils.isEmpty(MyApp.editNoteToSave.getText().toString())){
                  MyApp.editNoteToSave.setError(mContext.getString(R.string.hint_note));
                 }else {
-                    Note noteN = new Note(MyApp.editNoteToSave.getText().toString(), calledName, calledNumber, timeStampMilli, incomingCall, isDone);
+                    Note noteN = new Note(MyApp.editNoteToSave.getText().toString(), calledName, calledNumber, timeStampMilli, incomingCall);
                     noteN.save();
                     Toast.makeText(mContext, "Successfully Saved", Toast.LENGTH_LONG).show();
                     EventBus.getDefault().post(new EventB("4"));
@@ -866,27 +866,44 @@ public class PopUpService extends Service {
 
 
 
-           mRecorder = new MediaRecorder();
+        mRecorder = new MediaRecorder();
 
-           if (pref.getBoolean(getBaseContext().getString(R.string.voicecall), true)) {
-               mRecorder.setAudioSource(MediaRecorder.AudioSource.VOICE_CALL);
-           } else {
-               mRecorder.setAudioSource(MediaRecorder.AudioSource.VOICE_COMMUNICATION);
-           }
-           //voice call to be used
-           mRecorder.setOutputFormat(MediaRecorder.OutputFormat.AMR_NB);
-           mRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB);
-           mRecorder.setOutputFile(pathToSaveRecordedCalls + File.separator + fileNameOfCallRecording + ".amr");
 
-           Log.e(TAG, "path : " + pathToSaveRecordedCalls + fileNameOfCallRecording);
+        mRecorder.setAudioSource(MediaRecorder.AudioSource.VOICE_CALL);
 
-           try {
-               mRecorder.prepare();
-               mRecorder.start();
-           } catch (Exception e) {
-               Toast.makeText(getApplicationContext(), "Please Select different recording method", Toast.LENGTH_LONG).show();
 
-           }
+
+        //voice call to be used
+        mRecorder.setOutputFormat(MediaRecorder.OutputFormat.AMR_NB);
+        mRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB);
+        mRecorder.setOutputFile(pathToSaveRecordedCalls + File.separator + fileNameOfCallRecording + ".amr");
+
+        Log.e(TAG, "path : " + pathToSaveRecordedCalls + fileNameOfCallRecording);
+
+        try {
+            mRecorder.prepare();
+            mRecorder.start();
+        } catch (Exception e) {
+
+
+
+            mRecorder.setAudioSource(MediaRecorder.AudioSource.VOICE_COMMUNICATION);
+
+            //voice call to be used
+            mRecorder.setOutputFormat(MediaRecorder.OutputFormat.AMR_NB);
+            mRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB);
+            mRecorder.setOutputFile(pathToSaveRecordedCalls + File.separator + fileNameOfCallRecording + ".amr");
+
+            Log.e(TAG, "path : " + pathToSaveRecordedCalls + fileNameOfCallRecording);
+
+            try {
+                mRecorder.prepare();
+                mRecorder.start();
+            } catch (Exception err) {
+
+
+            }
+        }
 
 
     }

@@ -11,17 +11,17 @@ public class Note extends SugarRecord {
     String tsMilli;
     boolean incoming;
     boolean isSavedFromApp;
-    public boolean isDone;
+
 
     public Note(){}
 
-    public Note(String note,String calledName,String calledNumber,String tsMilli,boolean incoming,boolean isDone){
+    public Note(String note,String calledName,String calledNumber,String tsMilli,boolean incoming){
         this.note=note;
         this.calledName=calledName;
         this.calledNumber=calledNumber;
         this.tsMilli=tsMilli;
         this.incoming=incoming;
-        this.isDone=isDone;
+
 
     }
 
@@ -56,8 +56,6 @@ public class Note extends SugarRecord {
 
     public void setTsMilli(String tsMilli) {this.tsMilli = tsMilli;}
 
-    public boolean isDone() {return isDone;}
 
-    public void setDone(boolean done) {isDone = done;}
 
 }

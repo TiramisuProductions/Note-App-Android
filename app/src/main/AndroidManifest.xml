@@ -45,11 +45,12 @@
             </activity>
 
         <activity android:name=".MainActivity"
-            android:windowSoftInputMode="stateHidden"
+            android:screenOrientation="portrait"
             >
-
         </activity>
-        <activity android:name=".Settings"></activity>
+        <activity android:name=".Settings"
+            android:screenOrientation="portrait">
+        </activity>
         <receiver android:name=".Services.PhoneStateReceiver">
             <intent-filter>
                 <action android:name="android.intent.action.PHONE_STATE" />
@@ -63,8 +64,14 @@
 
         <service android:name=".Services.PopUpService" />
 
-        <activity android:name=".Search" />
-        <activity android:name=".NoteActivity"></activity>
+        <activity android:name=".Search"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".NoteActivity"
+            android:screenOrientation="portrait"
+            ></activity>
+
+        <activity android:name=".AboutUsActivity"></activity>
+        <activity android:name=".OpenSourceLicenceActivity"></activity>
     </application>
 
 </manifest>

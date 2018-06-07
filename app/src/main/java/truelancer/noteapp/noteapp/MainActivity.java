@@ -601,14 +601,20 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         for (int i = 0; i < notes.size(); i++) {
             String noteAll = notes.get(i).getNote().toLowerCase();
-            String calledNoAll = notes.get(i).getCalledNumber().toLowerCase();
-            String calledNameAll = notes.get(i).getCalledName().toLowerCase();
+            boolean savedFromApp = notes.get(i).isSavedFromApp();
+            String callednoAll="";
+            String callednameAll="";
+            if (!savedFromApp) {
+                callednoAll = notes.get(i).getCalledNumber().toLowerCase();
+                callednameAll = notes.get(i).getCalledName().toLowerCase();
+            }
+
 
             if (noteAll.contains(searchWord)) {
                 noteFilterList.add(notes.get(i));
-            } else if (calledNameAll.contains(searchWord)) {
+            } else if (callednameAll.contains(searchWord)) {
                 noteFilterList.add(notes.get(i));
-            } else if (calledNoAll.contains(searchWord)) {
+            } else if (callednoAll.contains(searchWord)) {
                 noteFilterList.add(notes.get(i));
             } else {
             }
@@ -1064,8 +1070,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                                             m.getNlist().get(i).getCalledName(),
                                             m.getNlist().get(i).getCalledNumber(),
                                             m.getNlist().get(i).getTsMilli(),
-                                            m.getNlist().get(i).isIncoming(),
-                                            m.getNlist().get(i).isDone()
+                                            m.getNlist().get(i).isIncoming()
+
                                     );
                                     if (!dataAlreadyExists(m.getNlist().get(i).getTsMilli(), "4")) {
                                         note.save();
@@ -1092,6 +1098,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         @Override
                         public void onSuccess(Void aVoid) {
                             HideProgressDialog();
+                            EventBus.getDefault().post(new EventB("1"));
+                            EventBus.getDefault().post(new EventB("2"));
+                            EventBus.getDefault().post(new EventB("3"));
+                            EventBus.getDefault().post(new EventB("4"));
                         }
                     })
                     .addOnFailureListener(new OnFailureListener() {
@@ -1131,6 +1141,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 dialog.setContentView(R.layout.add_contact_dialog);
                 dialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);//Puts dialog on top of keyboard
                 dialog.setCanceledOnTouchOutside(false);
+                TextView title = (TextView)dialog.findViewById(R.id.title);
                 final TextInputLayout field1 = (TextInputLayout) dialog.findViewById(R.id.field_layout_1);//Add Dialog Contact Name
                 final TextInputLayout field2 = (TextInputLayout) dialog.findViewById(R.id.field_layout_2);//Add Dialog Contact Number
                 final ImageView tick1 = (ImageView) dialog.findViewById(R.id.tick1);//Add Dialog Contact Name
@@ -1139,7 +1150,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 Button cancel = (Button) dialog.findViewById(R.id.cancel);
                 final TextInputEditText contactName = (TextInputEditText) dialog.findViewById(R.id.field_1);//Add Dialog Contact Name
                 final TextInputEditText contactNumber = (TextInputEditText) dialog.findViewById(R.id.field_2);//Add Dialog Contact Number
-
+                title.setText("Contact");
                 //Watches changes in contactName editText
                 final TextWatcher textWatcher01 = new TextWatcher() {
                     public void afterTextChanged(Editable s) {
@@ -1216,6 +1227,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 dialog.setContentView(R.layout.add_email_dailog);
                 dialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);//Puts dialog on top of keyboard
                 dialog.setCanceledOnTouchOutside(false);
+                TextView title = (TextView)dialog.findViewById(R.id.title);
                 final TextInputLayout field1 = (TextInputLayout) dialog.findViewById(R.id.field_layout_1);//Add Dialog Contact Name
                 final TextInputLayout field2 = (TextInputLayout) dialog.findViewById(R.id.field_layout_2);//Add Dialog Contact email
                 final ImageView tick1 = (ImageView) dialog.findViewById(R.id.tick1);//Add Dialog Contact Name
@@ -1224,7 +1236,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 Button cancel = (Button) dialog.findViewById(R.id.cancel);
                 final TextInputEditText contactName = (TextInputEditText) dialog.findViewById(R.id.field_1);//Add Dialog Contact Name
                 final TextInputEditText contactEmail = (TextInputEditText) dialog.findViewById(R.id.field_2);//Add Dialog Contact email
-
+                title.setText("Email");
                 //Watches change in EditText
                 final TextWatcher textWatcher01 = new TextWatcher() {
                     public void afterTextChanged(Editable s) {
@@ -1306,6 +1318,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 dialog.setContentView(R.layout.add_bank_account_dialog);
                 dialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);//Puts dialog on top of keyboard
                 dialog.setCanceledOnTouchOutside(false);
+                TextView title = (TextView)dialog.findViewById(R.id.title);
                 final TextInputLayout field1 = (TextInputLayout) dialog.findViewById(R.id.field_layout_1);//Add Dialog Contact Name
                 final TextInputLayout field2 = (TextInputLayout) dialog.findViewById(R.id.field_layout_2);//Add Dialog Account No
                 final TextInputLayout field3 = (TextInputLayout) dialog.findViewById(R.id.field_layout_3);//Add Dialog IFSC
@@ -1317,7 +1330,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 final TextInputEditText contactIFSC = (TextInputEditText) dialog.findViewById(R.id.field_3);//Add Dialog IFSC
                 Button save = (Button) dialog.findViewById(R.id.save);
                 Button cancel = (Button) dialog.findViewById(R.id.cancel);
-
+                title.setText("Bank Account");
                 final TextWatcher textWatcher01 = new TextWatcher() {
                     public void afterTextChanged(Editable s) {
                         //if (s.toString() != "") {MyApp.toSave = true;}
@@ -1413,6 +1426,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 dialog.setContentView(R.layout.add_contact_dialog);
                 dialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);//Puts dialog on top of keyboard
                 dialog.setCanceledOnTouchOutside(false);
+                TextView title = (TextView)dialog.findViewById(R.id.title);
                 final TextInputLayout field1 = (TextInputLayout) dialog.findViewById(R.id.field_layout_1);//Add Dialog Note
                 TextInputLayout field2 = (TextInputLayout) dialog.findViewById(R.id.field_layout_2);
                 final ImageView tick1 = (ImageView) dialog.findViewById(R.id.tick1);//Add Dialog Note
@@ -1423,6 +1437,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 field1.setHint(getString(R.string.hint_note));
                 tick2.setVisibility(View.GONE);
                 field2.setVisibility(View.GONE);
+                title.setText("Notes");
 
                 final TextWatcher textWatcher01 = new TextWatcher() {
                     public void afterTextChanged(Editable s) {
