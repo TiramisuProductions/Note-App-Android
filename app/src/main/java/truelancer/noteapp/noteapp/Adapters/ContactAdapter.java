@@ -230,6 +230,8 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.MyView> 
                             final Spinner calledState =(Spinner)dialog.findViewById(R.id.callstate);
                             Button btnDone = (Button)dialog.findViewById(R.id.button_done);//Edit Dialog Done Button
                             Button btnCancel = (Button)dialog.findViewById(R.id.btnCancel);//Edit Dialog Cancel Button
+                            TextView title=(TextView)dialog.findViewById(R.id.edit_dialog_text);
+                            title.setText(R.string.edit_dialog_contact);
                             String options[] = {"Incoming","Outgoing"};
                             ArrayAdapter<String> adminSpinnerArrayAdapter = new ArrayAdapter<String>(itemContext,   android.R.layout.simple_spinner_item, options);
                             adminSpinnerArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item); // The drop down view

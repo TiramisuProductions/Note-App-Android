@@ -66,6 +66,13 @@
     <string name="card_note">Note :</string>
     <string name="card_record_name">Record Name :</string>
 
+    <string name="edit_dialog_contact">Edit Contact</string>
+    <string name="edit_dialog_bank">Edit Contact</string>
+    <string name="edit_dialog_email">Edit Contact</string>
+    <string name="edit_dialog_note">Edit Contact</string>
+    <string name="edit_dialog_record">Edit Contact</string>
+
+
     //error msg
     <string name="error_email_edit_text">Enter valid email address</string>
     <string name="error_contact_number">Enter valid number</string>

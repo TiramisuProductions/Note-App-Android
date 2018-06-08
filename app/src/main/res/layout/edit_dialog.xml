@@ -2,12 +2,12 @@
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_width="300dp"
+    android:layout_height="wrap_content">
 
     <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:layout_marginBottom="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
@@ -30,16 +30,30 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
 
+            <TextView
+                android:id="@+id/edit_dialog_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+                android:textColor="@color/colorPrimaryDark"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
             <android.support.design.widget.TextInputLayout
                 android:id="@+id/field1"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="8dp"
                 android:layout_marginStart="8dp"
-                android:layout_marginTop="8dp"
                 app:layout_constraintEnd_toStartOf="@+id/tick_1"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent">
+                app:layout_constraintTop_toBottomOf="@+id/edit_dialog_text">
 
                 <android.support.design.widget.TextInputEditText
                     android:id="@+id/editContactName"
@@ -60,7 +74,8 @@
                 android:visibility="invisible"
                 app:layout_constraintBottom_toTopOf="@+id/field2"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/edit_dialog_text"
+                app:layout_constraintVertical_bias="1.0"
                 app:srcCompat="@drawable/ic_tick" />
 
             <android.support.design.widget.TextInputLayout
@@ -94,6 +109,7 @@
                 app:layout_constraintBottom_toTopOf="@+id/field4"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/tick_2"
+                app:layout_constraintVertical_bias="1.0"
                 app:srcCompat="@drawable/ic_tick" />
 
             <ImageView
@@ -104,9 +120,10 @@
                 android:layout_marginEnd="8dp"
                 android:layout_marginTop="8dp"
                 android:visibility="invisible"
-                app:layout_constraintBottom_toTopOf="@+id/field3"
+                app:layout_constraintBottom_toBottomOf="@+id/field2"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/tick_1"
+                app:layout_constraintVertical_bias="1.0"
                 app:srcCompat="@drawable/ic_tick" />
 
             <android.support.design.widget.TextInputLayout
@@ -157,11 +174,11 @@
                 android:layout_marginEnd="8dp"
                 android:layout_marginTop="8dp"
                 android:visibility="invisible"
-                app:layout_constraintBottom_toTopOf="@+id/textView2"
+                app:layout_constraintBottom_toBottomOf="@+id/field4"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/tick_3"
+                app:layout_constraintVertical_bias="1.0"
                 app:srcCompat="@drawable/ic_tick" />
-
 
 
             <Spinner
@@ -190,29 +207,29 @@
 
             <Button
                 android:id="@+id/button_done"
+                style="@style/AppTheme.RoundedCornerMaterialButtonBlue"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="8dp"
                 android:layout_marginEnd="16dp"
                 android:layout_marginTop="8dp"
-                style="@style/AppTheme.RoundedCornerMaterialButtonBlue"
-                android:textColor="@color/white"
                 android:text="@string/done"
+                android:textColor="@color/white"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/callstate" />
 
             <Button
                 android:id="@+id/btnCancel"
+                style="@style/AppTheme.RoundedCornerMaterialButtonRed"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="8dp"
                 android:layout_marginEnd="8dp"
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="8dp"
-                android:textColor="@color/white"
-                style="@style/AppTheme.RoundedCornerMaterialButtonRed"
                 android:text="@string/cancel"
+                android:textColor="@color/white"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@+id/button_done"
                 app:layout_constraintHorizontal_bias="0.0"

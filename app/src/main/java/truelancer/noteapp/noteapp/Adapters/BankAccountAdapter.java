@@ -197,6 +197,8 @@ public class BankAccountAdapter extends RecyclerView.Adapter<BankAccountAdapter.
                             final ImageView tick5 = (ImageView)dialog.findViewById(R.id.tick_5);//Edit Dialog Called Number
                             Button btnDone = (Button) dialog.findViewById(R.id.button_done);
                             Button btnCancel = (Button) dialog.findViewById(R.id.btnCancel);
+                            TextView title=(TextView)dialog.findViewById(R.id.edit_dialog_text);
+                            title.setText(R.string.edit_dialog_bank);
                             String options[] = {"Incoming", "Outgoing"};
                             ArrayAdapter<String> adminSpinnerArrayAdapter = new ArrayAdapter<String>(itemContext, android.R.layout.simple_spinner_item, options);
                             adminSpinnerArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item); // The drop down view

@@ -221,6 +221,8 @@ public class EmailAdapter extends RecyclerView.Adapter<EmailAdapter.MyView> {
                             final ImageView tick4 = (ImageView)dialog.findViewById(R.id.tick_4);//Edit Dialog Called number
                             Button btnDone = (Button)dialog.findViewById(R.id.button_done);//Edit Dialog Done Button
                             Button btnCancel = (Button)dialog.findViewById(R.id.btnCancel);//Edit Dialog Cancel Button
+                            TextView title=(TextView)dialog.findViewById(R.id.edit_dialog_text);
+                            title.setText(R.string.edit_dialog_email);
                             String options[] = {"Incoming","Outgoing"};
                             ArrayAdapter<String> adminSpinnerArrayAdapter = new ArrayAdapter<String>(itemContext,   android.R.layout.simple_spinner_item, options);
                             adminSpinnerArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item); // The drop down view
