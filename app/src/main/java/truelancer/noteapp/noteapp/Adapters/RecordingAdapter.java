@@ -22,10 +22,12 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.SeekBar;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -438,14 +440,25 @@ public class RecordingAdapter extends RecyclerView.Adapter<RecordingAdapter.MyVi
                             dialog.setCancelable(false);
 
                             final TextInputLayout recordNameTextInputLayout = (TextInputLayout) dialog.findViewById(R.id.recordtextInputLayout);
+                            final TextInputLayout recordCalledNameInputLayout = (TextInputLayout) dialog.findViewById(R.id.recordCalledNameInputLayout);
+                            final TextInputLayout recordCalledNumberTextInputLayout = (TextInputLayout) dialog.findViewById(R.id.recordCalledNumberInputLayout);
                             final EditText recordName = (EditText) dialog.findViewById(R.id.editRecordName);
-                            final ImageView tick1 = (ImageView) dialog.findViewById(R.id.tick);
+                            final EditText recordCalledName = (EditText) dialog.findViewById(R.id.editCalledNameRec);
+                            final EditText recordCalledNumber = (EditText) dialog.findViewById(R.id.editCalledNumberRec);
+                            final ImageView tick1 = (ImageView) dialog.findViewById(R.id.tick1);
+                            final ImageView tick2= (ImageView) dialog.findViewById(R.id.tick2);
+                            final ImageView tick3 = (ImageView) dialog.findViewById(R.id.tick3);
                             Button btnDone = (Button) dialog.findViewById(R.id.button_done);
                             Button btnCancel = (Button) dialog.findViewById(R.id.btnCancel);
+                            TextView title=(TextView)dialog.findViewById(R.id.edit_dialog_text);
+                            title.setText(R.string.edit_dialog_record);
+                            final Spinner calledState =(Spinner)dialog.findViewById(R.id.callstate);
+                            String options[] = {"Incoming","Outgoing"};
+                            ArrayAdapter<String> adminSpinnerArrayAdapter = new ArrayAdapter<String>(itemContext,   android.R.layout.simple_spinner_item, options);
+                            adminSpinnerArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item); // The drop down view
+                            calledState.setAdapter(adminSpinnerArrayAdapter);
 
-                            recordNameTextInputLayout.setHint(itemContext.getString(R.string.recording_name));
 
-                            recordName.setText(callRecordings.get(position).getRecordName());
 
                             recordName.addTextChangedListener(new TextWatcher() {
                                 @Override
@@ -458,6 +471,7 @@ public class RecordingAdapter extends RecyclerView.Adapter<RecordingAdapter.MyVi
 
                                     if (!TextUtils.isEmpty(recordName.getText().toString())) {
                                         tick1.setVisibility(View.VISIBLE);
+                                        recordNameTextInputLayout.setError(null);
                                     } else {
                                         tick1.setVisibility(View.INVISIBLE);
                                     }
@@ -468,21 +482,72 @@ public class RecordingAdapter extends RecyclerView.Adapter<RecordingAdapter.MyVi
                                 }
                             });
 
+                            recordCalledName.addTextChangedListener(new TextWatcher() {
+                                @Override
+                                public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+                                }
+
+                                @Override
+                                public void onTextChanged(CharSequence s, int start, int before, int count) {
+                                    if (!TextUtils.isEmpty(recordCalledName.getText().toString())) {
+                                        tick2.setVisibility(View.VISIBLE);
+                                        recordCalledNameInputLayout.setError(null);
+                                    } else {
+                                        tick2.setVisibility(View.INVISIBLE);
+                                    }
+                                }
+                                @Override
+                                public void afterTextChanged(Editable s) {
+
+                                }
+                            });
+
+                            recordCalledNumber.addTextChangedListener(new TextWatcher() {
+                                @Override
+                                public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+                                }
+
+                                @Override
+                                public void onTextChanged(CharSequence s, int start, int before, int count) {
+                                    if (String.valueOf(s).length()>0) {
+                                        tick3.setVisibility(View.VISIBLE);
+                                        recordCalledNumberTextInputLayout.setError(null);
+                                    } else {
+                                        tick3.setVisibility(View.INVISIBLE);
+                                    }
+                                }
+
+                                @Override
+                                public void afterTextChanged(Editable s) {
+
+                                }
+                            });
+
                             btnDone.setOnClickListener(new View.OnClickListener() {
                                 @Override
                                 public void onClick(View v) {
                                     Log.d("bluebottle1", "onClick: ");
 
                                     if (TextUtils.isEmpty(recordName.getText().toString())) {
-                                        recordName.setError("Enter Record Name");
+                                        recordNameTextInputLayout.setError("Enter Record Name");
                                         return;
+                                    }else {
+
+                                        CallRecording callRecording = CallRecording.findById(CallRecording.class, callRecordings.get(position).getId());
+                                        callRecording.setRecordName(recordName.getText().toString());
+                                        callRecording.setCalledName(recordCalledName.getText().toString());
+                                        callRecording.setCalledNumber(recordCalledNumber.getText().toString());
+                                        if (calledState.getSelectedItemPosition() == 0) {
+                                            callRecording.setIncoming(true);
+                                        } else {
+                                            callRecording.setIncoming(false);
+                                        }
+                                        callRecording.save();
+
+                                        dialog.dismiss();
                                     }
-
-                                    CallRecording callRecording = CallRecording.findById(CallRecording.class, callRecordings.get(position).getId());
-                                    callRecording.setRecordName(recordName.getText().toString());
-                                    callRecording.save();
-
-                                    dialog.dismiss();
                                 }
                             });
 
@@ -492,7 +557,9 @@ public class RecordingAdapter extends RecyclerView.Adapter<RecordingAdapter.MyVi
                                     dialog.dismiss();
                                 }
                             });
-
+                            recordName.setText(callRecordings.get(position).getRecordName());
+                            recordCalledName.setText(callRecordings.get(position).getCalledName());
+                            recordCalledNumber.setText(callRecordings.get(position).getCalledNumber());
                             dialog.show();
                         }
 

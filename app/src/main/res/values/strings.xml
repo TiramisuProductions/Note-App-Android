@@ -67,10 +67,10 @@
     <string name="card_record_name">Record Name :</string>
 
     <string name="edit_dialog_contact">Edit Contact</string>
-    <string name="edit_dialog_bank">Edit Contact</string>
-    <string name="edit_dialog_email">Edit Contact</string>
-    <string name="edit_dialog_note">Edit Contact</string>
-    <string name="edit_dialog_record">Edit Contact</string>
+    <string name="edit_dialog_bank">Edit Bank</string>
+    <string name="edit_dialog_email">Edit Email</string>
+    <string name="edit_dialog_note">Edit Note</string>
+    <string name="edit_dialog_record">Edit Call Rec</string>
 
 
     //error msg
@@ -99,6 +99,7 @@
 
     <!--Keys-->
     <string name="themechanged">themechanged</string>
+    <string name="type_of_call">Type of call</string>
 
 
 </resources>
