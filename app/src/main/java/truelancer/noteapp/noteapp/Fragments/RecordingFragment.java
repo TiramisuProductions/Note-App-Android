@@ -10,10 +10,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import org.greenrobot.eventbus.Subscribe;
+
 import java.util.Collections;
 import java.util.List;
 
 import truelancer.noteapp.noteapp.Database.CallRecording;
+import truelancer.noteapp.noteapp.EventB;
 import truelancer.noteapp.noteapp.MyApp;
 import truelancer.noteapp.noteapp.R;
 import truelancer.noteapp.noteapp.Adapters.RecordingAdapter;
@@ -59,6 +62,19 @@ public class RecordingFragment extends Fragment {
         mRecyclerView.setAdapter(mAdapter);
 
         return rootView;
+
+    }
+
+    @Subscribe
+    public void onEvent(EventB event){
+        if (event.getMessage().equals("5")){
+            mAdapter.notifyDataSetChanged();
+            List<CallRecording> callRecordings = CallRecording.listAll(CallRecording.class);
+            Collections.reverse(callRecordings);
+            mAdapter = new RecordingAdapter(getActivity(), callRecordings);
+            mRecyclerView.setAdapter(mAdapter);
+        }
+
 
     }
 

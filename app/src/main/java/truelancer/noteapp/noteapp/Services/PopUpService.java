@@ -918,12 +918,12 @@ public class PopUpService extends Service {
                 + File.separator + fileNameOfCallRecording + ".amr";
 
         final EditText usersRecordName = new EditText(this);
+        final TextView text=new TextView(this);
         suggestedRecordName = "Record_" + calledName;
         usersRecordName.setText(suggestedRecordName);
         usersRecordName.setTextColor(getResources().getColor(R.color.black));
         final AlertDialog alertDialog = new AlertDialog.Builder(this, R.style.CustomDialogTheme)
                 .setTitle("Recording Name")
-                .setView(usersRecordName)
                 .setCancelable(false)
                 .setPositiveButton("Save", new DialogInterface.OnClickListener() {
                     @Override
@@ -936,7 +936,7 @@ public class PopUpService extends Service {
                 }*/
                     }
                 })
-                .setNegativeButton("Delete", new DialogInterface.OnClickListener() {
+                .setNeutralButton("Delete", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         File file = new File(file_path).getAbsoluteFile();
@@ -946,8 +946,14 @@ public class PopUpService extends Service {
                     }
                 })
                 .create();
+        alertDialog.setCanceledOnTouchOutside(false);
         alertDialog.getWindow().setType(WindowManager.LayoutParams.TYPE_SYSTEM_ALERT);
+        alertDialog.setView(usersRecordName,30,30,30,30);
+        usersRecordName.setPadding(10,0,0,0);
         alertDialog.show();
+        alertDialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(getResources().getColor(R.color.colorPrimaryDark));
+        alertDialog.getButton(AlertDialog.BUTTON_NEUTRAL).setTextColor(getResources().getColor(R.color.cancel_color_dark));
+
         alertDialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -955,6 +961,7 @@ public class PopUpService extends Service {
                 if (nameByUser.length() > 0) {
                     CallRecording callRecording = new CallRecording(nameByUser, file_path, calledNumber, calledName, incomingCall, timeStampMilli);
                     callRecording.save();
+                    EventBus.getDefault().post(new EventB("5"));
                     alertDialog.dismiss();
                 } else {
                     Toast.makeText(PopUpService.this, "Enter Recording Name", Toast.LENGTH_SHORT).show();
