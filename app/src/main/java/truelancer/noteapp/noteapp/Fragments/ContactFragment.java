@@ -19,6 +19,7 @@ import java.util.List;
 import truelancer.noteapp.noteapp.Adapters.ContactAdapter;
 import truelancer.noteapp.noteapp.Database.Contact;
 import truelancer.noteapp.noteapp.EventB;
+import truelancer.noteapp.noteapp.MainActivity;
 import truelancer.noteapp.noteapp.MyApp;
 import truelancer.noteapp.noteapp.R;
 
@@ -51,6 +52,7 @@ public class ContactFragment extends Fragment {
 
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getActivity());
         mRecyclerView = (RecyclerView) rootView.findViewById(R.id.recycler_contact);
+
         mRecyclerView.setLayoutManager(mLayoutManager);
         if(!MyApp.defaultTheme){
             mRecyclerView.setBackgroundColor(getResources().getColor(R.color.dark));

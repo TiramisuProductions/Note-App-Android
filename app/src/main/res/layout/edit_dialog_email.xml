@@ -73,10 +73,9 @@
                 android:layout_marginEnd="8dp"
                 android:layout_marginTop="8dp"
                 android:visibility="invisible"
-                app:layout_constraintBottom_toBottomOf="@+id/field1"
+                app:layout_constraintBottom_toTopOf="@+id/field2"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/edit_dialog_text"
-                app:layout_constraintVertical_bias="1.0"
                 app:srcCompat="@drawable/ic_tick" />
 
             <android.support.design.widget.TextInputLayout
@@ -107,10 +106,9 @@
                 android:layout_marginEnd="8dp"
                 android:layout_marginTop="8dp"
                 android:visibility="invisible"
-                app:layout_constraintBottom_toBottomOf="@+id/field3"
+                app:layout_constraintBottom_toTopOf="@+id/field4"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tick_2"
-                app:layout_constraintVertical_bias="1.0"
+                app:layout_constraintTop_toBottomOf="@+id/field2"
                 app:srcCompat="@drawable/ic_tick" />
 
             <ImageView
@@ -121,10 +119,9 @@
                 android:layout_marginEnd="8dp"
                 android:layout_marginTop="8dp"
                 android:visibility="invisible"
-                app:layout_constraintBottom_toBottomOf="@+id/field2"
+                app:layout_constraintBottom_toTopOf="@+id/field3"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tick_1"
-                app:layout_constraintVertical_bias="1.0"
+                app:layout_constraintTop_toBottomOf="@+id/field1"
                 app:srcCompat="@drawable/ic_tick" />
 
             <android.support.design.widget.TextInputLayout
@@ -175,10 +172,9 @@
                 android:layout_marginEnd="8dp"
                 android:layout_marginTop="8dp"
                 android:visibility="invisible"
-                app:layout_constraintBottom_toBottomOf="@+id/field4"
+                app:layout_constraintBottom_toTopOf="@+id/textView2"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tick_3"
-                app:layout_constraintVertical_bias="1.0"
+                app:layout_constraintTop_toBottomOf="@+id/field3"
                 app:srcCompat="@drawable/ic_tick" />
 
 

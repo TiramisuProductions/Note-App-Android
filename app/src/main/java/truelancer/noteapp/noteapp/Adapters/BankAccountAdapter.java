@@ -37,6 +37,7 @@ import truelancer.noteapp.noteapp.EventB;
 import truelancer.noteapp.noteapp.MainActivity;
 import truelancer.noteapp.noteapp.MyApp;
 import truelancer.noteapp.noteapp.R;
+import truelancer.noteapp.noteapp.Utils;
 
 public class BankAccountAdapter extends RecyclerView.Adapter<BankAccountAdapter.MyView> {
     List<BankAccount> bankAccounts;
@@ -108,6 +109,7 @@ public class BankAccountAdapter extends RecyclerView.Adapter<BankAccountAdapter.
         holder.bankCardView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                MainActivity.floatingActionMenu.close(true);
 
             }
         });
@@ -293,7 +295,7 @@ public class BankAccountAdapter extends RecyclerView.Adapter<BankAccountAdapter.
                                 }
                                 @Override
                                 public void onTextChanged(CharSequence s, int start, int before, int count) {
-                                    if (String.valueOf(s).length()>0){
+                                    if (Utils.isValidMobile(String.valueOf(s))){
                                         tick5.setVisibility(View.VISIBLE);
                                         calledNumberTextInputLayout.setError(null);
                                     }
@@ -322,6 +324,28 @@ public class BankAccountAdapter extends RecyclerView.Adapter<BankAccountAdapter.
                                         contactNameTextInputLayout.setError(itemContext.getString(R.string.hint_contact_number));
                                     }else if (contactAccountNo.getText().toString().length()<=0){
                                         accountTextInputLayout.setError(itemContext.getString(R.string.hint_ac_no));
+                                    }else if (calledName.getText().toString().length()>0||calledNumber.getText().toString().length()>0){
+                                        if (calledName.getText().toString().length()==0){
+                                            calledNameTextInputLayout.setError(itemContext.getString(R.string.hint_called_name));
+                                        }else if (!Utils.isValidMobile(calledNumber.getText().toString())){
+                                            calledNumberTextInputLayout.setError(itemContext.getString(R.string.hint_called_number));
+                                        }else {
+                                            BankAccount bankAccount = BankAccount.findById(BankAccount.class, bankAccounts.get(position).getId());
+                                            bankAccount.setAccountNo(contactAccountNo.getText().toString());
+                                            bankAccount.setIfscCode(contactIFSC.getText().toString());
+                                            bankAccount.setName(contactName.getText().toString());
+                                            bankAccount.setCalledName(calledName.getText().toString());
+                                            bankAccount.setCalledNumber(calledNumber.getText().toString());
+                                            if (calledState.getSelectedItemPosition() == 0) {
+                                                bankAccount.setIncoming(true);
+                                            } else {
+                                                bankAccount.setIncoming(false);
+                                            }
+                                            bankAccount.save();
+                                            EventBus.getDefault().post(new EventB("3"));
+                                            dialog.dismiss();
+                                        }
+
                                     }
                                     else {
                                         BankAccount bankAccount = BankAccount.findById(BankAccount.class, bankAccounts.get(position).getId());

@@ -43,6 +43,7 @@ import truelancer.noteapp.noteapp.MainActivity;
 import truelancer.noteapp.noteapp.MyApp;
 import truelancer.noteapp.noteapp.NoteActivity;
 import truelancer.noteapp.noteapp.R;
+import truelancer.noteapp.noteapp.Utils;
 
 import static com.orm.SugarRecord.findById;
 
@@ -222,7 +223,7 @@ public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.MyView> {
                             final ImageView tick4=(ImageView)dialog.findViewById(R.id.tick4);//Edit Dialog Called Number
                             Button btnDone = (Button)dialog.findViewById(R.id.btnSelect);//Edit Dialog Done Button
                             Button btnCancel = (Button)dialog.findViewById(R.id.btnCancel);//Edit Dialog Cancel Button
-                            TextView title=(TextView)dialog.findViewById(R.id.edit_dialog_text);
+                            TextView title=(TextView)dialog.findViewById(R.id.edit_dialog_text);//Top text
                             title.setText(R.string.edit_dialog_note);
                             String options[] = {"Incoming","Outgoing"};
                             ArrayAdapter<String> adminSpinnerArrayAdapter = new ArrayAdapter<String>(itemContext,   android.R.layout.simple_spinner_item, options);
@@ -279,7 +280,7 @@ public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.MyView> {
                                 }
                                 @Override
                                 public void onTextChanged(CharSequence s, int start, int before, int count) {
-                                    if (String.valueOf(s).length()>0){
+                                    if (Utils.isValidMobile(calledNumber.getText().toString())){
                                         tick4.setVisibility(View.VISIBLE);
                                         calledNumberTextInputLayout.setError(null);
                                     }
@@ -306,7 +307,29 @@ public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.MyView> {
                                 public void onClick(View view) {
                                     if (TextUtils.isEmpty(contactNote.getText().toString())) {
                                         noteTextInputLayout.setError(itemContext.getString(R.string.hint_note));
-                                    } else {
+                                    }else if (calledName.getText().toString().length()>0||calledNumber.getText().toString().length()>0){
+                                        if (calledName.getText().toString().length()==0){
+                                            calledNameTextInputLayout.setError(itemContext.getString(R.string.hint_called_name));
+                                        }else if (!Utils.isValidMobile(calledNumber.getText().toString())){
+                                            calledNumberTextInputLayout.setError(itemContext.getString(R.string.hint_called_number));
+                                        }
+                                        else {
+                                            Note note = findById(Note.class, notes.get(position).getId());
+                                            note.setNote(contactNote.getText().toString());
+                                            note.setCalledName(calledName.getText().toString());
+                                            note.setCalledNumber(calledNumber.getText().toString());
+                                            if (calledState.getSelectedItemPosition() == 0) {
+                                                note.setIncoming(true);
+                                            } else {
+                                                note.setIncoming(false);
+                                            }
+                                            note.save();
+                                            EventBus.getDefault().post(new EventB("4"));
+                                            dialog.dismiss();
+                                        }
+
+                                    }
+                                    else {
 
                                         Note note = findById(Note.class, notes.get(position).getId());
                                         note.setNote(contactNote.getText().toString());

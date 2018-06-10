@@ -112,7 +112,7 @@ public class EmailAdapter extends RecyclerView.Adapter<EmailAdapter.MyView> {
         holder.emailCardView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+             MainActivity.floatingActionMenu.close(true);
             }
         });
 
@@ -208,8 +208,8 @@ public class EmailAdapter extends RecyclerView.Adapter<EmailAdapter.MyView> {
                             dialog.setCancelable(false);
                             final TextInputLayout contactNameTextInputLayout=(TextInputLayout)dialog.findViewById(R.id.field1);//Edit Dialog Contact Name
                             final TextInputLayout emailTextInputLayout=(TextInputLayout)dialog.findViewById(R.id.field2);//Edit Dialog Email
-                            TextInputLayout calledNumberTextInputLayout=(TextInputLayout)dialog.findViewById(R.id.field3);//Edit Dialog Called Number
-                            TextInputLayout calledNameTextInputLayout=(TextInputLayout)dialog.findViewById(R.id.field4);//Edit Dialog Called Name
+                            final TextInputLayout calledNumberTextInputLayout=(TextInputLayout)dialog.findViewById(R.id.field4);//Edit Dialog Called Number
+                            final TextInputLayout calledNameTextInputLayout=(TextInputLayout)dialog.findViewById(R.id.field3);//Edit Dialog Called Name
                             final EditText contactName = (EditText)dialog.findViewById(R.id.editContactName);
                             final EditText contactEmail = (EditText)dialog.findViewById(R.id.editContactEmail);
                             final EditText calledName =(EditText)dialog.findViewById(R.id.editCalledName);
@@ -280,6 +280,7 @@ public class EmailAdapter extends RecyclerView.Adapter<EmailAdapter.MyView> {
 
                                     if(String.valueOf(charSequence).length()>0){
                                         tick3.setVisibility(View.VISIBLE);
+                                        calledNameTextInputLayout.setError(null);
                                     }else{
                                         tick3.setVisibility(View.INVISIBLE);
                                     }
@@ -299,6 +300,7 @@ public class EmailAdapter extends RecyclerView.Adapter<EmailAdapter.MyView> {
                                 public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
                                     if(Utils.isValidMobile(String.valueOf(charSequence))){
                                         tick4.setVisibility(View.VISIBLE);
+                                        calledNumberTextInputLayout.setError(null);
                                     }else{
                                         tick4.setVisibility(View.INVISIBLE);
                                     }
@@ -325,7 +327,30 @@ public class EmailAdapter extends RecyclerView.Adapter<EmailAdapter.MyView> {
                                         contactNameTextInputLayout.setError(itemContext.getString(R.string.hint_contact_number));
                                     }else if (!Utils.isValidEmail(contactEmail.getText().toString())){
                                         emailTextInputLayout.setError(itemContext.getString(R.string.error_email_edit_text));
-                                    }else {
+                                    }else if(calledName.getText().toString().length()>0||calledNumber.getText().toString().length()>0){
+                                        if (calledName.getText().toString().length()<=0){
+                                            calledNameTextInputLayout.setError(itemContext.getString(R.string.hint_called_name));
+                                        }
+                                        else if(!Utils.isValidMobile(calledNumber.getText().toString())){
+                                            calledNumberTextInputLayout.setError(itemContext.getString(R.string.hint_called_number));
+                                        }else {
+                                            Email email = Email.findById(Email.class, emails.get(position).getId());
+                                            email.setEmailId(contactEmail.getText().toString());
+                                            email.setName(contactName.getText().toString());
+                                            email.setCalledName(calledName.getText().toString());
+                                            email.setCalledNumber(calledNumber.getText().toString());
+                                            if (calledState.getSelectedItemPosition() == 0) {
+                                                email.setIncoming(true);
+                                            } else {
+                                                email.setIncoming(false);
+                                            }
+                                            email.save();
+                                            EventBus.getDefault().post(new EventB("2"));
+                                            dialog.dismiss();
+
+                                        }
+                                    }
+                                    else {
 
                                         Email email = Email.findById(Email.class, emails.get(position).getId());
                                         email.setEmailId(contactEmail.getText().toString());

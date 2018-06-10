@@ -31,14 +31,19 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import org.greenrobot.eventbus.EventBus;
+
 import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.List;
 
 import truelancer.noteapp.noteapp.Database.CallRecording;
+import truelancer.noteapp.noteapp.EventB;
+import truelancer.noteapp.noteapp.MainActivity;
 import truelancer.noteapp.noteapp.MyApp;
 import truelancer.noteapp.noteapp.R;
+import truelancer.noteapp.noteapp.Utils;
 
 /**
  * Created by Siddhant Naique on 10-04-2018.
@@ -157,6 +162,13 @@ public class RecordingAdapter extends RecyclerView.Adapter<RecordingAdapter.MyVi
         holder.calledNumber.setText(callRecordings.get(position).getCalledNumber());
         holder.recordName.setText(callRecordings.get(position).getRecordName());
 
+        holder.recordCardView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                MainActivity.floatingActionMenu.close(true);
+            }
+        });
+
         holder.playStopbtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -173,9 +185,7 @@ public class RecordingAdapter extends RecyclerView.Adapter<RecordingAdapter.MyVi
 
                 final Dialog dialog = new Dialog(itemContext);
                 dialog.setContentView(R.layout.dialog_media_player);
-                dialog.setTitle("Title...");
                 dialog.setCanceledOnTouchOutside(true);
-
                 final ImageView play, stop;
                 final TextView recordName, startTimeTXT, finalTimeTXT;
                 final SeekBar seekBar;
@@ -370,7 +380,7 @@ public class RecordingAdapter extends RecyclerView.Adapter<RecordingAdapter.MyVi
 
                 PopupMenu popup_overflow = new PopupMenu(activity, holder.overflow);
                 popup_overflow.getMenuInflater().inflate(R.menu.menu_overflow, popup_overflow.getMenu());
-
+                MainActivity.floatingActionMenu.close(true);
                 popup_overflow.getMenu().findItem(R.id.save).setVisible(false);
 
                 popup_overflow.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
@@ -533,7 +543,27 @@ public class RecordingAdapter extends RecyclerView.Adapter<RecordingAdapter.MyVi
                                     if (TextUtils.isEmpty(recordName.getText().toString())) {
                                         recordNameTextInputLayout.setError("Enter Record Name");
                                         return;
-                                    }else {
+                                    }else if (recordCalledName.getText().toString().length()>0||recordCalledNumber.getText().toString().length()>0){
+                                        if (recordCalledName.getText().toString().length()==0){
+                                            recordCalledNameInputLayout.setError(itemContext.getString(R.string.hint_called_name));
+                                        }else if (!Utils.isValidMobile(recordCalledNumber.getText().toString())){
+                                            recordCalledNumberTextInputLayout.setError(itemContext.getString(R.string.hint_called_number));
+                                        }else {
+                                            CallRecording callRecording = CallRecording.findById(CallRecording.class, callRecordings.get(position).getId());
+                                            callRecording.setRecordName(recordName.getText().toString());
+                                            callRecording.setCalledName(recordCalledName.getText().toString());
+                                            callRecording.setCalledNumber(recordCalledNumber.getText().toString());
+                                            if (calledState.getSelectedItemPosition() == 0) {
+                                                callRecording.setIncoming(true);
+                                            } else {
+                                                callRecording.setIncoming(false);
+                                            }
+                                            callRecording.save();
+                                            EventBus.getDefault().post(new EventB("5"));
+                                            dialog.dismiss();
+                                        }
+                                    }
+                                    else {
 
                                         CallRecording callRecording = CallRecording.findById(CallRecording.class, callRecordings.get(position).getId());
                                         callRecording.setRecordName(recordName.getText().toString());
@@ -545,7 +575,7 @@ public class RecordingAdapter extends RecyclerView.Adapter<RecordingAdapter.MyVi
                                             callRecording.setIncoming(false);
                                         }
                                         callRecording.save();
-
+                                        EventBus.getDefault().post(new EventB("5"));
                                         dialog.dismiss();
                                     }
                                 }

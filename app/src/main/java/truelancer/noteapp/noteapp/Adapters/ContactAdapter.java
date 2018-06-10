@@ -116,7 +116,7 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.MyView> 
         holder.contactCardView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+              MainActivity.floatingActionMenu.close(true);
             }
         });
 
@@ -341,7 +341,7 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.MyView> 
                                          if (calledName.getText().toString().length()<=0){
                                              calledNameTextInputLayout.setError(itemContext.getString(R.string.hint_called_name));
                                          }
-                                         else if(calledNumber.getText().toString().length()<=0){
+                                         else if(!Utils.isValidMobile(calledNumber.getText().toString())){
                                              calledNumberTextInputLayout.setError(itemContext.getString(R.string.hint_called_number));
                                          }
                                          else {

@@ -6,6 +6,8 @@ import android.animation.AnimatorListenerAdapter;
 import android.animation.ObjectAnimator;
 import android.app.Activity;
 import android.app.Dialog;
+import android.app.FragmentManager;
+import android.app.FragmentTransaction;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -156,6 +158,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @BindView(R.id.not_found_txt) TextView notFoundText;
     @BindView(R.id.not_found_img) ImageView notFoundImg;
     @BindView(R.id.mainactivity) ConstraintLayout mainActivity;
+  //@BindView(R.id.email_fragment) ConstraintLayout emailFragment;
     List<Contact> contactFilterList = new ArrayList<Contact>();
     List<Email> emailFilterList = new ArrayList<Email>();
     List<BankAccount> bankFilterList = new ArrayList<BankAccount>();
@@ -177,6 +180,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     AlertDialog b;
     AlertDialog.Builder progressDialogBuilder;
     InputMethodManager inputMethodManager;
+    FragmentManager fragmentManager=getFragmentManager();
+
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -189,6 +196,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         pref = getApplicationContext().getSharedPreferences(getString(R.string.shared_pref), MODE_PRIVATE);
         floatingActionMenu=(FloatingActionMenu)findViewById(R.id.fab_menu);
         floatingActionMenu.setVisibility(View.VISIBLE);
+
         if (MyApp.defaultTheme) {
 
 
@@ -211,6 +219,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         lastNoteFab.setOnClickListener(this);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(false); //To disable back button on toolbar
+
+        homeViewPager.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                floatingActionMenu.close(true);
+            }
+        });
 
         homeTabLayout.setupWithViewPager(homeViewPager);
 
@@ -1301,6 +1316,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                             dialog.dismiss();
 
                             EventBus.getDefault().post(new EventB("2"));
+
+
                         }
                     }
                 });

@@ -100,10 +100,9 @@
                 android:layout_marginTop="8dp"
                 android:src="@drawable/ic_tick"
                 android:visibility="invisible"
-                app:layout_constraintBottom_toBottomOf="@+id/textInputLayout2"
+                app:layout_constraintBottom_toTopOf="@+id/textInputLayout3"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/edit_dialog_text"
-                app:layout_constraintVertical_bias="1.0" />
+                app:layout_constraintTop_toBottomOf="@+id/edit_dialog_text" />
 
 
             <android.support.design.widget.TextInputLayout
@@ -135,10 +134,9 @@
                 android:layout_marginTop="8dp"
                 android:src="@drawable/ic_tick"
                 android:visibility="invisible"
-                app:layout_constraintBottom_toBottomOf="@+id/textInputLayout3"
+                app:layout_constraintBottom_toTopOf="@+id/textInputLayout4"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tick2"
-                app:layout_constraintVertical_bias="1.0" />
+                app:layout_constraintTop_toBottomOf="@+id/textInputLayout2" />
 
 
             <android.support.design.widget.TextInputLayout
@@ -170,10 +168,9 @@
                 android:layout_marginTop="8dp"
                 android:src="@drawable/ic_tick"
                 android:visibility="invisible"
-                app:layout_constraintBottom_toBottomOf="@+id/textInputLayout4"
+                app:layout_constraintBottom_toTopOf="@+id/textView5"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tick3"
-                app:layout_constraintVertical_bias="1.0" />
+                app:layout_constraintTop_toBottomOf="@+id/textInputLayout3" />
 
             <TextView
                 android:id="@+id/textView5"

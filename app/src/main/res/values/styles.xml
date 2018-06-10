@@ -40,7 +40,14 @@
         <item name="android:textColorPrimary">@color/colorPrimaryDark</item>
         <!--dialog background-->
         <item name="android:windowBackground">@drawable/background_dialog</item>
+        <item name="android:windowSoftInputMode">stateUnspecified|adjustPan</item>
+
     </style>
+<style name="RecordPlayer" parent="Theme.AppCompat.Light.Dialog">
+    <item name="android:background">@drawable/dialog_border</item>
+    <item name="android:textColorPrimary">@color/colorPrimaryDark</item>
+
+</style>
 
 
 <!--Button-->

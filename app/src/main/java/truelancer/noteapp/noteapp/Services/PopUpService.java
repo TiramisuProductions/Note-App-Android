@@ -918,7 +918,6 @@ public class PopUpService extends Service {
                 + File.separator + fileNameOfCallRecording + ".amr";
 
         final EditText usersRecordName = new EditText(this);
-        final TextView text=new TextView(this);
         suggestedRecordName = "Record_" + calledName;
         usersRecordName.setText(suggestedRecordName);
         usersRecordName.setTextColor(getResources().getColor(R.color.black));
@@ -948,7 +947,7 @@ public class PopUpService extends Service {
                 .create();
         alertDialog.setCanceledOnTouchOutside(false);
         alertDialog.getWindow().setType(WindowManager.LayoutParams.TYPE_SYSTEM_ALERT);
-        alertDialog.setView(usersRecordName,30,30,30,30);
+        alertDialog.setView(usersRecordName,30,30,30,0);
         usersRecordName.setPadding(10,0,0,0);
         alertDialog.show();
         alertDialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(getResources().getColor(R.color.colorPrimaryDark));
@@ -964,6 +963,7 @@ public class PopUpService extends Service {
                     EventBus.getDefault().post(new EventB("5"));
                     alertDialog.dismiss();
                 } else {
+                    usersRecordName.setError(getText(R.string.hint_record_name));
                     Toast.makeText(PopUpService.this, "Enter Recording Name", Toast.LENGTH_SHORT).show();
                 }
             }

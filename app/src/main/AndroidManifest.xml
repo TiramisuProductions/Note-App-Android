@@ -64,8 +64,6 @@
 
         <service android:name=".Services.PopUpService" />
 
-        <activity android:name=".Search"
-            android:screenOrientation="portrait"/>
         <activity android:name=".NoteActivity"
             android:screenOrientation="portrait"
             ></activity>

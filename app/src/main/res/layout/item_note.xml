@@ -19,10 +19,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
-            android:layout_alignParentRight="true"
             android:layout_marginEnd="8dp"
             android:layout_marginTop="8dp"
-            android:text="12:10, 3 dec 2017"
             card_view:layout_constraintEnd_toEndOf="parent"
             card_view:layout_constraintTop_toTopOf="parent" />
 
@@ -33,7 +31,6 @@
             android:layout_marginEnd="8dp"
             android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
-            android:text="Call By"
             android:visibility="visible"
             card_view:layout_constraintEnd_toStartOf="@+id/date_time_txt"
             card_view:layout_constraintHorizontal_bias="0.0"
@@ -47,7 +44,6 @@
             android:layout_below="@+id/callText"
             android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
-            android:text="Cell"
             android:textColor="@color/black"
             card_view:layout_constraintStart_toStartOf="parent"
             card_view:layout_constraintTop_toBottomOf="@+id/callText" />
@@ -59,7 +55,6 @@
             android:layout_marginEnd="8dp"
             android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
-            android:text="Cell"
             android:textColor="@color/black"
             card_view:layout_constraintEnd_toEndOf="parent"
             card_view:layout_constraintHorizontal_bias="0.0"
@@ -73,7 +68,7 @@
             android:layout_marginEnd="8dp"
             android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
-            android:text="Saved Details"
+            android:text="@string/saved_details"
             card_view:layout_constraintEnd_toStartOf="@+id/stateOfCallNote"
             card_view:layout_constraintStart_toStartOf="parent"
             card_view:layout_constraintTop_toBottomOf="@+id/called_contactNote" />
@@ -85,7 +80,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
-            android:text="Note : "
+            android:text="@string/card_note"
             android:textColor="@color/black"
             card_view:layout_constraintStart_toStartOf="parent"
             card_view:layout_constraintTop_toBottomOf="@+id/saved_details" />
@@ -136,7 +131,7 @@
             android:layout_marginEnd="8dp"
             android:layout_marginTop="8dp"
             android:padding="10dp"
-            android:text="Add to Calendar"
+            android:text="@string/add_to_calender"
             android:textColor="@color/white"
             card_view:layout_constraintEnd_toEndOf="parent"
             card_view:layout_constraintTop_toBottomOf="@+id/noteTitle" />
