@@ -3,8 +3,6 @@ package truelancer.noteapp.noteapp;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
-import android.animation.ObjectAnimator;
-import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
@@ -24,13 +22,10 @@ import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.TabLayout;
 import android.support.design.widget.TextInputEditText;
 import android.support.design.widget.TextInputLayout;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.AppCompatTextView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
@@ -43,7 +38,6 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewAnimationUtils;
 import android.view.WindowManager;
@@ -52,9 +46,7 @@ import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
-import android.widget.ProgressBar;
 import android.widget.ScrollView;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -117,16 +109,8 @@ import truelancer.noteapp.noteapp.Fragments.EmailFragment;
 import truelancer.noteapp.noteapp.Fragments.NoteFragment;
 import truelancer.noteapp.noteapp.Fragments.RecordingFragment;
 
-import static android.Manifest.permission.CALL_PHONE;
-import static android.Manifest.permission.CAPTURE_AUDIO_OUTPUT;
-import static android.Manifest.permission.READ_CONTACTS;
-import static android.Manifest.permission.READ_EXTERNAL_STORAGE;
-import static android.Manifest.permission.READ_PHONE_STATE;
-import static android.Manifest.permission.RECORD_AUDIO;
-import static android.Manifest.permission.WRITE_CONTACTS;
-import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
-
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
+    String TAG1 = "dream";
     static final int RESULT_PICK_CONTACT_C = 4;
     static final int RESULT_PICK_CONTACT_E = 5;
     private static final int REQUEST_CODE_SIGN_IN = 0;
@@ -135,34 +119,59 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public static String dataFromAdapter;
     public static FloatingActionMenu floatingActionMenu;
 
-    @BindView(R.id.fab_contact) com.github.clans.fab.FloatingActionButton contactFab;
-    @BindView(R.id.fab_email) com.github.clans.fab.FloatingActionButton emailFab;
-    @BindView(R.id.fab_bank_account) com.github.clans.fab.FloatingActionButton bankAccountFab;
-    @BindView(R.id.fab_last_notes) com.github.clans.fab.FloatingActionButton lastNoteFab;
+    @BindView(R.id.fab_contact)
+    com.github.clans.fab.FloatingActionButton contactFab;
+    @BindView(R.id.fab_email)
+    com.github.clans.fab.FloatingActionButton emailFab;
+    @BindView(R.id.fab_bank_account)
+    com.github.clans.fab.FloatingActionButton bankAccountFab;
+    @BindView(R.id.fab_last_notes)
+    com.github.clans.fab.FloatingActionButton lastNoteFab;
     //@BindView(R.id.fab_menu) FloatingActionMenu floatingActionMenu;
-    @BindView(R.id.search_scrollview) ScrollView searchScrollView;
-    @BindView(R.id.viewpager) ViewPager homeViewPager;
-    @BindView(R.id.tabs) TabLayout homeTabLayout;
-    @BindView(R.id.toolbar) Toolbar toolbar;
-    @BindView(R.id.searchtoolbar) Toolbar searchToolbar;
-    @BindView(R.id.contact_search_recycler) RecyclerView contactSearchRecycler;
-    @BindView(R.id.email_search_recycler) RecyclerView emailSearchRecycler;
-    @BindView(R.id.bank_search_recycler) RecyclerView bankSearchRecycler;
-    @BindView(R.id.note_search_recycler) RecyclerView noteSearchRecycler;
-    @BindView(R.id.contacttxt) TextView contactText;
-    @BindView(R.id.emailtxt) TextView emailText;
-    @BindView(R.id.banktxt) TextView bankText;
-    @BindView(R.id.notetxt) TextView noteText;
-    @BindView(R.id.not_found_txt) TextView notFoundText;
-    @BindView(R.id.not_found_img) ImageView notFoundImg;
-    @BindView(R.id.mainactivity) ConstraintLayout mainActivity;
+    @BindView(R.id.search_scrollview)
+    ScrollView searchScrollView;
+    @BindView(R.id.viewpager)
+    ViewPager homeViewPager;
+    @BindView(R.id.tabs)
+    TabLayout homeTabLayout;
+    @BindView(R.id.toolbar)
+    Toolbar toolbar;
+    @BindView(R.id.searchtoolbar)
+    Toolbar searchToolbar;
+    @BindView(R.id.contact_search_recycler)
+    RecyclerView contactSearchRecycler;
+    @BindView(R.id.email_search_recycler)
+    RecyclerView emailSearchRecycler;
+    @BindView(R.id.bank_search_recycler)
+    RecyclerView bankSearchRecycler;
+    @BindView(R.id.note_search_recycler)
+    RecyclerView noteSearchRecycler;
+    @BindView(R.id.contacttxt)
+    TextView contactText;
+    @BindView(R.id.emailtxt)
+    TextView emailText;
+    @BindView(R.id.banktxt)
+    TextView bankText;
+    @BindView(R.id.notetxt)
+    TextView noteText;
+    @BindView(R.id.not_found_txt)
+    TextView notFoundText;
+    @BindView(R.id.not_found_img)
+    ImageView notFoundImg;
+    @BindView(R.id.mainactivity)
+    ConstraintLayout mainActivity;
     List<Contact> contactFilterList = new ArrayList<Contact>();
     List<Email> emailFilterList = new ArrayList<Email>();
     List<BankAccount> bankFilterList = new ArrayList<BankAccount>();
     List<Note> noteFilterList = new ArrayList<Note>();
     Menu search_menu;
     MenuItem item_search;
+
     Boolean isImport = false;
+
+    DriveId driveId = null;
+
+
     GoogleSignInClient mGoogleSignInClient;
     String jsonString = "";
     String TAG = "MainActivity";
@@ -181,13 +190,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        //  ShowProgressDialog("Setting things Up");
-        Log.d("Loading","Loading");
+        ShowProgressDialog("Setting things Up");
+        Log.d("Loading", "Loading");
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
-         inputMethodManager = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);//Controls keyboard
+        inputMethodManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);//Controls keyboard
         pref = getApplicationContext().getSharedPreferences(getString(R.string.shared_pref), MODE_PRIVATE);
-        floatingActionMenu=(FloatingActionMenu)findViewById(R.id.fab_menu);
+        floatingActionMenu = (FloatingActionMenu) findViewById(R.id.fab_menu);
         floatingActionMenu.setVisibility(View.VISIBLE);
         if (MyApp.defaultTheme) {
 
@@ -223,8 +232,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         homeViewPager.setOffscreenPageLimit(5);
 
         initiateTabs();
-        Log.d("Loading","Loading Done");
-        // HideProgressDialog();
+        Log.d("Loading", "Loading Done");
+        HideProgressDialog();
     }
 
     public void initiateTabs() {
@@ -602,8 +611,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         for (int i = 0; i < notes.size(); i++) {
             String noteAll = notes.get(i).getNote().toLowerCase();
             boolean savedFromApp = notes.get(i).isSavedFromApp();
-            String callednoAll="";
-            String callednameAll="";
+            String callednoAll = "";
+            String callednameAll = "";
             if (!savedFromApp) {
                 callednoAll = notes.get(i).getCalledNumber().toLowerCase();
                 callednameAll = notes.get(i).getCalledName().toLowerCase();
@@ -677,22 +686,22 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         return true;
     }
 
+    public void makeJSON() {
+        List<Contact> contactList = Contact.listAll(Contact.class);
+        List<Email> emailList = Email.listAll(Email.class);
+        List<BankAccount> bankAccountList = BankAccount.listAll(BankAccount.class);
+        List<Note> noteList = Note.listAll(Note.class);
+        List<truelancer.noteapp.noteapp.Database.Task> taskList = truelancer.noteapp.noteapp.Database.Task.listAll(truelancer.noteapp.noteapp.Database.Task.class);
+        Modelgson modelgson = new Modelgson(contactList, emailList, bankAccountList, noteList, taskList);
+        jsonString = new Gson().toJson(modelgson);
+    }
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
 
         switch (item.getItemId()) {
             case R.id.menu_export:
                 ShowProgressDialog("Exporting");
-
-                List<Contact> contactList = Contact.listAll(Contact.class);
-                List<Email> emailList = Email.listAll(Email.class);
-                List<BankAccount> bankAccountList = BankAccount.listAll(BankAccount.class);
-                List<Note> noteList = Note.listAll(Note.class);
-                List<truelancer.noteapp.noteapp.Database.Task> taskList = truelancer.noteapp.noteapp.Database.Task.listAll(truelancer.noteapp.noteapp.Database.Task.class);
-
-                Modelgson modelgson = new Modelgson(contactList, emailList, bankAccountList, noteList, taskList);
-                jsonString = new Gson().toJson(modelgson);
-
                 signIn();
                 return true;
 
@@ -742,8 +751,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
 
                 dialog.show();
-
-
                 return true;
 
 
@@ -789,20 +796,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     mDriveResourceClient =
                             Drive.getDriveResourceClient(this, GoogleSignIn.getLastSignedInAccount(this));
 
-                    if (!isImport) {
-                        createFileInAppFolder();
-                    } else {
+                    if (!isImport) {//export
+                        getDriveId();
+                    } else {//import
                         getDriveId();
                     }
-
-                }
-                break;
-            case REQUEST_CODE_CAPTURE_IMAGE:
-                Log.i(TAG, "capture image request code");
-
-                if (resultCode == Activity.RESULT_OK) {
-                    Log.i(TAG, "Image captured successfully.");
-
                 }
                 break;
 
@@ -886,9 +884,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     }
 
-    private void createFileInAppFolder() {
-
-        deleteFile();
+    private void createFileInAppFolder(final String jsonString) {
 
         final Task<DriveFolder> appFolderTask = mDriveResourceClient.getAppFolder();
 
@@ -924,7 +920,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                                     @Override
                                     public void onSuccess(DriveFile driveFile) {
                                         HideProgressDialog();
-                                        Log.d(TAG, "Working");
+                                        Log.d("abc", "Working");
+
                                     }
                                 })
                         .addOnFailureListener(this, new OnFailureListener() {
@@ -940,7 +937,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
 
-    private void  deleteFile(){
+    private void deleteDriveFile(final String jsonString) {
         Query query = new Query.Builder()
                 .addFilter(Filters.eq(SearchableField.TITLE, Config.BACKUP_FILE_NAME))
                 .build();
@@ -951,20 +948,22 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         new OnSuccessListener<MetadataBuffer>() {
                             @Override
                             public void onSuccess(MetadataBuffer metadataBuffer) {
-                                for( Metadata m : metadataBuffer )
-                                {
+                                Log.d("abc", "" + metadataBuffer.getCount());
+
+                                for (Metadata m : metadataBuffer) {
                                     DriveResource driveResource = m.getDriveId().asDriveResource();
-
-                                 //   Log.i( TAG, "Deleting file: " + sFilename + "  DriveId:(" + m.getDriveId() + ")" );
-                                    mDriveResourceClient.delete( driveResource );
+                                    //   Log.i( TAG, "Deleting file: " + sFilename + "  DriveId:(" + m.getDriveId() + ")" );
+                                    mDriveResourceClient.delete(driveResource);
                                 }
-
+                                Log.d("abc", "success");
+                                createFileInAppFolder(jsonString);
                             }
                         })
                 .addOnFailureListener(this, new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
                         // Handle failure...
+                        Log.d("abc", "failed");
                     }
                 });
     }
@@ -980,22 +979,56 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         new OnSuccessListener<MetadataBuffer>() {
                             @Override
                             public void onSuccess(MetadataBuffer metadataBuffer) {
-                                Log.d("countlol", "" + metadataBuffer.getCount());
+                                if (isImport) {//import
+                                    Log.d("countlol", "" + metadataBuffer.getCount());
+                                    if (metadataBuffer.getCount() == 0) {
 
-                                DriveId driveId = metadataBuffer.get(0).getDriveId();
-                                retrieveContents(driveId.asDriveFile());
+                                        Toast.makeText(MainActivity.this, "No Backups found", Toast.LENGTH_SHORT).show();
+
+
+                                    } else {
+                                        driveId = metadataBuffer.get(0).getDriveId();
+                                        retrieveContents(driveId.asDriveFile(), null, null, null, null, null, false);
+                                    }
+                                    isImport = false;
+                                } else {//export
+                                    if (metadataBuffer.getCount() == 0) {//no backup
+
+                                        List<Contact> contactList = Contact.listAll(Contact.class);
+                                        List<Email> emailList = Email.listAll(Email.class);
+                                        List<BankAccount> bankAccountList = BankAccount.listAll(BankAccount.class);
+                                        List<Note> noteList = Note.listAll(Note.class);
+                                        List<truelancer.noteapp.noteapp.Database.Task> taskList = truelancer.noteapp.noteapp.Database.Task.listAll(truelancer.noteapp.noteapp.Database.Task.class);
+                                        Modelgson modelgson = new Modelgson(contactList, emailList, bankAccountList, noteList, taskList);
+                                        jsonString = new Gson().toJson(modelgson);
+                                        createFileInAppFolder(jsonString);
+                                    } else {//backup exists
+                                        List<Contact> contactList = Contact.listAll(Contact.class);
+                                        List<Email> emailList = Email.listAll(Email.class);
+                                        List<BankAccount> bankAccountList = BankAccount.listAll(BankAccount.class);
+                                        List<Note> noteList = Note.listAll(Note.class);
+                                        List<truelancer.noteapp.noteapp.Database.Task> taskList = truelancer.noteapp.noteapp.Database.Task.listAll(truelancer.noteapp.noteapp.Database.Task.class);
+
+                                        retrieveContents(metadataBuffer.get(0).getDriveId().asDriveFile(), contactList,
+                                                emailList,
+                                                bankAccountList,
+                                                noteList, taskList, true);
+                                    }
+                                }
+
 
                             }
                         })
                 .addOnFailureListener(this, new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
-                        // Handle failure...
+
+                        Log.d(TAG1, "get drive id failed : ");
                     }
                 });
     }
 
-    private void retrieveContents(DriveFile file) {
+    private void retrieveContents(DriveFile file, final List<Contact> contactList, final List<Email> emailList, final List<BankAccount> bankAccountList, final List<Note> noteList, final List<truelancer.noteapp.noteapp.Database.Task> taskList, final Boolean backupExists) {
 
         Task<DriveContents> openFileTask =
                 mDriveResourceClient.openFile(file, DriveFile.MODE_READ_ONLY);
@@ -1006,7 +1039,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         @Override
                         public Task<Void> then(@NonNull Task<DriveContents> task) throws Exception {
                             DriveContents contents = task.getResult();
-
 
                             try (BufferedReader reader = new BufferedReader(
                                     new InputStreamReader(contents.getInputStream()))) {
@@ -1022,72 +1054,97 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
                                 Log.d(TAG, "" + m.getClist().size());
 
-
+                                Log.d("abc", "contact list before add : " + contactList);
                                 for (int i = 0; i < m.getClist().size(); i++) {
-                                    Contact contact = new Contact(m.getClist().get(i).getName(),
-                                            m.getClist().get(i).getPhoneno(),
-                                            m.getClist().get(i).getCalledNumber(),
-                                            m.getClist().get(i).getCalledName(),
-                                            m.getClist().get(i).isIncoming(),
-                                            m.getClist().get(i).getTsMilli());
-                                    if (!dataAlreadyExists(m.getClist().get(i).getTsMilli(), "1")) {
-                                        contact.save();
+                                    if (backupExists) {
+                                        contactList.add(m.clist.get(i));
+                                        Log.d("abc", "contact list after add : " + contactList);
+
+                                    } else {
+                                        Contact contact = new Contact(m.getClist().get(i).getName(),
+                                                m.getClist().get(i).getPhoneno(),
+                                                m.getClist().get(i).getCalledNumber(),
+                                                m.getClist().get(i).getCalledName(),
+                                                m.getClist().get(i).isIncoming(),
+                                                m.getClist().get(i).getTsMilli());
+                                        if (!dataAlreadyExists(m.getClist().get(i).getTsMilli(), "1")) {
+                                            contact.save();
+                                        }
                                     }
-                                    //contact.save();
                                 }
 
                                 for (int i = 0; i < m.getElist().size(); i++) {
-                                    Email email = new Email(m.getElist().get(i).getName(),
-                                            m.getElist().get(i).getEmailId(),
-                                            m.getElist().get(i).getCalledNumber(),
-                                            m.getElist().get(i).getCalledName(),
-                                            m.getElist().get(i).isIncoming(),
-                                            m.getElist().get(i).getTsMilli());
-                                    if (!dataAlreadyExists(m.getElist().get(i).getTsMilli(), "2")) {
-                                        email.save();
+                                    if (backupExists) {
+                                        emailList.add(m.elist.get(i));
+                                    } else {
+                                        Email email = new Email(m.getElist().get(i).getName(),
+                                                m.getElist().get(i).getEmailId(),
+                                                m.getElist().get(i).getCalledNumber(),
+                                                m.getElist().get(i).getCalledName(),
+                                                m.getElist().get(i).isIncoming(),
+                                                m.getElist().get(i).getTsMilli());
+                                        if (!dataAlreadyExists(m.getElist().get(i).getTsMilli(), "2")) {
+                                            email.save();
+                                        }
                                     }
-                                    //email.save();
                                 }
 
                                 for (int i = 0; i < m.getBlist().size(); i++) {
-                                    BankAccount bankAccount = new BankAccount(m.getBlist().get(i).getName(),
-                                            m.getBlist().get(i).getAccountNo(),
-                                            m.getBlist().get(i).getIfscCode(),
-                                            m.getBlist().get(i).getCalledNumber(),
-                                            m.getBlist().get(i).getCalledName(),
-                                            m.getBlist().get(i).isIncoming(),
-                                            m.getBlist().get(i).getTsMilli());
-                                    if (!dataAlreadyExists(m.getBlist().get(i).getTsMilli(), "3")) {
-                                        bankAccount.save();
+                                    if (backupExists) {
+                                        bankAccountList.add(m.blist.get(i));
+                                    } else {
+                                        BankAccount bankAccount = new BankAccount(m.getBlist().get(i).getName(),
+                                                m.getBlist().get(i).getAccountNo(),
+                                                m.getBlist().get(i).getIfscCode(),
+                                                m.getBlist().get(i).getCalledNumber(),
+                                                m.getBlist().get(i).getCalledName(),
+                                                m.getBlist().get(i).isIncoming(),
+                                                m.getBlist().get(i).getTsMilli());
+                                        if (!dataAlreadyExists(m.getBlist().get(i).getTsMilli(), "3")) {
+                                            bankAccount.save();
+                                        }
                                     }
+
                                     //bankAccount.save();
                                 }
 
                                 for (int i = 0; i < m.getNlist().size(); i++) {
+                                    if (backupExists) {
+                                        noteList.add(m.nlist.get(i));
+                                    } else {
+                                        Note note = new Note(
+                                                m.getNlist().get(i).getNote(),
+                                                m.getNlist().get(i).getCalledName(),
+                                                m.getNlist().get(i).getCalledNumber(),
+                                                m.getNlist().get(i).getTsMilli(),
+                                                m.getNlist().get(i).isIncoming()
 
-                                    Note note = new Note(
-                                            m.getNlist().get(i).getNote(),
-                                            m.getNlist().get(i).getCalledName(),
-                                            m.getNlist().get(i).getCalledNumber(),
-                                            m.getNlist().get(i).getTsMilli(),
-                                            m.getNlist().get(i).isIncoming()
-
-                                    );
-                                    if (!dataAlreadyExists(m.getNlist().get(i).getTsMilli(), "4")) {
-                                        note.save();
+                                        );
+                                        if (!dataAlreadyExists(m.getNlist().get(i).getTsMilli(), "4")) {
+                                            note.save();
+                                        }
                                     }
-                                    //note.save();
-
                                 }
 
                                 for (int i = 0; i < m.gettList().size(); i++) {
-                                    truelancer.noteapp.noteapp.Database.Task task1 = new truelancer.noteapp.noteapp.Database.Task(
-                                            m.gettList().get(i).getTaskText(),
-                                            m.gettList().get(i).getNoteId(),
-                                            m.gettList().get(i).isDone
-                                    );
-                                    task1.save();
+                                    if (backupExists) {
+                                        taskList.add(m.tList.get(i));
+                                    } else {
+                                        truelancer.noteapp.noteapp.Database.Task task1 = new truelancer.noteapp.noteapp.Database.Task(
+                                                m.gettList().get(i).getTaskText(),
+                                                m.gettList().get(i).getNoteId(),
+                                                m.gettList().get(i).isDone
+                                        );
+                                        task1.save();
+                                    }
+
                                 }
+                            }
+                            if (backupExists) {
+                                Modelgson modelgson = new Modelgson(contactList, emailList, bankAccountList, noteList, taskList);
+                                jsonString = new Gson().toJson(modelgson);
+                                deleteDriveFile(jsonString);
+                                //createFileInAppFolder(jsonString);
                             }
                             Task<Void> discardTask = mDriveResourceClient.discardContents(contents);
                             return discardTask;
@@ -1113,13 +1170,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         }
                     });
         }
+        // fromExport=false;
     }
 
     ////////////////////////////OnClick////////////////////////////////////////////
     @Override
     public void onClick(View v) {
 
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("h:mm dd-MM-yyyy");
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("HH:mm:ss dd-MM-yyyy");
         String dateString = simpleDateFormat.format(new Date());//get current timestamp direct to string
 
 
@@ -1141,7 +1199,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 dialog.setContentView(R.layout.add_contact_dialog);
                 dialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);//Puts dialog on top of keyboard
                 dialog.setCanceledOnTouchOutside(false);
-                TextView title = (TextView)dialog.findViewById(R.id.title);
+                TextView title = (TextView) dialog.findViewById(R.id.title);
                 final TextInputLayout field1 = (TextInputLayout) dialog.findViewById(R.id.field_layout_1);//Add Dialog Contact Name
                 final TextInputLayout field2 = (TextInputLayout) dialog.findViewById(R.id.field_layout_2);//Add Dialog Contact Number
                 final ImageView tick1 = (ImageView) dialog.findViewById(R.id.tick1);//Add Dialog Contact Name
@@ -1156,8 +1214,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     public void afterTextChanged(Editable s) {
                         //if (s.toString() != "") {MyApp.toSave = true;}
                     }
+
                     public void beforeTextChanged(CharSequence s, int start, int count, int after) {
                     }
+
                     public void onTextChanged(CharSequence s, int start, int before, int count) {
                         if (!TextUtils.isEmpty(String.valueOf(s))) {
                             tick1.setVisibility(View.VISIBLE);
@@ -1172,9 +1232,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     public void afterTextChanged(Editable s) {
                         //if (s.toString() != "") {MyApp.toSave = true;}
                     }
+
                     public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
                     }
+
                     public void onTextChanged(CharSequence s, int start, int before, int count) {
                         if (Utils.isValidMobile(String.valueOf(s))) {
                             tick2.setVisibility(View.VISIBLE);
@@ -1208,7 +1270,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         } else {
                             Contact contact = new Contact(contactName.getText().toString(), contactNumber.getText().toString(), tsMilli, true);
                             contact.save();
-                            inputMethodManager.hideSoftInputFromWindow(contactNumber.getWindowToken(),0);
+                            inputMethodManager.hideSoftInputFromWindow(contactNumber.getWindowToken(), 0);
                             dialog.dismiss();
                             EventBus.getDefault().post(new EventB("1"));
                         }
@@ -1227,7 +1289,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 dialog.setContentView(R.layout.add_email_dailog);
                 dialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);//Puts dialog on top of keyboard
                 dialog.setCanceledOnTouchOutside(false);
-                TextView title = (TextView)dialog.findViewById(R.id.title);
+                TextView title = (TextView) dialog.findViewById(R.id.title);
                 final TextInputLayout field1 = (TextInputLayout) dialog.findViewById(R.id.field_layout_1);//Add Dialog Contact Name
                 final TextInputLayout field2 = (TextInputLayout) dialog.findViewById(R.id.field_layout_2);//Add Dialog Contact email
                 final ImageView tick1 = (ImageView) dialog.findViewById(R.id.tick1);//Add Dialog Contact Name
@@ -1242,9 +1304,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     public void afterTextChanged(Editable s) {
                         //if (s.toString() != "") {MyApp.toSave = true;}
                     }
+
                     public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
                     }
+
                     public void onTextChanged(CharSequence s, int start, int before, int count) {
                         if (!TextUtils.isEmpty(String.valueOf(s))) {
                             tick1.setVisibility(View.VISIBLE);
@@ -1260,9 +1324,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     public void afterTextChanged(Editable s) {
                         //if (s.toString() != "") {MyApp.toSave = true;}
                     }
+
                     public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
                     }
+
                     public void onTextChanged(CharSequence s, int start, int before, int count) {
                         if (Utils.isValidEmail(String.valueOf(s))) {
                             tick2.setVisibility(View.VISIBLE);
@@ -1290,14 +1356,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
                         if (TextUtils.isEmpty(contactName.getText().toString())) {
                             field1.setError(getString(R.string.hint_contact_name));
-                            inputMethodManager.hideSoftInputFromWindow(contactName.getWindowToken(),InputMethodManager.RESULT_UNCHANGED_SHOWN);
+                            inputMethodManager.hideSoftInputFromWindow(contactName.getWindowToken(), InputMethodManager.RESULT_UNCHANGED_SHOWN);
                         } else if (!Utils.isValidEmail(contactEmail.getText().toString())) {
                             field2.setError(getString(R.string.error_email_edit_text));
-                            inputMethodManager.hideSoftInputFromWindow(contactEmail.getWindowToken(),InputMethodManager.RESULT_UNCHANGED_SHOWN);
+                            inputMethodManager.hideSoftInputFromWindow(contactEmail.getWindowToken(), InputMethodManager.RESULT_UNCHANGED_SHOWN);
                         } else {
                             Email email = new Email(contactName.getText().toString(), contactEmail.getText().toString(), tsMilli, true);
                             email.save();
-                            inputMethodManager.hideSoftInputFromWindow(contactEmail.getWindowToken(),0);
+                            inputMethodManager.hideSoftInputFromWindow(contactEmail.getWindowToken(), 0);
                             dialog.dismiss();
 
                             EventBus.getDefault().post(new EventB("2"));
@@ -1318,7 +1384,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 dialog.setContentView(R.layout.add_bank_account_dialog);
                 dialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);//Puts dialog on top of keyboard
                 dialog.setCanceledOnTouchOutside(false);
-                TextView title = (TextView)dialog.findViewById(R.id.title);
+                TextView title = (TextView) dialog.findViewById(R.id.title);
                 final TextInputLayout field1 = (TextInputLayout) dialog.findViewById(R.id.field_layout_1);//Add Dialog Contact Name
                 final TextInputLayout field2 = (TextInputLayout) dialog.findViewById(R.id.field_layout_2);//Add Dialog Account No
                 final TextInputLayout field3 = (TextInputLayout) dialog.findViewById(R.id.field_layout_3);//Add Dialog IFSC
@@ -1335,9 +1401,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     public void afterTextChanged(Editable s) {
                         //if (s.toString() != "") {MyApp.toSave = true;}
                     }
+
                     public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
                     }
+
                     public void onTextChanged(CharSequence s, int start, int before, int count) {
                         if (!TextUtils.isEmpty(String.valueOf(s))) {
                             tick1.setVisibility(View.VISIBLE);
@@ -1353,9 +1421,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     public void afterTextChanged(Editable s) {
                         //if (s.toString() != "") {MyApp.toSave = true;}
                     }
+
                     public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
                     }
+
                     public void onTextChanged(CharSequence s, int start, int before, int count) {
                         if (!TextUtils.isEmpty(String.valueOf(s))) {
                             tick2.setVisibility(View.VISIBLE);
@@ -1370,8 +1440,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     public void afterTextChanged(Editable s) {
                         //if (s.toString() != "") {MyApp.toSave = true;}
                     }
+
                     public void beforeTextChanged(CharSequence s, int start, int count, int after) {
                     }
+
                     public void onTextChanged(CharSequence s, int start, int before, int count) {
                         if (!TextUtils.isEmpty(String.valueOf(s))) {
                             tick3.setVisibility(View.VISIBLE);
@@ -1393,14 +1465,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
                         if (TextUtils.isEmpty(contactName.getText().toString())) {
                             field1.setError(getString(R.string.hint_contact_name));
-                            inputMethodManager.hideSoftInputFromWindow(contactName.getWindowToken(),InputMethodManager.RESULT_UNCHANGED_SHOWN);
+                            inputMethodManager.hideSoftInputFromWindow(contactName.getWindowToken(), InputMethodManager.RESULT_UNCHANGED_SHOWN);
                         } else if (TextUtils.isEmpty(contactAccountNo.getText().toString())) {
                             field2.setError(getString(R.string.hint_ac_no));
-                            inputMethodManager.hideSoftInputFromWindow(contactName.getWindowToken(),InputMethodManager.RESULT_UNCHANGED_SHOWN);
+                            inputMethodManager.hideSoftInputFromWindow(contactName.getWindowToken(), InputMethodManager.RESULT_UNCHANGED_SHOWN);
                         } else {
                             BankAccount bankAccount = new BankAccount(contactName.getText().toString(), contactAccountNo.getText().toString(), contactIFSC.getText().toString(), tsMilli, true);
                             bankAccount.save();
-                            inputMethodManager.hideSoftInputFromWindow(contactIFSC.getWindowToken(),0);
+                            inputMethodManager.hideSoftInputFromWindow(contactIFSC.getWindowToken(), 0);
                             dialog.dismiss();
                             EventBus.getDefault().post(new EventB("3"));
                         }
@@ -1426,7 +1498,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 dialog.setContentView(R.layout.add_contact_dialog);
                 dialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);//Puts dialog on top of keyboard
                 dialog.setCanceledOnTouchOutside(false);
-                TextView title = (TextView)dialog.findViewById(R.id.title);
+                TextView title = (TextView) dialog.findViewById(R.id.title);
                 final TextInputLayout field1 = (TextInputLayout) dialog.findViewById(R.id.field_layout_1);//Add Dialog Note
                 TextInputLayout field2 = (TextInputLayout) dialog.findViewById(R.id.field_layout_2);
                 final ImageView tick1 = (ImageView) dialog.findViewById(R.id.tick1);//Add Dialog Note
@@ -1443,9 +1515,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     public void afterTextChanged(Editable s) {
                         //if (s.toString() != "") {MyApp.toSave = true;}
                     }
+
                     public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
                     }
+
                     public void onTextChanged(CharSequence s, int start, int before, int count) {
                         if (!TextUtils.isEmpty(String.valueOf(s))) {
                             tick1.setVisibility(View.VISIBLE);
@@ -1471,11 +1545,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     public void onClick(View v) {
                         if (TextUtils.isEmpty(noteEditText.getText().toString())) {
                             field1.setError(getString(R.string.hint_note));
-                            inputMethodManager.hideSoftInputFromWindow(noteEditText.getWindowToken(),InputMethodManager.RESULT_UNCHANGED_SHOWN);
+                            inputMethodManager.hideSoftInputFromWindow(noteEditText.getWindowToken(), InputMethodManager.RESULT_UNCHANGED_SHOWN);
                         } else {
                             Note note = new Note(noteEditText.getText().toString(), tsMilli, true);
                             note.save();
-                            inputMethodManager.hideSoftInputFromWindow(noteEditText.getWindowToken(),0);
+                            inputMethodManager.hideSoftInputFromWindow(noteEditText.getWindowToken(), 0);
                             dialog.dismiss();
 
                             EventBus.getDefault().post(new EventB("4"));
@@ -1561,8 +1635,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         progressDialogBuilder = new AlertDialog.Builder(MainActivity.this);
         LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View dialogView = inflater.inflate(R.layout.progress_dialog_layout, null);
-        final TextView progressText = (TextView)dialogView.findViewById(R.id.progessText);
-        progressText.setText(progressText1+" ...");
+        final TextView progressText = (TextView) dialogView.findViewById(R.id.progessText);
+        progressText.setText(progressText1 + " ...");
         progressDialogBuilder.setView(dialogView);
         progressDialogBuilder.setCancelable(false);
         b = progressDialogBuilder.create();

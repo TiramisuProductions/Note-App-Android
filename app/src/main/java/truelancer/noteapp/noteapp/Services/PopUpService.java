@@ -719,7 +719,7 @@ public class PopUpService extends Service {
                 Log.d(TAG, "onChatHeadRollOut() called with: key = [" + key + "], chatHead = [" + chatHead + "]");
             }
         });
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("h:mm dd-MM-yyyy");
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("HH:mm:ss dd-MM-yyyy");
         String dateString = simpleDateFormat.format(new Date());//get current timestamp direct to string
 
 

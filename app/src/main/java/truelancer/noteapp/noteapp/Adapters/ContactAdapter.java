@@ -38,7 +38,7 @@ import java.util.List;
 import truelancer.noteapp.noteapp.Database.Contact;
 import truelancer.noteapp.noteapp.EventB;
 import truelancer.noteapp.noteapp.MainActivity;
-import truelancer.noteapp.noteapp.MainActivity_ViewBinding;
+
 import truelancer.noteapp.noteapp.MyApp;
 import truelancer.noteapp.noteapp.R;
 import truelancer.noteapp.noteapp.Utils;
@@ -51,7 +51,7 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.MyView> 
     String timeStampString;
     String inout = "";
 
-    SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
+    SimpleDateFormat simpleDateFormat = new SimpleDateFormat("HH:mm:ss dd-MM-yyyy");
 
     static final int RESULT_PICK_CONTACT = 4;
 

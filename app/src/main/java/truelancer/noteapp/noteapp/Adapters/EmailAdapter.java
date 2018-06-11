@@ -45,7 +45,7 @@ public class EmailAdapter extends RecyclerView.Adapter<EmailAdapter.MyView> {
     Activity activity;
     String timeStampString;
     Context itemContext;
-    SimpleDateFormat simpleDateFormat = new SimpleDateFormat(" dd-MM-yyyy HH:mm:ss");
+    SimpleDateFormat simpleDateFormat = new SimpleDateFormat("HH:mm:ss dd-MM-yyyy");
     String inout = "";
 
     static final int RESULT_PICK_CONTACT_E= 5;

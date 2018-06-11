@@ -42,7 +42,7 @@ public class BankAccountAdapter extends RecyclerView.Adapter<BankAccountAdapter.
     List<BankAccount> bankAccounts;
     Activity activity;
     String timeStampString;
-    SimpleDateFormat simpleDateFormat = new SimpleDateFormat(" dd-MM-yyyy HH:mm:ss");
+    SimpleDateFormat simpleDateFormat = new SimpleDateFormat("HH:mm:ss dd-MM-yyyy");
     Context itemContext;
     String inout = "";
 

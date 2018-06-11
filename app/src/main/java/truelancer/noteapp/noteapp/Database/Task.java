@@ -12,7 +12,6 @@ public class Task extends SugarRecord {
     String noteId;
     public boolean isDone;
 
-
     public Task() {
     }
 
