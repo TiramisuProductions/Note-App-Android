@@ -39,21 +39,19 @@ public class EmailFragment extends Fragment {
                              Bundle savedInstanceState) {
 
 
-
         View rootView = inflater.inflate(R.layout.fragment_email, container, false);
 
-       // getActivity().setTheme(R.style.MyMaterialThemeDark);
-        if(!EventBus.getDefault().isRegistered(this)){
+        // getActivity().setTheme(R.style.MyMaterialThemeDark);
+        if (!EventBus.getDefault().isRegistered(this)) {
             EventBus.getDefault().register(this);
         }
-
 
 
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getActivity());
         mRecyclerView = (RecyclerView) rootView.findViewById(R.id.recycler_email);
         mRecyclerView.setLayoutManager(mLayoutManager);
 
-        if(!MyApp.defaultTheme){
+        if (!MyApp.defaultTheme) {
             mRecyclerView.setBackgroundColor(getResources().getColor(R.color.dark));
             rootView.setBackgroundColor(getResources().getColor(R.color.dark));
         }
@@ -77,9 +75,9 @@ public class EmailFragment extends Fragment {
     }
 
     @Subscribe
-    public void onEvent(EventB event){
+    public void onEvent(EventB event) {
         // your implementation
-        if(event.getMessage().equals("2")){
+        if (event.getMessage().equals("2")) {
             mAdapter.notifyDataSetChanged();
             List<Email> emails = Email.listAll(Email.class);
             Collections.reverse(emails);

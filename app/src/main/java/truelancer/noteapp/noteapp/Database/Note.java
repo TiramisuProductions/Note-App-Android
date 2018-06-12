@@ -21,8 +21,6 @@ public class Note extends SugarRecord {
         this.calledNumber=calledNumber;
         this.tsMilli=tsMilli;
         this.incoming=incoming;
-
-
     }
 
     public Note(String note, String tsMilli, boolean isSavedFromApp) {

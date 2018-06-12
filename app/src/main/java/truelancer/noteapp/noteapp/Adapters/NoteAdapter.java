@@ -15,15 +15,12 @@ import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.CheckBox;
-import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Spinner;
@@ -57,8 +54,6 @@ public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.MyView> {
     String inout = "";
 
 
-
-
     public NoteAdapter(FragmentActivity activity, List<Note> not) {
         this.activity = activity;
         this.notes = not;
@@ -74,7 +69,7 @@ public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.MyView> {
     @Override
     public void onBindViewHolder(final MyView holder, final int position) {
 
-        if(!MyApp.defaultTheme){
+        if (!MyApp.defaultTheme) {
             holder.noteCardView.setCardBackgroundColor(itemContext.getResources().getColor(R.color.darker_card));
             holder.noteText.setTextColor(itemContext.getResources().getColor(R.color.white));
             holder.calledName.setTextColor(itemContext.getResources().getColor(R.color.white));
@@ -85,16 +80,12 @@ public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.MyView> {
             holder.call_text.setTextColor(itemContext.getResources().getColor(R.color.white));
             holder.contactId2.setTextColor(itemContext.getResources().getColor(R.color.white));
             holder.overflow.setColorFilter(itemContext.getResources().getColor(R.color.white));
-
-
-
         }
 
-
-        if(notes.get(position).isSavedFromApp()){
+        if (notes.get(position).isSavedFromApp()) {
             holder.state_of_call.setImageResource(R.drawable.ic_saved_from_app);
-            inout="Saved From App";
-        }else{
+            inout = "Saved From App";
+        } else {
             if (!notes.get(position).isIncoming()) {
 
                 inout = "Call To";
@@ -115,15 +106,13 @@ public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.MyView> {
         holder.calledName.setText(notes.get(position).getCalledName());
         holder.calledNumber.setText(notes.get(position).getCalledNumber());
 
-        List<Task> tasks=Task.findWithQuery(Task.class,"Select * from Task where note_id=?",notes.get(position).getId().toString());
+        List<Task> tasks = Task.findWithQuery(Task.class, "Select * from Task where note_id=?", notes.get(position).getId().toString());
 
-        if(tasks.size()!=0){
-            holder.noOfTasks.setText(tasks.size()+" Tasks");
-        }else{
+        if (tasks.size() != 0) {
+            holder.noOfTasks.setText(tasks.size() + " Tasks");
+        } else {
             holder.noOfTasks.setText("No Tasks");
         }
-
-
 
         holder.noteCardView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -134,7 +123,8 @@ public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.MyView> {
 
                 intent.putExtra("calledName", notes.get(position).getCalledName());
                 intent.putExtra("calledNumber", notes.get(position).getCalledNumber());
-                intent.putExtra("noteId",""+notes.get(position).getId());
+                intent.putExtra("noteId", "" + notes.get(position).getId());
+                intent.putExtra("notetimestamp",notes.get(position).getTsMilli() );
 
                 String income = "" + notes.get(position).isIncoming();
                 intent.putExtra("incoming", income);
@@ -163,7 +153,7 @@ public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.MyView> {
                         String temp = item.getTitle().toString();
                         if (temp.equals("Share")) {//Share
 
-                            if(holder.calledNumber.getText().length()==0 && holder.calledNumber.getText().length()==0) {
+                            if (holder.calledNumber.getText().length() == 0 && holder.calledNumber.getText().length() == 0) {
                                 String shareText = "DateTime: [" + timeStampString + "]\n"
                                         + inout + "\n"
                                         + "Saved Details\n"
@@ -178,12 +168,11 @@ public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.MyView> {
                                 } catch (Exception e) {
                                     e.printStackTrace();
                                 }
-                            }else {
+                            } else {
                                 if (!notes.get(position).isIncoming()) {
                                     inout = "Call To";
                                     holder.state_of_call.setImageResource(R.drawable.ic_outgoing);
-                                }
-                                else {
+                                } else {
                                     inout = "Call By";
                                     holder.state_of_call.setImageResource(R.drawable.ic_incoming);
                                 }
@@ -204,28 +193,28 @@ public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.MyView> {
                                 }
                             }
                         }//Edit Dialog
-                        else if(temp.equals("Edit")){
+                        else if (temp.equals("Edit")) {
                             final Dialog dialog = new Dialog(itemContext);
                             dialog.setContentView(R.layout.edit_dialog_notes);
                             dialog.setTitle("Edit...");
                             dialog.setCancelable(false);
-                            final TextInputLayout noteTextInputLayout=(TextInputLayout)dialog.findViewById(R.id.textInputLayout2);//Edit Dialog Note
-                            final TextInputLayout calledNameTextInputLayout=(TextInputLayout)dialog.findViewById(R.id.textInputLayout3);//Edit Dialog Called Name
-                            final TextInputLayout calledNumberTextInputLayout=(TextInputLayout)dialog.findViewById(R.id.textInputLayout4);//Edit Dialog Called Number
-                            final EditText contactName = (EditText)dialog.findViewById(R.id.editContactName);
-                            final EditText contactNote = (EditText)dialog.findViewById(R.id.editContactNote);
-                            final EditText calledName =(EditText)dialog.findViewById(R.id.editCalledName);
-                            final EditText calledNumber = (EditText)dialog.findViewById(R.id.editCalledNumber);
-                            final Spinner calledState =(Spinner)dialog.findViewById(R.id.callstate);
-                            final ImageView tick2=(ImageView)dialog.findViewById(R.id.tick2);//Edit Dialog Note
-                            final ImageView tick3=(ImageView)dialog.findViewById(R.id.tick3);//Edit Dialog Called Name
-                            final ImageView tick4=(ImageView)dialog.findViewById(R.id.tick4);//Edit Dialog Called Number
-                            Button btnDone = (Button)dialog.findViewById(R.id.btnSelect);//Edit Dialog Done Button
-                            Button btnCancel = (Button)dialog.findViewById(R.id.btnCancel);//Edit Dialog Cancel Button
-                            TextView title=(TextView)dialog.findViewById(R.id.edit_dialog_text);
+                            final TextInputLayout noteTextInputLayout = (TextInputLayout) dialog.findViewById(R.id.textInputLayout2);//Edit Dialog Note
+                            final TextInputLayout calledNameTextInputLayout = (TextInputLayout) dialog.findViewById(R.id.textInputLayout3);//Edit Dialog Called Name
+                            final TextInputLayout calledNumberTextInputLayout = (TextInputLayout) dialog.findViewById(R.id.textInputLayout4);//Edit Dialog Called Number
+                            final EditText contactName = (EditText) dialog.findViewById(R.id.editContactName);
+                            final EditText contactNote = (EditText) dialog.findViewById(R.id.editContactNote);
+                            final EditText calledName = (EditText) dialog.findViewById(R.id.editCalledName);
+                            final EditText calledNumber = (EditText) dialog.findViewById(R.id.editCalledNumber);
+                            final Spinner calledState = (Spinner) dialog.findViewById(R.id.callstate);
+                            final ImageView tick2 = (ImageView) dialog.findViewById(R.id.tick2);//Edit Dialog Note
+                            final ImageView tick3 = (ImageView) dialog.findViewById(R.id.tick3);//Edit Dialog Called Name
+                            final ImageView tick4 = (ImageView) dialog.findViewById(R.id.tick4);//Edit Dialog Called Number
+                            Button btnDone = (Button) dialog.findViewById(R.id.btnSelect);//Edit Dialog Done Button
+                            Button btnCancel = (Button) dialog.findViewById(R.id.btnCancel);//Edit Dialog Cancel Button
+                            TextView title = (TextView) dialog.findViewById(R.id.edit_dialog_text);
                             title.setText(R.string.edit_dialog_note);
-                            String options[] = {"Incoming","Outgoing"};
-                            ArrayAdapter<String> adminSpinnerArrayAdapter = new ArrayAdapter<String>(itemContext,   android.R.layout.simple_spinner_item, options);
+                            String options[] = {"Incoming", "Outgoing"};
+                            ArrayAdapter<String> adminSpinnerArrayAdapter = new ArrayAdapter<String>(itemContext, android.R.layout.simple_spinner_item, options);
                             adminSpinnerArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item); // The drop down view
                             calledState.setAdapter(adminSpinnerArrayAdapter);
 
@@ -235,16 +224,17 @@ public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.MyView> {
                                 public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
                                 }
+
                                 @Override
                                 public void onTextChanged(CharSequence s, int start, int before, int count) {
-                                  if (String.valueOf(s).length()>0){
-                                      tick2.setVisibility(View.VISIBLE);
-                                      noteTextInputLayout.setError(null);
-                                  }
-                                  else {
-                                      tick2.setVisibility(View.INVISIBLE);
-                                  }
+                                    if (String.valueOf(s).length() > 0) {
+                                        tick2.setVisibility(View.VISIBLE);
+                                        noteTextInputLayout.setError(null);
+                                    } else {
+                                        tick2.setVisibility(View.INVISIBLE);
+                                    }
                                 }
+
                                 @Override
                                 public void afterTextChanged(Editable s) {
 
@@ -256,16 +246,17 @@ public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.MyView> {
                                 public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
                                 }
+
                                 @Override
                                 public void onTextChanged(CharSequence s, int start, int before, int count) {
-                                    if (String.valueOf(s).length()>0){
+                                    if (String.valueOf(s).length() > 0) {
                                         tick3.setVisibility(View.VISIBLE);
                                         calledNameTextInputLayout.setError(null);
-                                    }
-                                    else {
+                                    } else {
                                         tick3.setVisibility(View.INVISIBLE);
                                     }
                                 }
+
                                 @Override
                                 public void afterTextChanged(Editable s) {
 
@@ -277,16 +268,17 @@ public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.MyView> {
                                 public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
                                 }
+
                                 @Override
                                 public void onTextChanged(CharSequence s, int start, int before, int count) {
-                                    if (String.valueOf(s).length()>0){
+                                    if (String.valueOf(s).length() > 0) {
                                         tick4.setVisibility(View.VISIBLE);
                                         calledNumberTextInputLayout.setError(null);
-                                    }
-                                    else {
+                                    } else {
                                         tick4.setVisibility(View.INVISIBLE);
                                     }
                                 }
+
                                 @Override
                                 public void afterTextChanged(Editable s) {
 
@@ -294,10 +286,9 @@ public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.MyView> {
                             });
 
                             //Edit Dialog set spinner
-                            if(notes.get(position).isIncoming()){
+                            if (notes.get(position).isIncoming()) {
                                 calledState.setSelection(0);
-                            }
-                            else {
+                            } else {
                                 calledState.setSelection(1);
                             }
                             //Edit Dialog Done
@@ -334,9 +325,7 @@ public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.MyView> {
                             calledName.setText(notes.get(position).getCalledName());
                             calledNumber.setText(notes.get(position).getCalledNumber());
                             dialog.show();
-                        }
-
-                        else {//Delete
+                        } else {//Delete
                             AlertDialog.Builder builder = new AlertDialog.Builder(itemContext);
 
                             builder.setTitle("You want to delete");
@@ -410,14 +399,13 @@ public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.MyView> {
 
 
     public class MyView extends RecyclerView.ViewHolder {
-        private TextView  noteText, calledName, calledNumber, call_text, date_time,savedDetails,contactId1,contactId2,noOfTasks;
+        private TextView noteText, calledName, calledNumber, call_text, date_time, savedDetails, contactId1, contactId2, noOfTasks;
         private CardView noteCardView;
         private ImageView state_of_call, overflow;
         private Button sync;
 
         public MyView(View itemView) {
             super(itemView);
-
 
 
             noteText = (TextView) itemView.findViewById(R.id.noteTitle);
@@ -428,10 +416,10 @@ public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.MyView> {
             state_of_call = (ImageView) itemView.findViewById(R.id.stateOfCallNote);
             date_time = (TextView) itemView.findViewById(R.id.date_time_txt);
             overflow = (ImageView) itemView.findViewById(R.id.overflow);
-            sync=(Button)itemView.findViewById(R.id.calendarSync);
-            savedDetails =(TextView)itemView.findViewById(R.id.saved_details);
-            contactId2 =(TextView)itemView.findViewById(R.id.contact_id2Note);
-            noOfTasks = (TextView)itemView.findViewById(R.id.nooftasks);
+            sync = (Button) itemView.findViewById(R.id.calendarSync);
+            savedDetails = (TextView) itemView.findViewById(R.id.saved_details);
+            contactId2 = (TextView) itemView.findViewById(R.id.contact_id2Note);
+            noOfTasks = (TextView) itemView.findViewById(R.id.nooftasks);
 
             itemContext = itemView.getContext();
         }

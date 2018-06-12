@@ -1,13 +1,11 @@
 package truelancer.noteapp.noteapp.Services;
 
-import android.app.Dialog;
 import android.app.Service;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.media.AudioManager;
 import android.media.MediaRecorder;
@@ -15,7 +13,6 @@ import android.os.Binder;
 import android.os.Environment;
 import android.os.IBinder;
 import android.support.constraint.ConstraintLayout;
-import android.support.design.widget.TextInputLayout;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AlertDialog;
@@ -51,7 +48,6 @@ import com.ogaclejapan.smarttablayout.SmartTabLayout;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
-import org.w3c.dom.Text;
 
 import java.io.File;
 import java.io.Serializable;
@@ -79,16 +75,7 @@ public class PopUpService extends Service {
 
     private static final String TAG = "PopUpService";
     private final IBinder mBinder = new LocalBinder();
-    private DefaultChatHeadManager<String> chatHeadManager;
-    private int chatHeadIdentifier = 0;
-    private WindowManagerContainer windowManagerContainer;
-    private Map<String, View> viewCache = new HashMap<>();
     int count = 0;
-    private CustomChatHeadConfig customChatHeadConfig;
-    private String calledNumber = "";
-    private String calledName = "";
-    private boolean incomingCall, isDone;
-    private String timeStampMilli = "";
     MediaRecorder mRecorder;
     boolean isStartRecording = false;
     String pathToSaveRecordedCalls = null;
@@ -97,432 +84,25 @@ public class PopUpService extends Service {
     String suggestedRecordName;
     String file_path;
     SharedPreferences pref;
+    private DefaultChatHeadManager<String> chatHeadManager;
+    private int chatHeadIdentifier = 0;
+    private WindowManagerContainer windowManagerContainer;
+    private Map<String, View> viewCache = new HashMap<>();
+    private CustomChatHeadConfig customChatHeadConfig;
+    private String calledNumber = "";
+    private String calledName = "";
+    private boolean incomingCall, isDone;
+    private String timeStampMilli = "";
 
-
-    public enum CustomPagerEnum {
-
-        CONTACT(R.string.contact, R.layout.contact_add),
-        EMAIL(R.string.email, R.layout.email_add),
-        ACCOUNT(R.string.account, R.layout.account_add),
-        NOTE(R.string.notes, R.layout.notes_add);
-
-        private int mTitleResId;
-        private int mLayoutResId;
-
-        CustomPagerEnum(int titleResId, int layoutResId) {
-            mTitleResId = titleResId;
-            mLayoutResId = layoutResId;
-        }
-
-        public int getTitleResId() {
-            return mTitleResId;
-        }
-
-        public int getLayoutResId() {
-            return mLayoutResId;
-        }
+    //Email validation
+    public final static boolean isValidEmail(String target) {
+        return (!TextUtils.isEmpty(target) && Patterns.EMAIL_ADDRESS.matcher(target).matches());
     }
-
-    public class CustomPagerAdapter extends PagerAdapter {
-
-        private Context mContext;
-        private EditText abc;
-
-
-        public CustomPagerAdapter(Context context) {
-            mContext = context;
-        }
-
-
-        @Override
-        public Object instantiateItem(ViewGroup collection, int position) {
-
-            CustomPagerEnum customPagerEnum = CustomPagerEnum.values()[position];
-            LayoutInflater inflater = LayoutInflater.from(mContext);
-            ViewGroup layout = (ViewGroup) inflater.inflate(customPagerEnum.getLayoutResId(), collection, false);
-            collection.addView(layout);
-
-
-            count++;
-
-            if (count == 1) {
-                EventBus.getDefault().register(this);
-            }
-            switch (position) {
-
-                case 0:
-                    final EditText EditContactName = (EditText) layout.findViewById(R.id.contact_name_et);
-                    final EditText EditContactNo = (EditText) layout.findViewById(R.id.contact_no_et);
-                    final TextView contactLabel1 = (TextView)layout.findViewById(R.id.contactLabel1);
-                    final TextView contactLabel2 = (TextView)layout.findViewById(R.id.contactLabel2);
-                    final RelativeLayout relativeLayout =(RelativeLayout)layout.findViewById(R.id.layout);
-                    final ScrollView scrollView = (ScrollView)layout.findViewById(R.id.scroll_layout);
-                    if(!MyApp.defaultTheme){
-                    relativeLayout.setBackgroundColor(getResources().getColor(R.color.dark));
-                    scrollView.setBackgroundColor(getResources().getColor(R.color.dark));
-                    EditContactName.setTextColor(getResources().getColor(R.color.white));
-                    EditContactNo.setTextColor(getResources().getColor(R.color.white));
-                    contactLabel1.setTextColor(getResources().getColor(R.color.white));
-                    contactLabel2.setTextColor(getResources().getColor(R.color.white));
-                    }
-
-                    MyApp.editContactNameToSave = EditContactName;
-                    MyApp.editContactNumberToSave = EditContactNo;
-                    final ImageView contactTick1 = (ImageView) layout.findViewById(R.id.tick1);
-                    final ImageView contactTick2 = (ImageView) layout.findViewById(R.id.tick2);
-
-
-                    TextWatcher textWatcher01 = new TextWatcher() {
-
-                        public void afterTextChanged(Editable s) {
-                            //if (s.toString() != "") {MyApp.toSave = true;}
-                        }
-
-                        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-                        }
-
-                        public void onTextChanged(CharSequence s, int start, int before,
-                                                  int count) {
-
-                            MyApp.contactNumber0 = String.valueOf(s);
-                            if (isValidMobile(String.valueOf(s))) {
-                                contactTick2.setVisibility(View.VISIBLE);
-                            } else {
-                                contactTick2.setVisibility(View.INVISIBLE);
-                            }
-
-
-                        }
-                    };
-                    EditContactNo.addTextChangedListener(textWatcher01);
-
-                    TextWatcher textWatcher02 = new TextWatcher() {
-
-                        public void afterTextChanged(Editable s) {
-                        }
-
-                        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-                        }
-
-                        public void onTextChanged(CharSequence s, int start, int before,
-                                                  int count) {
-                            MyApp.contactName0 = String.valueOf(s);
-
-                            if (String.valueOf(s).length() > 0) {
-                                contactTick1.setVisibility(View.VISIBLE);
-                            } else {
-                                contactTick1.setVisibility(View.INVISIBLE);
-                            }
-                        }
-                    };
-                    EditContactName.addTextChangedListener(textWatcher02);
-
-
-
-                    break;
-
-                case 1:
-                    final EditText ContactName2 = (EditText) layout.findViewById(R.id.contact_name2_et);
-                    final EditText EmailID = (EditText) layout.findViewById(R.id.emailId_et);
-                    final ImageView emailTick1 = (ImageView) layout.findViewById(R.id.tick1);
-                    final ImageView emailTick2 = (ImageView) layout.findViewById(R.id.tick2);
-                    final TextView emailLabel1 = (TextView)layout.findViewById(R.id.contactLabel1);
-                    final TextView emailLabel2 = (TextView)layout.findViewById(R.id.contactLabel2);
-
-                    MyApp.editEmailContactNameToSave = ContactName2;
-                    MyApp.editEmailAdressToSave = EmailID;
-
-
-                    if(!MyApp.defaultTheme){
-                        ContactName2.setTextColor(getResources().getColor(R.color.white));
-                        EmailID.setTextColor(getResources().getColor(R.color.white));
-                        emailLabel1.setTextColor(getResources().getColor(R.color.white));
-                        emailLabel2.setTextColor(getResources().getColor(R.color.white));
-                    }
-
-
-                    TextWatcher textWatcher11 = new TextWatcher() {
-
-                        public void afterTextChanged(Editable s) {
-                        }
-
-                        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-                        }
-
-                        public void onTextChanged(CharSequence s, int start, int before,
-                                                  int count) {
-                            MyApp.contactName1 = String.valueOf(s);
-                            if (String.valueOf(s).length() > 0) {
-                                emailTick1.setVisibility(View.VISIBLE);
-                            } else {
-                                emailTick1.setVisibility(View.INVISIBLE);
-                            }
-                        }
-                    };
-                    ContactName2.addTextChangedListener(textWatcher11);
-
-                    TextWatcher textWatcher12 = new TextWatcher() {
-                        public void afterTextChanged(Editable s) {
-                        }
-
-                        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-                        }
-
-                        public void onTextChanged(CharSequence s, int start, int before,
-                                                  int count) {
-                            MyApp.emailId1 = String.valueOf(s);
-
-                            if (isValidEmail(String.valueOf(s))) {
-                                emailTick2.setVisibility(View.VISIBLE);
-                            } else {
-                                emailTick2.setVisibility(View.INVISIBLE);
-                            }
-                        }
-                    };
-                    EmailID.addTextChangedListener(textWatcher12);
-
-
-                    break;
-
-                case 2:
-
-                    final TextView accountLabel1 = (TextView)layout.findViewById(R.id.contactLabel1);
-                    final TextView accountLabel2 = (TextView)layout.findViewById(R.id.contactLabel2);
-                    final TextView accountLabel3 = (TextView)layout.findViewById(R.id.contactLabel3);
-                    final EditText ContactName3 = (EditText) layout.findViewById(R.id.contact_name3_et);
-                    final EditText AccountNo = (EditText) layout.findViewById(R.id.account_no_et);
-                    final EditText Others = (EditText) layout.findViewById(R.id.others_et);
-                    final ImageView bankAccountTick1 = (ImageView) layout.findViewById(R.id.tick1);
-                    final ImageView bankAccountTick2 = (ImageView) layout.findViewById(R.id.tick2);
-                    final ImageView bankAccountTick3 = (ImageView) layout.findViewById(R.id.tick3);
-
-                    MyApp.editBankContactNameToSave = ContactName3;
-                    MyApp.editBankAccountNoToSave = AccountNo;
-                    MyApp.editBankOthersNoToSave = Others;
-
-
-                    if(!MyApp.defaultTheme){
-                        accountLabel1.setTextColor(getResources().getColor(R.color.white));
-                        accountLabel2.setTextColor(getResources().getColor(R.color.white));
-                        accountLabel3.setTextColor(getResources().getColor(R.color.white));
-                        ContactName3.setTextColor(getResources().getColor(R.color.white));
-                        AccountNo.setTextColor(getResources().getColor(R.color.white));
-                        Others.setTextColor(getResources().getColor(R.color.white));
-                    }
-
-
-                    TextWatcher textWatcher21 = new TextWatcher() {
-
-                        public void afterTextChanged(Editable s) {
-                        }
-
-                        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-                        }
-
-                        public void onTextChanged(CharSequence s, int start, int before,
-                                                  int count) {
-                            MyApp.contactName2 = String.valueOf(s);
-                            if (String.valueOf(s).length() > 0) {
-                                bankAccountTick1.setVisibility(View.VISIBLE);
-                            } else {
-                                bankAccountTick1.setVisibility(View.INVISIBLE);
-                            }
-                        }
-                    };
-                    ContactName3.addTextChangedListener(textWatcher21);
-
-                    TextWatcher textWatcher22 = new TextWatcher() {
-
-                        public void afterTextChanged(Editable s) {
-                        }
-
-                        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-                        }
-
-                        public void onTextChanged(CharSequence s, int start, int before,
-                                                  int count) {
-                            MyApp.accountNumber2 = String.valueOf(s);
-                            if (String.valueOf(s).length() > 0) {
-                                bankAccountTick2.setVisibility(View.VISIBLE);
-                            } else {
-                                bankAccountTick2.setVisibility(View.INVISIBLE);
-                            }
-                        }
-                    };
-                    AccountNo.addTextChangedListener(textWatcher22);
-
-                    TextWatcher textWatcher23 = new TextWatcher() {
-
-                        public void afterTextChanged(Editable s) {
-                        }
-
-                        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-                        }
-
-                        public void onTextChanged(CharSequence s, int start, int before,
-                                                  int count) {
-                            MyApp.ifsc2 = String.valueOf(s);
-                            if (String.valueOf(s).length() > 0) {
-                                bankAccountTick3.setVisibility(View.VISIBLE);
-                            } else {
-                                bankAccountTick3.setVisibility(View.INVISIBLE);
-                            }
-                        }
-                    };
-                    Others.addTextChangedListener(textWatcher23);
-                    break;
-
-                case 3:
-
-
-                    final EditText Note1 = (EditText) layout.findViewById(R.id.note_et);
-                    final TextView noteLabel1 = (TextView)layout.findViewById(R.id.contactLabel2);
-                    final ImageView tick = (ImageView)layout.findViewById(R.id.tick2);
-
-                    MyApp.editNoteToSave = Note1;
-
-
-                    if(!MyApp.defaultTheme){
-                        Note1.setTextColor(getResources().getColor(R.color.white));
-                        noteLabel1.setTextColor(getResources().getColor(R.color.white));
-                    }
-
-
-                    TextWatcher textWatcher31 = new TextWatcher() {
-
-                        public void afterTextChanged(Editable s) {
-                        }
-
-                        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-                        }
-
-                        public void onTextChanged(CharSequence s, int start, int before,
-                                                  int count) {
-                            MyApp.contactName3 = String.valueOf(s);
-                        }
-                    };
-
-                    TextWatcher textWatcher32 = new TextWatcher() {
-
-                        public void afterTextChanged(Editable s) {
-                        }
-
-                        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-                        }
-
-                        public void onTextChanged(CharSequence s, int start, int before,
-                                                  int count) {
-                            MyApp.note3 = String.valueOf(s);
-
-                            if(TextUtils.isEmpty(String.valueOf(s))){
-                                tick.setVisibility(View.INVISIBLE);
-                            }else {
-                                tick.setVisibility(View.VISIBLE);
-                            }
-                        }
-                    };
-                    Note1.addTextChangedListener(textWatcher32);
-
-
-
-                    break;
-            }
-
-            return layout;
-        }
-
-
-        @Override
-        public void destroyItem(ViewGroup collection, int position, Object view) {
-            collection.removeView((View) view);
-        }
-
-        @Override
-        public int getCount() {
-            return CustomPagerEnum.values().length;
-        }
-
-        @Override
-        public boolean isViewFromObject(View view, Object object) {
-            return view == object;
-        }
-
-        @Override
-        public CharSequence getPageTitle(int position) {
-            CustomPagerEnum customPagerEnum = CustomPagerEnum.values()[position];
-            return mContext.getString(customPagerEnum.getTitleResId());
-        }
-
-        @Subscribe
-        public void onEvent(EventB event) {
-            // your implementation
-            if (event.getMessage().equals("0")) {
-                if (TextUtils.isEmpty(MyApp.editContactNameToSave.getText().toString())) {
-                    MyApp.editContactNameToSave.setError(mContext.getString(R.string.hint_contact_name));
-                    MyApp.editEmailAdressToSave.setError(null);
-
-                } else if (!isValidMobile(MyApp.editContactNumberToSave.getText().toString())) {
-                    MyApp.editContactNumberToSave.setError(mContext.getString(R.string.hint_contact_number));
-                } else {
-                    Contact contact = new Contact(MyApp.editContactNameToSave.getText().toString(), MyApp.editContactNumberToSave.getText().toString(), calledNumber, calledName, incomingCall, timeStampMilli);
-                    contact.save();
-                    Toast.makeText(mContext, "Successfully Saved", Toast.LENGTH_LONG).show();
-                    EventBus.getDefault().post(new EventB("1"));
-                    MyApp.editContactNameToSave.setText(null);
-                    MyApp.editContactNumberToSave.setText(null);
-                }
-            } else if (event.getMessage().equals("1")) {
-                if (TextUtils.isEmpty(MyApp.editEmailContactNameToSave.getText().toString())) {
-                    MyApp.editEmailContactNameToSave.setError(mContext.getString(R.string.hint_contact_name));
-                } else if (!isValidEmail(MyApp.editEmailAdressToSave.getText().toString())) {
-                    MyApp.editEmailAdressToSave.setError(mContext.getString(R.string.hint_email));
-                } else {
-                    Email email = new Email(MyApp.editEmailContactNameToSave.getText().toString(), MyApp.editEmailAdressToSave.getText().toString(), calledNumber, calledName, incomingCall, timeStampMilli);
-                    email.save();
-                    Toast.makeText(mContext, "Successfully Saved", Toast.LENGTH_LONG).show();
-                    EventBus.getDefault().post(new EventB("2"));
-                    MyApp.editEmailContactNameToSave.setText(null);
-                    MyApp.editEmailAdressToSave.setText(null);
-                }
-
-            } else if (event.getMessage().equals("2")) {
-                if (TextUtils.isEmpty(MyApp.editBankContactNameToSave.getText().toString())) {
-                    MyApp.editBankContactNameToSave.setError(mContext.getString(R.string.hint_contact_name));
-                } else if (TextUtils.isEmpty(MyApp.editBankAccountNoToSave.getText().toString())) {
-                    MyApp.editBankAccountNoToSave.setError(mContext.getString(R.string.hint_ac_no));
-                } else {
-                    BankAccount bankAccount = new BankAccount(MyApp.editBankContactNameToSave.getText().toString(), MyApp.editBankAccountNoToSave.getText().toString(), MyApp.editBankOthersNoToSave.getText().toString(), calledNumber, calledName, incomingCall, timeStampMilli);
-                    bankAccount.save();
-                    Toast.makeText(mContext, "Successfully Saved", Toast.LENGTH_LONG).show();
-                    EventBus.getDefault().post(new EventB("3"));
-                    MyApp.editBankContactNameToSave.setText(null);
-                    MyApp.editBankAccountNoToSave.setText(null);
-                    MyApp.editBankOthersNoToSave.setText(null);
-                }
-            }else if(event.getMessage().equals("3")){
-                if(TextUtils.isEmpty(MyApp.editNoteToSave.getText().toString())){
-                 MyApp.editNoteToSave.setError(mContext.getString(R.string.hint_note));
-                }else {
-                    Note noteN = new Note(MyApp.editNoteToSave.getText().toString(), calledName, calledNumber, timeStampMilli, incomingCall);
-                    noteN.save();
-                    Toast.makeText(mContext, "Successfully Saved", Toast.LENGTH_LONG).show();
-                    EventBus.getDefault().post(new EventB("4"));
-                    MyApp.editNoteToSave.setText(null);
-                }
-            }
-
-
-        }
-
-    }
-
 
     @Override
     public IBinder onBind(Intent intent) {
         return mBinder;
     }
-
 
     @Override
     public void onCreate() {
@@ -565,15 +145,14 @@ public class PopUpService extends Service {
                     View view = inflater.inflate(R.layout.fragment_hoverphone, parent, false);
 
                     final ViewPager pager = (ViewPager) view.findViewById(R.id.viewPager);
-                    final ConstraintLayout layout =(ConstraintLayout)view.findViewById(R.id.layout);
+                    final ConstraintLayout layout = (ConstraintLayout) view.findViewById(R.id.layout);
                     pager.setAdapter(new CustomPagerAdapter(getApplicationContext()));
                     final SmartTabLayout viewPagerTab = (SmartTabLayout) view.findViewById(R.id.viewPagerTab);
 
-                    if(!MyApp.defaultTheme){
+                    if (!MyApp.defaultTheme) {
                         viewPagerTab.setDefaultTabTextColor(getResources().getColor(R.color.white));
                         layout.setBackgroundColor(getResources().getColor(R.color.dark));
                     }
-
 
 
                     viewPagerTab.setViewPager(pager);
@@ -592,7 +171,7 @@ public class PopUpService extends Service {
                         @Override
                         public void onClick(View view) {
                             Log.d("booh", "" + pager.getCurrentItem());
-                            EventBus.getDefault().post(new EventB(""+ pager.getCurrentItem()));
+                            EventBus.getDefault().post(new EventB("" + pager.getCurrentItem()));
 
                         }
                     });
@@ -612,11 +191,11 @@ public class PopUpService extends Service {
                         @Override
                         public void onClick(View v) {
 
-                         //   Toast.makeText(PopUpService.this, "record call : " + recordCall.getText().toString(), Toast.LENGTH_SHORT).show();
+                            //   Toast.makeText(PopUpService.this, "record call : " + recordCall.getText().toString(), Toast.LENGTH_SHORT).show();
 
-                            if( !isCallActive(getApplicationContext())){
-                                Toast.makeText(getApplicationContext(),"Call is not active",Toast.LENGTH_LONG).show();
-                            }else {
+                            if (!isCallActive(getApplicationContext())) {
+                                Toast.makeText(getApplicationContext(), "Call is not active", Toast.LENGTH_LONG).show();
+                            } else {
 
 
                                 if (isStartRecording) {
@@ -818,17 +397,6 @@ public class PopUpService extends Service {
         chatHeadManager.setArrangement(MinimizedArrangement.class, null);
     }
 
-    /**
-     * Class used for the client Binder.  Because we know this service always
-     * runs in the same process as its clients, we don't need to deal with IPC.
-     */
-    public class LocalBinder extends Binder {
-        public PopUpService getService() {
-            // Return this instance of LocalService so clients can call public methods
-            return PopUpService.this;
-        }
-    }
-
     //Phone no validation
     private boolean isValidMobile(String phone) {
         boolean check = false;
@@ -846,32 +414,19 @@ public class PopUpService extends Service {
         return check;
     }
 
-    //Email validation
-    public final static boolean isValidEmail(String target) {
-        return (!TextUtils.isEmpty(target) && Patterns.EMAIL_ADDRESS.matcher(target).matches());
-    }
-
-    public boolean isCallActive(Context context){
-        AudioManager manager = (AudioManager)context.getSystemService(Context.AUDIO_SERVICE);
-        if(manager.getMode()== AudioManager.MODE_IN_CALL){
+    public boolean isCallActive(Context context) {
+        AudioManager manager = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
+        if (manager.getMode() == AudioManager.MODE_IN_CALL) {
             return true;
-        }
-        else{
+        } else {
             return false;
         }
     }
 
     public void startRecording() {
 
-
-
-
         mRecorder = new MediaRecorder();
-
-
         mRecorder.setAudioSource(MediaRecorder.AudioSource.VOICE_CALL);
-
-
 
         //voice call to be used
         mRecorder.setOutputFormat(MediaRecorder.OutputFormat.AMR_NB);
@@ -884,12 +439,12 @@ public class PopUpService extends Service {
             mRecorder.prepare();
             mRecorder.start();
         } catch (Exception e) {
-
-
-
+            e.printStackTrace();
+            Log.d("wood", "communication");
+            mRecorder=null;
+            mRecorder=new MediaRecorder();
             mRecorder.setAudioSource(MediaRecorder.AudioSource.VOICE_COMMUNICATION);
-
-            //voice call to be used
+            //voice communication to be used
             mRecorder.setOutputFormat(MediaRecorder.OutputFormat.AMR_NB);
             mRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB);
             mRecorder.setOutputFile(pathToSaveRecordedCalls + File.separator + fileNameOfCallRecording + ".amr");
@@ -899,8 +454,8 @@ public class PopUpService extends Service {
             try {
                 mRecorder.prepare();
                 mRecorder.start();
-            } catch (Exception err) {
-
+            } catch (Exception er) {
+                er.printStackTrace();
 
             }
         }
@@ -918,7 +473,7 @@ public class PopUpService extends Service {
                 + File.separator + fileNameOfCallRecording + ".amr";
 
         final EditText usersRecordName = new EditText(this);
-        final TextView text=new TextView(this);
+        final TextView text = new TextView(this);
         suggestedRecordName = "Record_" + calledName;
         usersRecordName.setText(suggestedRecordName);
         usersRecordName.setTextColor(getResources().getColor(R.color.black));
@@ -948,8 +503,8 @@ public class PopUpService extends Service {
                 .create();
         alertDialog.setCanceledOnTouchOutside(false);
         alertDialog.getWindow().setType(WindowManager.LayoutParams.TYPE_SYSTEM_ALERT);
-        alertDialog.setView(usersRecordName,30,30,30,30);
-        usersRecordName.setPadding(10,0,0,0);
+        alertDialog.setView(usersRecordName, 30, 30, 30, 30);
+        usersRecordName.setPadding(10, 0, 0, 0);
         alertDialog.show();
         alertDialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(getResources().getColor(R.color.colorPrimaryDark));
         alertDialog.getButton(AlertDialog.BUTTON_NEUTRAL).setTextColor(getResources().getColor(R.color.cancel_color_dark));
@@ -990,6 +545,433 @@ public class PopUpService extends Service {
         } else {
             //Not exists
             dir.mkdir();
+        }
+    }
+
+    public enum CustomPagerEnum {
+
+        CONTACT(R.string.contact, R.layout.contact_add),
+        EMAIL(R.string.email, R.layout.email_add),
+        ACCOUNT(R.string.account, R.layout.account_add),
+        NOTE(R.string.notes, R.layout.notes_add);
+
+        private int mTitleResId;
+        private int mLayoutResId;
+
+        CustomPagerEnum(int titleResId, int layoutResId) {
+            mTitleResId = titleResId;
+            mLayoutResId = layoutResId;
+        }
+
+        public int getTitleResId() {
+            return mTitleResId;
+        }
+
+        public int getLayoutResId() {
+            return mLayoutResId;
+        }
+    }
+
+    public class CustomPagerAdapter extends PagerAdapter {
+
+        private Context mContext;
+        private EditText abc;
+
+
+        public CustomPagerAdapter(Context context) {
+            mContext = context;
+        }
+
+
+        @Override
+        public Object instantiateItem(ViewGroup collection, int position) {
+
+            CustomPagerEnum customPagerEnum = CustomPagerEnum.values()[position];
+            LayoutInflater inflater = LayoutInflater.from(mContext);
+            ViewGroup layout = (ViewGroup) inflater.inflate(customPagerEnum.getLayoutResId(), collection, false);
+            collection.addView(layout);
+
+
+            count++;
+
+            if (count == 1) {
+                EventBus.getDefault().register(this);
+            }
+            switch (position) {
+
+                case 0:
+                    final EditText EditContactName = (EditText) layout.findViewById(R.id.contact_name_et);
+                    final EditText EditContactNo = (EditText) layout.findViewById(R.id.contact_no_et);
+                    final TextView contactLabel1 = (TextView) layout.findViewById(R.id.contactLabel1);
+                    final TextView contactLabel2 = (TextView) layout.findViewById(R.id.contactLabel2);
+                    final RelativeLayout relativeLayout = (RelativeLayout) layout.findViewById(R.id.layout);
+                    final ScrollView scrollView = (ScrollView) layout.findViewById(R.id.scroll_layout);
+                    if (!MyApp.defaultTheme) {
+                        relativeLayout.setBackgroundColor(getResources().getColor(R.color.dark));
+                        scrollView.setBackgroundColor(getResources().getColor(R.color.dark));
+                        EditContactName.setTextColor(getResources().getColor(R.color.white));
+                        EditContactNo.setTextColor(getResources().getColor(R.color.white));
+                        contactLabel1.setTextColor(getResources().getColor(R.color.white));
+                        contactLabel2.setTextColor(getResources().getColor(R.color.white));
+                    }
+
+                    MyApp.editContactNameToSave = EditContactName;
+                    MyApp.editContactNumberToSave = EditContactNo;
+                    final ImageView contactTick1 = (ImageView) layout.findViewById(R.id.tick1);
+                    final ImageView contactTick2 = (ImageView) layout.findViewById(R.id.tick2);
+
+
+                    TextWatcher textWatcher01 = new TextWatcher() {
+
+                        public void afterTextChanged(Editable s) {
+                            //if (s.toString() != "") {MyApp.toSave = true;}
+                        }
+
+                        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+                        }
+
+                        public void onTextChanged(CharSequence s, int start, int before,
+                                                  int count) {
+
+                            MyApp.contactNumber0 = String.valueOf(s);
+                            if (isValidMobile(String.valueOf(s))) {
+                                contactTick2.setVisibility(View.VISIBLE);
+                            } else {
+                                contactTick2.setVisibility(View.INVISIBLE);
+                            }
+
+
+                        }
+                    };
+                    EditContactNo.addTextChangedListener(textWatcher01);
+
+                    TextWatcher textWatcher02 = new TextWatcher() {
+
+                        public void afterTextChanged(Editable s) {
+                        }
+
+                        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                        }
+
+                        public void onTextChanged(CharSequence s, int start, int before,
+                                                  int count) {
+                            MyApp.contactName0 = String.valueOf(s);
+
+                            if (String.valueOf(s).length() > 0) {
+                                contactTick1.setVisibility(View.VISIBLE);
+                            } else {
+                                contactTick1.setVisibility(View.INVISIBLE);
+                            }
+                        }
+                    };
+                    EditContactName.addTextChangedListener(textWatcher02);
+
+
+                    break;
+
+                case 1:
+                    final EditText ContactName2 = (EditText) layout.findViewById(R.id.contact_name2_et);
+                    final EditText EmailID = (EditText) layout.findViewById(R.id.emailId_et);
+                    final ImageView emailTick1 = (ImageView) layout.findViewById(R.id.tick1);
+                    final ImageView emailTick2 = (ImageView) layout.findViewById(R.id.tick2);
+                    final TextView emailLabel1 = (TextView) layout.findViewById(R.id.contactLabel1);
+                    final TextView emailLabel2 = (TextView) layout.findViewById(R.id.contactLabel2);
+
+                    MyApp.editEmailContactNameToSave = ContactName2;
+                    MyApp.editEmailAdressToSave = EmailID;
+
+
+                    if (!MyApp.defaultTheme) {
+                        ContactName2.setTextColor(getResources().getColor(R.color.white));
+                        EmailID.setTextColor(getResources().getColor(R.color.white));
+                        emailLabel1.setTextColor(getResources().getColor(R.color.white));
+                        emailLabel2.setTextColor(getResources().getColor(R.color.white));
+                    }
+
+
+                    TextWatcher textWatcher11 = new TextWatcher() {
+
+                        public void afterTextChanged(Editable s) {
+                        }
+
+                        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                        }
+
+                        public void onTextChanged(CharSequence s, int start, int before,
+                                                  int count) {
+                            MyApp.contactName1 = String.valueOf(s);
+                            if (String.valueOf(s).length() > 0) {
+                                emailTick1.setVisibility(View.VISIBLE);
+                            } else {
+                                emailTick1.setVisibility(View.INVISIBLE);
+                            }
+                        }
+                    };
+                    ContactName2.addTextChangedListener(textWatcher11);
+
+                    TextWatcher textWatcher12 = new TextWatcher() {
+                        public void afterTextChanged(Editable s) {
+                        }
+
+                        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                        }
+
+                        public void onTextChanged(CharSequence s, int start, int before,
+                                                  int count) {
+                            MyApp.emailId1 = String.valueOf(s);
+
+                            if (isValidEmail(String.valueOf(s))) {
+                                emailTick2.setVisibility(View.VISIBLE);
+                            } else {
+                                emailTick2.setVisibility(View.INVISIBLE);
+                            }
+                        }
+                    };
+                    EmailID.addTextChangedListener(textWatcher12);
+
+
+                    break;
+
+                case 2:
+
+                    final TextView accountLabel1 = (TextView) layout.findViewById(R.id.contactLabel1);
+                    final TextView accountLabel2 = (TextView) layout.findViewById(R.id.contactLabel2);
+                    final TextView accountLabel3 = (TextView) layout.findViewById(R.id.contactLabel3);
+                    final EditText ContactName3 = (EditText) layout.findViewById(R.id.contact_name3_et);
+                    final EditText AccountNo = (EditText) layout.findViewById(R.id.account_no_et);
+                    final EditText Others = (EditText) layout.findViewById(R.id.others_et);
+                    final ImageView bankAccountTick1 = (ImageView) layout.findViewById(R.id.tick1);
+                    final ImageView bankAccountTick2 = (ImageView) layout.findViewById(R.id.tick2);
+                    final ImageView bankAccountTick3 = (ImageView) layout.findViewById(R.id.tick3);
+
+                    MyApp.editBankContactNameToSave = ContactName3;
+                    MyApp.editBankAccountNoToSave = AccountNo;
+                    MyApp.editBankOthersNoToSave = Others;
+
+
+                    if (!MyApp.defaultTheme) {
+                        accountLabel1.setTextColor(getResources().getColor(R.color.white));
+                        accountLabel2.setTextColor(getResources().getColor(R.color.white));
+                        accountLabel3.setTextColor(getResources().getColor(R.color.white));
+                        ContactName3.setTextColor(getResources().getColor(R.color.white));
+                        AccountNo.setTextColor(getResources().getColor(R.color.white));
+                        Others.setTextColor(getResources().getColor(R.color.white));
+                    }
+
+
+                    TextWatcher textWatcher21 = new TextWatcher() {
+
+                        public void afterTextChanged(Editable s) {
+                        }
+
+                        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                        }
+
+                        public void onTextChanged(CharSequence s, int start, int before,
+                                                  int count) {
+                            MyApp.contactName2 = String.valueOf(s);
+                            if (String.valueOf(s).length() > 0) {
+                                bankAccountTick1.setVisibility(View.VISIBLE);
+                            } else {
+                                bankAccountTick1.setVisibility(View.INVISIBLE);
+                            }
+                        }
+                    };
+                    ContactName3.addTextChangedListener(textWatcher21);
+
+                    TextWatcher textWatcher22 = new TextWatcher() {
+
+                        public void afterTextChanged(Editable s) {
+                        }
+
+                        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                        }
+
+                        public void onTextChanged(CharSequence s, int start, int before,
+                                                  int count) {
+                            MyApp.accountNumber2 = String.valueOf(s);
+                            if (String.valueOf(s).length() > 0) {
+                                bankAccountTick2.setVisibility(View.VISIBLE);
+                            } else {
+                                bankAccountTick2.setVisibility(View.INVISIBLE);
+                            }
+                        }
+                    };
+                    AccountNo.addTextChangedListener(textWatcher22);
+
+                    TextWatcher textWatcher23 = new TextWatcher() {
+
+                        public void afterTextChanged(Editable s) {
+                        }
+
+                        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                        }
+
+                        public void onTextChanged(CharSequence s, int start, int before,
+                                                  int count) {
+                            MyApp.ifsc2 = String.valueOf(s);
+                            if (String.valueOf(s).length() > 0) {
+                                bankAccountTick3.setVisibility(View.VISIBLE);
+                            } else {
+                                bankAccountTick3.setVisibility(View.INVISIBLE);
+                            }
+                        }
+                    };
+                    Others.addTextChangedListener(textWatcher23);
+                    break;
+
+                case 3:
+
+
+                    final EditText Note1 = (EditText) layout.findViewById(R.id.note_et);
+                    final TextView noteLabel1 = (TextView) layout.findViewById(R.id.contactLabel2);
+                    final ImageView tick = (ImageView) layout.findViewById(R.id.tick2);
+
+                    MyApp.editNoteToSave = Note1;
+
+
+                    if (!MyApp.defaultTheme) {
+                        Note1.setTextColor(getResources().getColor(R.color.white));
+                        noteLabel1.setTextColor(getResources().getColor(R.color.white));
+                    }
+
+
+                    TextWatcher textWatcher31 = new TextWatcher() {
+
+                        public void afterTextChanged(Editable s) {
+                        }
+
+                        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                        }
+
+                        public void onTextChanged(CharSequence s, int start, int before,
+                                                  int count) {
+                            MyApp.contactName3 = String.valueOf(s);
+                        }
+                    };
+
+                    TextWatcher textWatcher32 = new TextWatcher() {
+
+                        public void afterTextChanged(Editable s) {
+                        }
+
+                        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                        }
+
+                        public void onTextChanged(CharSequence s, int start, int before,
+                                                  int count) {
+                            MyApp.note3 = String.valueOf(s);
+
+                            if (TextUtils.isEmpty(String.valueOf(s))) {
+                                tick.setVisibility(View.INVISIBLE);
+                            } else {
+                                tick.setVisibility(View.VISIBLE);
+                            }
+                        }
+                    };
+                    Note1.addTextChangedListener(textWatcher32);
+
+
+                    break;
+            }
+
+            return layout;
+        }
+
+
+        @Override
+        public void destroyItem(ViewGroup collection, int position, Object view) {
+            collection.removeView((View) view);
+        }
+
+        @Override
+        public int getCount() {
+            return CustomPagerEnum.values().length;
+        }
+
+        @Override
+        public boolean isViewFromObject(View view, Object object) {
+            return view == object;
+        }
+
+        @Override
+        public CharSequence getPageTitle(int position) {
+            CustomPagerEnum customPagerEnum = CustomPagerEnum.values()[position];
+            return mContext.getString(customPagerEnum.getTitleResId());
+        }
+
+        @Subscribe
+        public void onEvent(EventB event) {
+            // your implementation
+            if (event.getMessage().equals("0")) {
+                if (TextUtils.isEmpty(MyApp.editContactNameToSave.getText().toString())) {
+                    MyApp.editContactNameToSave.setError(mContext.getString(R.string.hint_contact_name));
+                    MyApp.editEmailAdressToSave.setError(null);
+
+                } else if (!isValidMobile(MyApp.editContactNumberToSave.getText().toString())) {
+                    MyApp.editContactNumberToSave.setError(mContext.getString(R.string.hint_contact_number));
+                } else {
+                    Contact contact = new Contact(MyApp.editContactNameToSave.getText().toString(), MyApp.editContactNumberToSave.getText().toString(), calledNumber, calledName, incomingCall, timeStampMilli);
+                    contact.save();
+                    Toast.makeText(mContext, "Successfully Saved", Toast.LENGTH_LONG).show();
+                    EventBus.getDefault().post(new EventB("1"));
+                    MyApp.editContactNameToSave.setText(null);
+                    MyApp.editContactNumberToSave.setText(null);
+                }
+            } else if (event.getMessage().equals("1")) {
+                if (TextUtils.isEmpty(MyApp.editEmailContactNameToSave.getText().toString())) {
+                    MyApp.editEmailContactNameToSave.setError(mContext.getString(R.string.hint_contact_name));
+                } else if (!isValidEmail(MyApp.editEmailAdressToSave.getText().toString())) {
+                    MyApp.editEmailAdressToSave.setError(mContext.getString(R.string.hint_email));
+                } else {
+                    Email email = new Email(MyApp.editEmailContactNameToSave.getText().toString(), MyApp.editEmailAdressToSave.getText().toString(), calledNumber, calledName, incomingCall, timeStampMilli);
+                    email.save();
+                    Toast.makeText(mContext, "Successfully Saved", Toast.LENGTH_LONG).show();
+                    EventBus.getDefault().post(new EventB("2"));
+                    MyApp.editEmailContactNameToSave.setText(null);
+                    MyApp.editEmailAdressToSave.setText(null);
+                }
+
+            } else if (event.getMessage().equals("2")) {
+                if (TextUtils.isEmpty(MyApp.editBankContactNameToSave.getText().toString())) {
+                    MyApp.editBankContactNameToSave.setError(mContext.getString(R.string.hint_contact_name));
+                } else if (TextUtils.isEmpty(MyApp.editBankAccountNoToSave.getText().toString())) {
+                    MyApp.editBankAccountNoToSave.setError(mContext.getString(R.string.hint_ac_no));
+                } else {
+                    BankAccount bankAccount = new BankAccount(MyApp.editBankContactNameToSave.getText().toString(), MyApp.editBankAccountNoToSave.getText().toString(), MyApp.editBankOthersNoToSave.getText().toString(), calledNumber, calledName, incomingCall, timeStampMilli);
+                    bankAccount.save();
+                    Toast.makeText(mContext, "Successfully Saved", Toast.LENGTH_LONG).show();
+                    EventBus.getDefault().post(new EventB("3"));
+                    MyApp.editBankContactNameToSave.setText(null);
+                    MyApp.editBankAccountNoToSave.setText(null);
+                    MyApp.editBankOthersNoToSave.setText(null);
+                }
+            } else if (event.getMessage().equals("3")) {
+                if (TextUtils.isEmpty(MyApp.editNoteToSave.getText().toString())) {
+                    MyApp.editNoteToSave.setError(mContext.getString(R.string.hint_note));
+                } else {
+                    Note noteN = new Note(MyApp.editNoteToSave.getText().toString(), calledName, calledNumber, timeStampMilli, incomingCall);
+                    noteN.save();
+                    Toast.makeText(mContext, "Successfully Saved", Toast.LENGTH_LONG).show();
+                    EventBus.getDefault().post(new EventB("4"));
+                    MyApp.editNoteToSave.setText(null);
+                }
+            }
+
+
+        }
+
+    }
+
+    /**
+     * Class used for the client Binder.  Because we know this service always
+     * runs in the same process as its clients, we don't need to deal with IPC.
+     */
+    public class LocalBinder extends Binder {
+        public PopUpService getService() {
+            // Return this instance of LocalService so clients can call public methods
+            return PopUpService.this;
         }
     }
 

@@ -114,8 +114,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     static final int RESULT_PICK_CONTACT_C = 4;
     static final int RESULT_PICK_CONTACT_E = 5;
     private static final int REQUEST_CODE_SIGN_IN = 0;
-    private static final int REQUEST_CODE_CAPTURE_IMAGE = 1;
-    private static final int RequestPermissionCode = 3;
     public static String dataFromAdapter;
     public static FloatingActionMenu floatingActionMenu;
 
@@ -166,12 +164,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     List<Note> noteFilterList = new ArrayList<Note>();
     Menu search_menu;
     MenuItem item_search;
-
     Boolean isImport = false;
-
     DriveId driveId = null;
-
-
     GoogleSignInClient mGoogleSignInClient;
     String jsonString = "";
     String TAG = "MainActivity";
@@ -210,7 +204,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             emailSearchRecycler.setBackgroundColor(getResources().getColor(R.color.dark));
             noteSearchRecycler.setBackgroundColor(getResources().getColor(R.color.dark));
             bankSearchRecycler.setBackgroundColor(getResources().getColor(R.color.dark));
-
         }
 
         setSearchToolbar();
@@ -231,13 +224,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         homeViewPager.setOffscreenPageLimit(5);
 
-        initiateTabs();
         Log.d("Loading", "Loading Done");
         HideProgressDialog();
-    }
-
-    public void initiateTabs() {
-
     }
 
     private void setupViewPager(ViewPager viewPager) {
@@ -427,9 +415,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         Log.d(TAG, "SearchView");
         final SearchView searchView = (SearchView) search_menu.findItem(R.id.action_filter_search).getActionView();
 
-        if (!MyApp.defaultTheme) {
-
-        }
 
         // Enable/Disable Submit button in the keyboard
 
@@ -495,12 +480,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     noteFilterList.clear();
                     execute(query);
                 }
-
-
             }
-
         });
-
     }
 
 
@@ -665,9 +646,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     if (noteFilterList.isEmpty()) {
                         notFoundText.setVisibility(View.VISIBLE);
                         notFoundImg.setVisibility(View.VISIBLE);
-                    } else {
-
-
                     }
                 }
             }
@@ -686,7 +664,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         return true;
     }
 
-    public void makeJSON() {
+    /*public void makeJSON() {
         List<Contact> contactList = Contact.listAll(Contact.class);
         List<Email> emailList = Email.listAll(Email.class);
         List<BankAccount> bankAccountList = BankAccount.listAll(BankAccount.class);
@@ -694,7 +672,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         List<truelancer.noteapp.noteapp.Database.Task> taskList = truelancer.noteapp.noteapp.Database.Task.listAll(truelancer.noteapp.noteapp.Database.Task.class);
         Modelgson modelgson = new Modelgson(contactList, emailList, bankAccountList, noteList, taskList);
         jsonString = new Gson().toJson(modelgson);
-    }
+    }*/
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -928,8 +906,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                             @Override
                             public void onFailure(@NonNull Exception e) {
                                 Log.e(TAG, "Unable to create file", e);
-
                                 //finish();
+                                HideProgressDialog();
                             }
                         });
             }
@@ -982,11 +960,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                                 if (isImport) {//import
                                     Log.d("countlol", "" + metadataBuffer.getCount());
                                     if (metadataBuffer.getCount() == 0) {
-
                                         Toast.makeText(MainActivity.this, "No Backups found", Toast.LENGTH_SHORT).show();
-
-
-                                    } else {
+                                        HideProgressDialog();
+                                    } else {//export
                                         driveId = metadataBuffer.get(0).getDriveId();
                                         retrieveContents(driveId.asDriveFile(), null, null, null, null, null, false);
                                     }
@@ -1015,7 +991,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                                                 noteList, taskList, true);
                                     }
                                 }
-
+                                //metadataBuffer.release();
 
                             }
                         })
@@ -1024,6 +1000,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     public void onFailure(@NonNull Exception e) {
 
                         Log.d(TAG1, "get drive id failed : ");
+                        HideProgressDialog();
                     }
                 });
     }
@@ -1127,27 +1104,37 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                                 }
 
                                 for (int i = 0; i < m.gettList().size(); i++) {
-                                    if (backupExists) {
+                                    if (backupExists) {//used during export
                                         taskList.add(m.tList.get(i));
                                     } else {
-                                        truelancer.noteapp.noteapp.Database.Task task1 = new truelancer.noteapp.noteapp.Database.Task(
+                                        String noteID = findNoteIDForTask(m.gettList().get(i).getNoteTimeStamp());
+                                        truelancer.noteapp.noteapp.Database.Task task1 =
+                                                new truelancer.noteapp.noteapp.Database.Task(
+                                                        m.gettList().get(i).getTaskText(),
+                                                        noteID,
+                                                        m.gettList().get(i).isDone,
+                                                        m.gettList().get(i).getNoteTimeStamp()
+                                                );
+                                        task1.save();
+
+                                       /* truelancer.noteapp.noteapp.Database.Task task1 =
+                                                new truelancer.noteapp.noteapp.Database.Task(
                                                 m.gettList().get(i).getTaskText(),
                                                 m.gettList().get(i).getNoteId(),
-                                                m.gettList().get(i).isDone
+                                                m.gettList().get(i).isDone,
+                                                m.gettList().get(i).getNoteTimeStamp()
                                         );
-                                        task1.save();
+                                        task1.save();*/
                                     }
-
                                 }
                             }
                             if (backupExists) {
                                 Modelgson modelgson = new Modelgson(contactList, emailList, bankAccountList, noteList, taskList);
                                 jsonString = new Gson().toJson(modelgson);
                                 deleteDriveFile(jsonString);
-                                //createFileInAppFolder(jsonString);
+
                             }
-                            Task<Void> discardTask = mDriveResourceClient.discardContents(contents);
-                            return discardTask;
+                            return mDriveResourceClient.discardContents(contents);
                         }
                     })
 
@@ -1164,13 +1151,25 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     .addOnFailureListener(new OnFailureListener() {
                         @Override
                         public void onFailure(@NonNull Exception e) {
-
+                            HideProgressDialog();
                             Log.e(TAG, "Unable to read contents", e);
                             finish();
                         }
                     });
         }
         // fromExport=false;
+    }
+
+    public String findNoteIDForTask(String noteTSfromtasklist) {
+
+        List<Note> notes2 = Note.listAll(Note.class);
+
+        for (int i = 0; i < notes2.size(); i++) {
+            if(noteTSfromtasklist.equals(notes2.get(i).getTsMilli())){
+                return notes2.get(i).getId().toString();
+            }
+        }
+        return null;
     }
 
     ////////////////////////////OnClick////////////////////////////////////////////
@@ -1573,7 +1572,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         if (number.equals("1")) {
 
             List<Contact> contacts = Contact.listAll(Contact.class);
-            boolean exists = false;
+            // boolean exists = false;
 
             Log.d("cricket", "then: " + tsMilli_fromBackup);
 
@@ -1587,12 +1586,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     return true;
                 }
             }
-            Log.d(TAG + "baaghi", "" + exists);
+            //Log.d(TAG + "baaghi", "" + exists);
             return false;
         } else if (number.equals("2")) {
 
             List<Email> emails = Email.listAll(Email.class);
-            boolean exists = false;
+            //boolean exists = false;
 
             for (int i = 0; i < emails.size(); i++) {
 
@@ -1606,7 +1605,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         } else if (number.equals("3")) {
 
             List<BankAccount> bankAccounts = BankAccount.listAll(BankAccount.class);
-            boolean exists = false;
+            //boolean exists = false;
 
             for (int i = 0; i < bankAccounts.size(); i++) {
                 String tsMilli_fromLocalDb = bankAccounts.get(i).getTsMilli();
@@ -1618,7 +1617,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             return false;
         } else if (number.equals("4")) {
             List<Note> notes = Note.listAll(Note.class);
-            boolean exists = false;
+            //boolean exists = false;
 
             for (int i = 0; i < notes.size(); i++) {
                 String tsMilli_fromLocalDb = notes.get(i).getTsMilli();

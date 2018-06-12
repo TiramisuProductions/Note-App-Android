@@ -109,12 +109,12 @@ public class EmailAdapter extends RecyclerView.Adapter<EmailAdapter.MyView> {
         holder.calledName.setText(emails.get(position).getCalledName());
         holder.calledNumber.setText(emails.get(position).getCalledNumber());
 
-        holder.emailCardView.setOnClickListener(new View.OnClickListener() {
+       /* holder.emailCardView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
             }
-        });
+        });*/
 
         holder.overflow.setOnClickListener(new View.OnClickListener() {
             @Override

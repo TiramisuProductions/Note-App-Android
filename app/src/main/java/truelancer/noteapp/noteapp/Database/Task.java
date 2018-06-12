@@ -11,21 +11,22 @@ public class Task extends SugarRecord {
     String taskText;
     String noteId;
     public boolean isDone;
+    String noteTimeStamp;
 
-    public Task() {
-    }
+    public Task() {}
 
-    public Task(String taskText, String noteId, boolean isDone) {
+    public Task(String taskText, String noteId, boolean isDone, String noteTimeStamp) {
         this.taskText = taskText;
         this.noteId = noteId;
         this.isDone = isDone;
+        this.noteTimeStamp = noteTimeStamp;
     }
 
     public String getTaskText() {
         return taskText;
     }
 
-    public void setTaskTest(String taskText) {
+    public void setTaskText(String taskText) {
         this.taskText = taskText;
     }
 
@@ -45,5 +46,11 @@ public class Task extends SugarRecord {
         isDone = done;
     }
 
+    public String getNoteTimeStamp() {
+        return noteTimeStamp;
+    }
 
+    public void setNoteTimeStamp(String noteTimeStamp) {
+        this.noteTimeStamp = noteTimeStamp;
+    }
 }

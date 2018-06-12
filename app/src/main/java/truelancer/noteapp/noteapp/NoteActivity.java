@@ -13,31 +13,26 @@ import android.widget.TextView;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
-
 import java.util.ArrayList;
 import java.util.List;
-
 import truelancer.noteapp.noteapp.Adapters.TaskAdapter;
 import truelancer.noteapp.noteapp.Database.Task;
 
 
-
 public class NoteActivity extends AppCompatActivity {
 
+    TaskAdapter mAdapter1;
+    String noteId,noteTimeStamp;
     private TextView noteText1, moreD;
     private EditText addTaskEditText;
     private View seprator;
     private FloatingActionButton addTaskButton;
-    private RecyclerView mRecyclerView1,mRecyclerView2;
-    TaskAdapter mAdapter1;
+    private RecyclerView mRecyclerView1, mRecyclerView2;
     private ConstraintLayout layout;
-    private ArrayList<Task> taskDone = new ArrayList<>();
     // GoogleAccountCredential mCredential;
+    private ArrayList<Task> taskDone = new ArrayList<>();
 
-    String noteId;
-
-    public NoteActivity() {
-    }
+    public NoteActivity() {}
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,16 +49,12 @@ public class NoteActivity extends AppCompatActivity {
         addTaskButton = (FloatingActionButton) findViewById(R.id.add_task_button);
         mRecyclerView1 = (RecyclerView) findViewById(R.id.recyclerViewNoteTask1);
         mRecyclerView2 = (RecyclerView) findViewById(R.id.recyclerViewNoteTask2);
-
         layout = (ConstraintLayout) findViewById(R.id.layout);
         seprator = (View) findViewById(R.id.seprator);
 
-
         RecyclerView.LayoutManager layoutManager1 = new LinearLayoutManager(getApplicationContext());
 
-
         mRecyclerView1.setLayoutManager(layoutManager1);
-
 
         if (!MyApp.defaultTheme) {
             noteText1.setTextColor(getResources().getColor(R.color.white));
@@ -74,40 +65,31 @@ public class NoteActivity extends AppCompatActivity {
             seprator.setBackgroundColor(getResources().getColor(R.color.white));
         }
 
-
         noteText1.setText(getIntent().getStringExtra("noteText"));
 
         String temp = getIntent().getStringExtra("calledName") + "\n" + getIntent().getStringExtra("calledNumber")
                 + "\n" + getIntent().getStringExtra("incoming")
                 + "\n" + getIntent().getStringExtra("timestamp");
-
         // moreD.setText(""+temp);
 
         noteId = getIntent().getStringExtra("noteId");
-
+        noteTimeStamp = getIntent().getStringExtra("notetimestamp");
 
         addTaskButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
-
                 if (TextUtils.isEmpty(addTaskEditText.getText().toString())) {
                     addTaskEditText.setError("No Task Entered");
                 } else {
-                    Task task = new Task(addTaskEditText.getText().toString().trim(), noteId, false);
+                    Task task = new Task(addTaskEditText.getText().toString().trim(), noteId, false,noteTimeStamp);
                     task.save();
                     addTaskEditText.setText(null);
                     getTask();
                 }
-
-
             }
         });
-
-
         getTask();
-
-
     }
 
 
@@ -118,7 +100,6 @@ public class NoteActivity extends AppCompatActivity {
         }
     }
 
-
     public void getTask() {
         taskDone.clear();
         List<Task> tasks = Task.findWithQuery(Task.class, "Select * from Task where note_id=?", noteId);
@@ -126,17 +107,14 @@ public class NoteActivity extends AppCompatActivity {
             if (task.isDone) {
                 taskDone.add(task);
             }
-
         }
         for (Task task : tasks) {
             if (!task.isDone) {
                 taskDone.add(task);
             }
-
         }
 
         mAdapter1 = new TaskAdapter(NoteActivity.this, taskDone);
         mRecyclerView1.setAdapter(mAdapter1);
-
     }
 }

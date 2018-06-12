@@ -26,77 +26,72 @@ import truelancer.noteapp.noteapp.R;
 public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.MyView> {
     List<Task> tasks;
     Context context;
-    Task task;
+    //Task task;
 
     public TaskAdapter(Context context, List<Task> tasks) {
 
-        this.context=context;
-        this.tasks=tasks;
-        this.task=task;
+        this.context = context;
+        this.tasks = tasks;
+        //this.task = task;
     }
 
     @Override
     public MyView onCreateViewHolder(ViewGroup parent, int viewType) {
-        View itemView= LayoutInflater.from(parent.getContext()).inflate(R.layout.item_task,parent,false);
+        View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_task, parent, false);
         return new MyView(itemView);
     }
 
     @Override
-    public void onBindViewHolder(MyView holder,final int position) {
+    public void onBindViewHolder(MyView holder, final int position) {
         final Task task = tasks.get(position);
 
-        if(!MyApp.defaultTheme){
+        if (!MyApp.defaultTheme) {
             holder.noteCardView.setBackgroundColor(context.getResources().getColor(R.color.darker_card));
             holder.textViewTask.setTextColor(context.getResources().getColor(R.color.white));
-
         }
 
+        if (!task.isDone) {
+            holder.checkBoxText.setChecked(false);
+            holder.textViewTask.setText(tasks.get(position).getTaskText());
 
-if(!task.isDone){
-    holder.checkBoxText.setChecked(false);
-    holder.textViewTask.setText(tasks.get(position).getTaskText());
+        } else {
+            holder.checkBoxText.setChecked(true);
+            holder.textViewTask.setText(tasks.get(position).getTaskText());
+            holder.textViewTask.setPaintFlags(holder.textViewTask.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+        }
 
-}else {
-    holder.checkBoxText.setChecked(true);
-    holder.textViewTask.setText(tasks.get(position).getTaskText());
-    holder.textViewTask.setPaintFlags(holder.textViewTask.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
-}
-
-holder.deleteTask.setOnClickListener(new View.OnClickListener() {
-    @Override
-    public void onClick(View view) {
-        Task taskDelete = Task.findById(Task.class, task.getId());
-        taskDelete.delete();
-        EventBus.getDefault().post(new EventB("updateTask"));
-    }
-});
-
+        holder.deleteTask.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Task taskDelete = Task.findById(Task.class, task.getId());
+                taskDelete.delete();
+                EventBus.getDefault().post(new EventB("updateTask"));
+            }
+        });
 
 
         holder.checkBoxText.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if(!isChecked)
-                {
-                    Task task=  Task.findById(Task.class,tasks.get(position).getId());
-                    task.isDone=false;
+                if (!isChecked) {
+                    Task task = Task.findById(Task.class, tasks.get(position).getId());
+                    task.isDone = false;
                     task.save();
                     EventBus.getDefault().post(new EventB("updateTask"));
 
-                }else{
-                    Task task=  Task.findById(Task.class,tasks.get(position).getId());
-                    task.isDone=true;
+                } else {
+                    Task task = Task.findById(Task.class, tasks.get(position).getId());
+                    task.isDone = true;
                     task.save();
                     EventBus.getDefault().post(new EventB("updateTask"));
                 }
             }
         });
-
     }
 
     @Override
     public int getItemCount() {
-        Log.d("done",""+tasks.size());
+        Log.d("done", "" + tasks.size());
         return tasks.size();
     }
 
@@ -105,13 +100,14 @@ holder.deleteTask.setOnClickListener(new View.OnClickListener() {
         TextView textViewTask;
         ImageView deleteTask;
         CardView noteCardView;
+
         public MyView(View itemView) {
 
             super(itemView);
-            checkBoxText=(CheckBox)itemView.findViewById(R.id.checkBoxTask);
-            textViewTask=(TextView)itemView.findViewById(R.id.taskText);
-            deleteTask =(ImageView)itemView.findViewById(R.id.imageButtonDelete);
-            noteCardView =(CardView)itemView.findViewById(R.id.cardview_note);
+            checkBoxText = (CheckBox) itemView.findViewById(R.id.checkBoxTask);
+            textViewTask = (TextView) itemView.findViewById(R.id.taskText);
+            deleteTask = (ImageView) itemView.findViewById(R.id.imageButtonDelete);
+            noteCardView = (CardView) itemView.findViewById(R.id.cardview_note);
         }
     }
 }
