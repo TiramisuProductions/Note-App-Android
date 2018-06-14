@@ -5,21 +5,22 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
 import java.util.Collections;
 import java.util.List;
 
+import truelancer.noteapp.noteapp.Adapters.RecordingAdapter;
+import truelancer.noteapp.noteapp.AsyncTaskModel;
 import truelancer.noteapp.noteapp.Database.CallRecording;
 import truelancer.noteapp.noteapp.EventB;
 import truelancer.noteapp.noteapp.MyApp;
 import truelancer.noteapp.noteapp.R;
-import truelancer.noteapp.noteapp.Adapters.RecordingAdapter;
 
 
 /**
@@ -27,7 +28,7 @@ import truelancer.noteapp.noteapp.Adapters.RecordingAdapter;
  */
 public class RecordingFragment extends Fragment {
 
-    private RecyclerView mRecyclerView;
+    public static RecyclerView mRecyclerView;
     private RecordingAdapter mAdapter;
     String TAG = "yellow";
 
@@ -42,33 +43,40 @@ public class RecordingFragment extends Fragment {
         // Inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.fragment_recording, container, false);
 
+        if (!EventBus.getDefault().isRegistered(this)) {
+            EventBus.getDefault().register(this);
+        }
 
 
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getActivity());
         mRecyclerView = (RecyclerView) rootView.findViewById(R.id.recycler_recording);
         mRecyclerView.setLayoutManager(mLayoutManager);
 
+        AsyncTaskModel asyncTaskModel = new AsyncTaskModel(getActivity(), 5);
+        asyncTaskModel.execute();
 
-        if(!MyApp.defaultTheme){
+
+        if (!MyApp.defaultTheme) {
             mRecyclerView.setBackgroundColor(getResources().getColor(R.color.dark));
             rootView.setBackgroundColor(getResources().getColor(R.color.dark));
         }
-        List<CallRecording> callRecordings = CallRecording.listAll(CallRecording.class);
+
+       /* List<CallRecording> callRecordings = CallRecording.listAll(CallRecording.class);
         Collections.reverse(callRecordings);
 
         Log.d(TAG, ""+callRecordings.size());
 
         mAdapter = new RecordingAdapter(getActivity(), callRecordings);
-        mRecyclerView.setAdapter(mAdapter);
+        mRecyclerView.setAdapter(mAdapter);*/
 
         return rootView;
 
     }
 
     @Subscribe
-    public void onEvent(EventB event){
-        if (event.getMessage().equals("5")){
-            mAdapter.notifyDataSetChanged();
+    public void onEvent(EventB event) {
+        if (event.getMessage().equals("5")) {
+            //mAdapter.notifyDataSetChanged();
             List<CallRecording> callRecordings = CallRecording.listAll(CallRecording.class);
             Collections.reverse(callRecordings);
             mAdapter = new RecordingAdapter(getActivity(), callRecordings);
@@ -78,14 +86,5 @@ public class RecordingFragment extends Fragment {
 
     }
 
-    @Override
-    public void onResume() {
-        super.onResume();
-        mAdapter.notifyDataSetChanged();
-        List<CallRecording> callRecordings = CallRecording.listAll(CallRecording.class);
-        Collections.reverse(callRecordings);
 
-        mAdapter = new RecordingAdapter(getActivity(), callRecordings);
-        mRecyclerView.setAdapter(mAdapter);
-    }
 }

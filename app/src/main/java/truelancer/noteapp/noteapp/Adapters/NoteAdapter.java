@@ -54,7 +54,7 @@ public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.MyView> {
     String inout = "";
 
 
-    public NoteAdapter(FragmentActivity activity, List<Note> not) {
+    public NoteAdapter(Activity activity, List<Note> not) {
         this.activity = activity;
         this.notes = not;
     }

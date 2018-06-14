@@ -23,7 +23,7 @@ public class MyApp extends SugarApp {
     public PopUpService popUpService;
     private boolean bound;
     public boolean toHideBubble;
-    static public boolean toSave;
+    static public boolean toSave,off_hook=false,recording_in_progress = false;
     String defaultValue = "default";
     public boolean firstRun = true;
     public static boolean defaultTheme = true;
@@ -144,8 +144,6 @@ public class MyApp extends SugarApp {
     @Override
     public void onCreate() {
         super.onCreate();
-
-
 
         // font from assets: "assets/fonts/Roboto-Regular.ttf
         /*FontsOverride.setDefaultFont(this, "DEFAULT", "font.ttf");

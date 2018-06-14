@@ -27,7 +27,6 @@ import truelancer.noteapp.noteapp.MyApp;
 public class PhoneStateReceiver extends BroadcastReceiver {
 
     public static MyApp app;
-    public boolean wasHookedup = false;
 
     @Override
     public void onReceive(Context context, Intent intent) {
@@ -45,54 +44,57 @@ public class PhoneStateReceiver extends BroadcastReceiver {
         String tsMilli = "" + startDate.getTime();
         //Toast.makeText(context, "Date : "+tsMilli, Toast.LENGTH_SHORT).show();
 
-        Log.d("Receiver", "Start");
+        //Log.d("Receiver", "Start");
         //Toast.makeText(context, " Receiver start ", Toast.LENGTH_SHORT).show();
         app = (MyApp) context.getApplicationContext();
         //app.popUpService.removeAllChatHeads();
-        Log.d("yoyo", "" + app.toHideBubble);
+        //Log.d("yoyo", "" + app.toHideBubble);
 
         String state = intent.getStringExtra(TelephonyManager.EXTRA_STATE);
 
         if (state.equals(TelephonyManager.EXTRA_STATE_RINGING)) {
             String ringingNumber = intent.getStringExtra(TelephonyManager.EXTRA_INCOMING_NUMBER);
             Toast.makeText(context, "Ringing State Number is -" + ringingNumber, Toast.LENGTH_SHORT).show();
-            if (!MyApp.toSave) {
+            /*if (!MyApp.toSave) {
 
-            }
+            }*/
 
-            if(app.firstRun){
+            if (app.firstRun) {
                 MyApp.firstRunRingingNumber = ringingNumber;
-                MyApp.firstRunContactName = getContactDisplayNameByNumber(ringingNumber,context);
+                MyApp.firstRunContactName = getContactDisplayNameByNumber(ringingNumber, context);
                 MyApp.firstRunIsIncoming = false;
                 MyApp.firstRuntsMilli = tsMilli;
                 app.bindService();
 
-            }
-            else{
+            } else {
                 app.checkForDraft(ringingNumber, getContactDisplayNameByNumber(ringingNumber, context), true, tsMilli);
                 app.popUpService.removeAllChatHeads();
                 app.popUpService.addChatHead(ringingNumber, getContactDisplayNameByNumber(ringingNumber, context), true, tsMilli);
             }
 
-
-            //Toast.makeText(context, "Ringing State Name is -" + getContactDisplayNameByNumber(ringingNumber, context), Toast.LENGTH_SHORT).show();
-
+            Toast.makeText(context, "Ringing State Name is -" + getContactDisplayNameByNumber(ringingNumber, context), Toast.LENGTH_SHORT).show();
         }
 
         if ((state.equals(TelephonyManager.EXTRA_STATE_OFFHOOK))) {
             //Toast.makeText(context, "Received State Hookup", Toast.LENGTH_SHORT).show();
-            wasHookedup = true;
+            MyApp.off_hook = true;
+            /*Toast.makeText(context, "off_hook", Toast.LENGTH_SHORT).show();
+            Log.d("wood", "off_hook ");*/
         }
 
         if (state.equals(TelephonyManager.EXTRA_STATE_IDLE)) {
-            //Toast.makeText(context, "Idle State", Toast.LENGTH_SHORT).show();
-            if (wasHookedup) {
-                app.popUpService.stopRecording();
-                wasHookedup = false;
+           /* Toast.makeText(context, "Idle State", Toast.LENGTH_SHORT).show();
+            Log.d("wood", "off hook: " + MyApp.off_hook);*/
 
+            if (MyApp.off_hook) {
+                // Toast.makeText(context, "call ended", Toast.LENGTH_SHORT).show();
+                //Log.d("wood", "call ended ");
+                if (MyApp.recording_in_progress) {
+                    app.popUpService.stopRecording();
+                }
+                MyApp.off_hook = false;
             }
         }
-
     }
 
 
@@ -108,7 +110,9 @@ public class PhoneStateReceiver extends BroadcastReceiver {
             if (contactLookup != null && contactLookup.getCount() > 0) {
                 contactLookup.moveToNext();
                 name = contactLookup.getString(contactLookup.getColumnIndex(ContactsContract.Data.DISPLAY_NAME));
-                //String contactId = contactLookup.getString(contactLookup.getColumnIndex(BaseColumns._ID));
+
+
+                Log.d("wood", "name: "+name);
             }
         } finally {
             if (contactLookup != null) {

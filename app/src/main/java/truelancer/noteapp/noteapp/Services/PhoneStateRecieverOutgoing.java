@@ -8,6 +8,9 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.provider.BaseColumns;
 import android.provider.ContactsContract;
+import android.telephony.TelephonyManager;
+import android.util.Log;
+import android.widget.Toast;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -41,28 +44,23 @@ public class PhoneStateRecieverOutgoing extends BroadcastReceiver {
         app = (MyApp) context.getApplicationContext();
 
         final String outgoingNumber = intent.getStringExtra(Intent.EXTRA_PHONE_NUMBER);
-        if(app.firstRun){
+        if (app.firstRun) {
             MyApp.firstRunRingingNumber = outgoingNumber;
-            MyApp.firstRunContactName = getContactDisplayNameByNumber(outgoingNumber,context);
+            MyApp.firstRunContactName = getContactDisplayNameByNumber(outgoingNumber, context);
             MyApp.firstRunIsIncoming = false;
             MyApp.firstRuntsMilli = tsMilli;
             app.bindService();
 
-        }
-        else{
+        } else {
             app.checkForDraft(outgoingNumber, getContactDisplayNameByNumber(outgoingNumber, context), false, tsMilli);
             app.popUpService.removeAllChatHeads();
             app.popUpService.addChatHead(outgoingNumber, getContactDisplayNameByNumber(outgoingNumber, context), false, tsMilli);
         }
 
 
-
-
-
-
         String msg = "Intercepted outgoing call number " + outgoingNumber + " " + getContactDisplayNameByNumber(outgoingNumber, context);
 
-        //Toast.makeText(context, msg, Toast.LENGTH_LONG).show();
+        Toast.makeText(context, msg, Toast.LENGTH_LONG).show();
     }
 
     public String getContactDisplayNameByNumber(String number, Context context) {

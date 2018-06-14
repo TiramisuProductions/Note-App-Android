@@ -869,7 +869,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         final Task<DriveContents> createContentsTask = mDriveResourceClient.createContents();
 
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.KITKAT) {
-            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.KITKAT) {
+
                 Tasks.whenAll(appFolderTask, createContentsTask)
                         .continueWithTask(new Continuation<Void, Task<DriveFile>>() {
                             @Override
@@ -910,7 +910,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                                 HideProgressDialog();
                             }
                         });
-            }
+
         }
     }
 

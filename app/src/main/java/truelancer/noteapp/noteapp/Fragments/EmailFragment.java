@@ -16,6 +16,7 @@ import java.util.Collections;
 import java.util.List;
 
 import truelancer.noteapp.noteapp.Adapters.EmailAdapter;
+import truelancer.noteapp.noteapp.AsyncTaskModel;
 import truelancer.noteapp.noteapp.Database.Email;
 import truelancer.noteapp.noteapp.EventB;
 import truelancer.noteapp.noteapp.MyApp;
@@ -25,7 +26,7 @@ import truelancer.noteapp.noteapp.R;
  * A simple {@link Fragment} subclass.
  */
 public class EmailFragment extends Fragment {
-    private RecyclerView mRecyclerView;
+    public static RecyclerView mRecyclerView;
     private EmailAdapter mAdapter;
 
 
@@ -51,18 +52,22 @@ public class EmailFragment extends Fragment {
         mRecyclerView = (RecyclerView) rootView.findViewById(R.id.recycler_email);
         mRecyclerView.setLayoutManager(mLayoutManager);
 
+        AsyncTaskModel asyncTaskModel = new AsyncTaskModel(getActivity(), 2);
+        asyncTaskModel.execute();
+
         if (!MyApp.defaultTheme) {
             mRecyclerView.setBackgroundColor(getResources().getColor(R.color.dark));
             rootView.setBackgroundColor(getResources().getColor(R.color.dark));
         }
 
-        List<Email> emails = Email.listAll(Email.class);
-        Collections.reverse(emails);
+   /*     List<Email> emails = Email.listAll(Email.class);
+        Collections.reverse(emails);*/
 
         //Toast.makeText(getContext(),"emails coming! "+emails.size(),Toast.LENGTH_LONG).show();
 
-        mAdapter = new EmailAdapter(getActivity(), emails);
-        mRecyclerView.setAdapter(mAdapter);
+      /*  mAdapter = new EmailAdapter(getActivity(), emails);
+        mRecyclerView.setAdapter(mAdapter);*/
+
         onResume();
         return rootView;
     }
@@ -78,7 +83,7 @@ public class EmailFragment extends Fragment {
     public void onEvent(EventB event) {
         // your implementation
         if (event.getMessage().equals("2")) {
-            mAdapter.notifyDataSetChanged();
+            // mAdapter.notifyDataSetChanged();
             List<Email> emails = Email.listAll(Email.class);
             Collections.reverse(emails);
             mAdapter = new EmailAdapter(getActivity(), emails);

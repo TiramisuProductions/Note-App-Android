@@ -42,7 +42,7 @@
     <string name="admin_subject_1">Sir I would like to Report A Issue</string>
     <string name="admin_subject_2">Sir I would like to Suggest A Feature</string>
 
-//Hints
+    //Hints
     <string name="hint_name">Enter name</string>
     <string name="hint_number">Enter number</string>
     <string name="hint_ac_no">Enter Account No</string>

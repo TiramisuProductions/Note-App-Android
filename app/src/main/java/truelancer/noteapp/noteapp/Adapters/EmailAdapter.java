@@ -50,7 +50,7 @@ public class EmailAdapter extends RecyclerView.Adapter<EmailAdapter.MyView> {
 
     static final int RESULT_PICK_CONTACT_E= 5;
 
-    public EmailAdapter(FragmentActivity activity, List<Email> emails) {
+    public EmailAdapter(Activity activity, List<Email> emails) {
         this.activity = activity;
         this.emails = emails;
 

@@ -25,6 +25,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -180,7 +182,6 @@ public class PopUpService extends Service {
                         @Override
                         public void onClick(View v) {
 
-
                             Intent launchApp = getPackageManager().getLaunchIntentForPackage("truelancer.noteapp.noteapp");
                             startActivity(launchApp);
                             minimize();
@@ -194,9 +195,10 @@ public class PopUpService extends Service {
                             //   Toast.makeText(PopUpService.this, "record call : " + recordCall.getText().toString(), Toast.LENGTH_SHORT).show();
 
                             if (!isCallActive(getApplicationContext())) {
+                                Animation shake = AnimationUtils.loadAnimation(PopUpService.this, R.anim.shake);
+                                recordCall.startAnimation(shake);
                                 Toast.makeText(getApplicationContext(), "Call is not active", Toast.LENGTH_LONG).show();
                             } else {
-
 
                                 if (isStartRecording) {
                                     recordCall.setText(getString(R.string.call_record_start));
@@ -207,7 +209,6 @@ public class PopUpService extends Service {
                                 }
                                 isStartRecording = !isStartRecording;
                             }
-
                         }
                     });
 
@@ -347,17 +348,6 @@ public class PopUpService extends Service {
         this.timeStampMilli = tsMilli;
         chatHeadIdentifier++;
 
-        Toast.makeText(getApplicationContext(), "inside AddChatHead " + incomingCall
-                + "\n" + calledNumber, Toast.LENGTH_SHORT).show();
-        // you can even pass a custom object instead of "head0"
-        // a sticky chat head (passed as 'true') cannot be closed and will remain when all other chat heads are closed.
-        /**
-         * In this example a String object (identified by chatHeadIdentifier) is attached to each chat head.
-         * You can instead attach any custom object, for e.g a Conversation object to denote each chat head.
-         * This object will represent a chat head uniquely and will be passed back in all callbacks.
-         */
-
-
         chatHeadManager.addChatHead(String.valueOf(chatHeadIdentifier), false, true);
         chatHeadManager.bringToFront(chatHeadManager.findChatHeadByKey(String.valueOf(chatHeadIdentifier)));
     }
@@ -424,7 +414,7 @@ public class PopUpService extends Service {
     }
 
     public void startRecording() {
-
+        MyApp.recording_in_progress = true;
         mRecorder = new MediaRecorder();
         mRecorder.setAudioSource(MediaRecorder.AudioSource.VOICE_CALL);
 
@@ -440,9 +430,9 @@ public class PopUpService extends Service {
             mRecorder.start();
         } catch (Exception e) {
             e.printStackTrace();
-            Log.d("wood", "communication");
-            mRecorder=null;
-            mRecorder=new MediaRecorder();
+
+            mRecorder = null;
+            mRecorder = new MediaRecorder();
             mRecorder.setAudioSource(MediaRecorder.AudioSource.VOICE_COMMUNICATION);
             //voice communication to be used
             mRecorder.setOutputFormat(MediaRecorder.OutputFormat.AMR_NB);
@@ -464,6 +454,7 @@ public class PopUpService extends Service {
     }
 
     public void stopRecording() {
+        MyApp.recording_in_progress = false;
         mRecorder.stop();
         mRecorder.release();
         mRecorder = null;
@@ -532,8 +523,6 @@ public class PopUpService extends Service {
             Log.d("logitech1", "" + callRecording1.getRecordName());
             Log.d("logitech2", "" + callRecording1.getRecordPath());
         }
-
-
     }
 
     private void makeDirectory() {
@@ -577,7 +566,6 @@ public class PopUpService extends Service {
         private Context mContext;
         private EditText abc;
 
-
         public CustomPagerAdapter(Context context) {
             mContext = context;
         }
@@ -590,8 +578,6 @@ public class PopUpService extends Service {
             LayoutInflater inflater = LayoutInflater.from(mContext);
             ViewGroup layout = (ViewGroup) inflater.inflate(customPagerEnum.getLayoutResId(), collection, false);
             collection.addView(layout);
-
-
             count++;
 
             if (count == 1) {

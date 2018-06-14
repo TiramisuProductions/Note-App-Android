@@ -28,4 +28,6 @@ public class Utils {
     public final static boolean isValidEmail(String target) {
         return (!TextUtils.isEmpty(target) && Patterns.EMAIL_ADDRESS.matcher(target).matches());
     }
+
+
 }

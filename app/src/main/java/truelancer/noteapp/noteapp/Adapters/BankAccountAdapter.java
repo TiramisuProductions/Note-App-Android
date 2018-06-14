@@ -46,7 +46,7 @@ public class BankAccountAdapter extends RecyclerView.Adapter<BankAccountAdapter.
     Context itemContext;
     String inout = "";
 
-    public BankAccountAdapter(FragmentActivity activity, List<BankAccount> bankAccounts) {
+    public BankAccountAdapter(Activity activity, List<BankAccount> bankAccounts) {
         this.bankAccounts = bankAccounts;
         this.activity = activity;
     }

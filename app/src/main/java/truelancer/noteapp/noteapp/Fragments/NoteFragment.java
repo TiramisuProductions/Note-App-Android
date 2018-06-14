@@ -20,17 +20,17 @@ import java.util.List;
 
 import truelancer.noteapp.noteapp.Adapters.EmailAdapter;
 import truelancer.noteapp.noteapp.Adapters.NoteAdapter;
+import truelancer.noteapp.noteapp.AsyncTaskModel;
 import truelancer.noteapp.noteapp.Database.Email;
 import truelancer.noteapp.noteapp.Database.Note;
 import truelancer.noteapp.noteapp.EventB;
+import truelancer.noteapp.noteapp.MyApp;
 import truelancer.noteapp.noteapp.R;
 
 
 public class NoteFragment extends Fragment {
-    private RecyclerView mRecyclerView, mRecyclerView2;
+    public static RecyclerView mRecyclerView;
     private NoteAdapter mAdapter;
-    private ArrayList<Note> noteDoneList = new ArrayList<>();
-    private ArrayList<Note> noteNotDoneList = new ArrayList<>();
 
     public NoteFragment() {/*required empty*/}
 
@@ -51,20 +51,26 @@ public class NoteFragment extends Fragment {
         }
 
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getActivity());
-        RecyclerView.LayoutManager mLayoutManager2 = new LinearLayoutManager(getActivity());
-
         mRecyclerView = (RecyclerView) rootView.findViewById(R.id.recycler_note);
-
         mRecyclerView.setLayoutManager(mLayoutManager);
 
 
-        List<Note> notes = Note.listAll(Note.class);
+        AsyncTaskModel asyncTaskModel = new AsyncTaskModel(getActivity(),4);
+        asyncTaskModel.execute();
+
+        if(!MyApp.defaultTheme){
+            mRecyclerView.setBackgroundColor(getResources().getColor(R.color.dark));
+            rootView.setBackgroundColor(getResources().getColor(R.color.dark));
+        }
+
+
+      /*  List<Note> notes = Note.listAll(Note.class);
         Collections.reverse(notes);
 
 
         mAdapter = new NoteAdapter(getActivity(), notes);
-        mRecyclerView.setAdapter(mAdapter);
-        onResume();
+        mRecyclerView.setAdapter(mAdapter);*/
+
         return rootView;
     }
 
@@ -73,7 +79,7 @@ public class NoteFragment extends Fragment {
     public void onEvent(EventB event){
         // your implementation
         if(event.getMessage().equals("4")){
-            mAdapter.notifyDataSetChanged();
+            //mAdapter.notifyDataSetChanged();
             List<Note> emails = Note.listAll(Note.class);
             Collections.reverse(emails);
             mAdapter = new NoteAdapter(getActivity(), emails);
@@ -81,13 +87,5 @@ public class NoteFragment extends Fragment {
         }
     }
 
-    @Override
-    public void onResume() {
-        super.onResume();
-        mAdapter.notifyDataSetChanged();
-        List<Note> emails = Note.listAll(Note.class);
-        Collections.reverse(emails);
-        mAdapter = new NoteAdapter(getActivity(), emails);
-        mRecyclerView.setAdapter(mAdapter);
-    }
+
 }
