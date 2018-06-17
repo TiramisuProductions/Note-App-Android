@@ -78,7 +78,6 @@ public class Settings extends AppCompatActivity {
                    // themeChanged = true;
                     if (!MyApp.defaultTheme) {
 
-
                         recyclerViewSettings.setBackgroundColor(getResources().getColor(R.color.dark));
                         settingsLayout.setBackgroundColor(getResources().getColor(R.color.dark));
                     } else {

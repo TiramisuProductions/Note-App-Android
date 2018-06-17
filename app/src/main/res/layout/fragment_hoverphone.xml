@@ -35,6 +35,7 @@
         style="@style/AppTheme.RoundedCornerMaterialButtonBlue"
         android:textColor="@color/white"
         android:text="@string/save"
+        android:ems="4"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/goToAppButton"
         app:layout_constraintStart_toEndOf="@+id/callRecordButton" />
@@ -46,7 +47,11 @@
         android:layout_below="@+id/viewPager"
         android:layout_marginBottom="8dp"
         android:layout_marginStart="8dp"
-        android:layout_toRightOf="@+id/save"
+        android:layout_toEndOf="@+id/save"
+        android:padding="8dp"
+        android:ems="7"
+        android:textColor="@color/white"
+        style="@style/AppTheme.RoundedCornerMaterialButtonBlue"
         android:text="@string/call_record_start"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
@@ -59,11 +64,13 @@
         android:layout_below="@+id/viewPager"
         android:layout_marginBottom="8dp"
         android:layout_marginEnd="8dp"
-        android:background="#757575"
-        android:drawableRight="@drawable/ic_go_to_app"
-        android:padding="10dp"
-        android:text="Go to app "
-        android:textColor="#ffffff"
+
+        android:drawableEnd="@drawable/ic_go_to_app"
+        android:drawablePadding="8dp"
+        android:padding="8dp"
+        android:text="@string/go_to_app"
+        style="@style/AppTheme.RoundedCornerMaterialButtonBlue"
+        android:textColor="@color/white"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 

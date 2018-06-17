@@ -8,6 +8,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.RelativeLayout;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -21,6 +22,7 @@ import truelancer.noteapp.noteapp.Database.CallRecording;
 import truelancer.noteapp.noteapp.EventB;
 import truelancer.noteapp.noteapp.MyApp;
 import truelancer.noteapp.noteapp.R;
+import truelancer.noteapp.noteapp.Utils;
 
 
 /**
@@ -30,7 +32,7 @@ public class RecordingFragment extends Fragment {
 
     public static RecyclerView mRecyclerView;
     private RecordingAdapter mAdapter;
-    String TAG = "yellow";
+    public static RelativeLayout RRecord_no_data;
 
     public RecordingFragment() {
         // Required empty public constructor
@@ -43,6 +45,7 @@ public class RecordingFragment extends Fragment {
         // Inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.fragment_recording, container, false);
 
+        RRecord_no_data = (RelativeLayout)rootView.findViewById(R.id.Rlayout_no_data_record);
         if (!EventBus.getDefault().isRegistered(this)) {
             EventBus.getDefault().register(this);
         }
@@ -79,6 +82,11 @@ public class RecordingFragment extends Fragment {
             //mAdapter.notifyDataSetChanged();
             List<CallRecording> callRecordings = CallRecording.listAll(CallRecording.class);
             Collections.reverse(callRecordings);
+            if (callRecordings.size() == 0) {
+                Utils.Visibility_no_data(5, true);
+            } else {
+                Utils.Visibility_no_data(5, false);
+            }
             mAdapter = new RecordingAdapter(getActivity(), callRecordings);
             mRecyclerView.setAdapter(mAdapter);
         }

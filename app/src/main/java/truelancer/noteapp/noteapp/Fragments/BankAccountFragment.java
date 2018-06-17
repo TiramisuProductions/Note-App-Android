@@ -8,6 +8,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.RelativeLayout;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -21,6 +22,7 @@ import truelancer.noteapp.noteapp.Database.BankAccount;
 import truelancer.noteapp.noteapp.EventB;
 import truelancer.noteapp.noteapp.MyApp;
 import truelancer.noteapp.noteapp.R;
+import truelancer.noteapp.noteapp.Utils;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -29,7 +31,7 @@ public class BankAccountFragment extends Fragment {
 
     public static RecyclerView mRecycleView;
     private BankAccountAdapter mAdapter;
-
+    public static RelativeLayout RBank_no_data;
 
     public BankAccountFragment() {
         // Required empty public constructor
@@ -41,6 +43,7 @@ public class BankAccountFragment extends Fragment {
 
         View rootView = inflater.inflate(R.layout.fragment_bank_account, container, false);
 
+        RBank_no_data = (RelativeLayout)rootView.findViewById(R.id.Rlayout_no_data_bank);
         if (!EventBus.getDefault().isRegistered(this)) {
             EventBus.getDefault().register(this);
         }
@@ -75,6 +78,11 @@ public class BankAccountFragment extends Fragment {
             //mAdapter.notifyDataSetChanged();
             List<BankAccount> banks = BankAccount.listAll(BankAccount.class);
             Collections.reverse(banks);
+            if (banks.size() == 0) {
+                Utils.Visibility_no_data(3, true);
+            } else {
+                Utils.Visibility_no_data(3, false);
+            }
             mAdapter = new BankAccountAdapter(getActivity(), banks);
 
             mRecycleView.setAdapter(mAdapter);

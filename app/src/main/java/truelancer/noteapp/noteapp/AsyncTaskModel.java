@@ -2,6 +2,8 @@ package truelancer.noteapp.noteapp;
 
 import android.app.Activity;
 import android.os.AsyncTask;
+import android.util.Log;
+import android.view.View;
 
 import java.util.Collections;
 import java.util.List;
@@ -49,25 +51,49 @@ public class AsyncTaskModel extends AsyncTask<String, String, String> {
             case 1:
                 contacts = Contact.listAll(Contact.class);
                 Collections.reverse(contacts);
+                if (contacts.size()==0){
+                   ContactFragment.RContact_no_data.setVisibility(View.VISIBLE);
+                }else {
+                    ContactFragment.RContact_no_data.setVisibility(View.GONE);
+                }
                 break;
             case 2:
                 emails = Email.listAll(Email.class);
                 Collections.reverse(emails);
+                if (emails.size()==0){
+                    EmailFragment.REmail_no_data.setVisibility(View.VISIBLE);
+                }else {
+                    EmailFragment.REmail_no_data.setVisibility(View.GONE);
+                }
                 break;
             case 3:
                 bankAccounts = BankAccount.listAll(BankAccount.class);
                 Collections.reverse(bankAccounts);
+                if (bankAccounts.size()==0){
+                    BankAccountFragment.RBank_no_data.setVisibility(View.VISIBLE);
+                }else {
+                    BankAccountFragment.RBank_no_data.setVisibility(View.GONE);
+                }
                 break;
             case 4:
                 notes = Note.listAll(Note.class);
                 Collections.reverse(notes);
+                if (notes.size()==0){
+                  NoteFragment.RNote_no_data.setVisibility(View.VISIBLE);
+                }else {
+                    NoteFragment.RNote_no_data.setVisibility(View.GONE);
+                }
                 break;
             case 5:
                 callRecordings = CallRecording.listAll(CallRecording.class);
                 Collections.reverse(callRecordings);
+                if (callRecordings.size()==0){
+                    RecordingFragment.RRecord_no_data.setVisibility(View.VISIBLE);
+                }else {
+                    RecordingFragment.RRecord_no_data.setVisibility(View.GONE);
+                }
                 break;
         }
-
         return null;
     }
 
@@ -103,7 +129,5 @@ public class AsyncTaskModel extends AsyncTask<String, String, String> {
                 RecordingFragment.mRecyclerView.setAdapter(recordingAdapter);
                 break;
         }
-
-
     }
 }

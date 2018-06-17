@@ -5,9 +5,11 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.RelativeLayout;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -21,6 +23,7 @@ import truelancer.noteapp.noteapp.Database.Contact;
 import truelancer.noteapp.noteapp.EventB;
 import truelancer.noteapp.noteapp.MyApp;
 import truelancer.noteapp.noteapp.R;
+import truelancer.noteapp.noteapp.Utils;
 
 
 /**
@@ -30,6 +33,7 @@ public class ContactFragment extends Fragment {
 
     public static RecyclerView mRecyclerView;
     private ContactAdapter mAdapter;
+    public static RelativeLayout RContact_no_data;
 
     public ContactFragment() {
         // Required empty public constructor
@@ -45,6 +49,7 @@ public class ContactFragment extends Fragment {
         if (!EventBus.getDefault().isRegistered(this)) {
             EventBus.getDefault().register(this);
         }
+        RContact_no_data = (RelativeLayout) rootView.findViewById(R.id.Rlayout_no_data_contact);
 
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getActivity());
         mRecyclerView = (RecyclerView) rootView.findViewById(R.id.recycler_contact);
@@ -79,8 +84,15 @@ public class ContactFragment extends Fragment {
     public void onEvent(EventB event) {
         // your implementation
         if (event.getMessage().equals("1")) {
+            Log.d("wood", "KIdde: ");
             //mAdapter.notifyDataSetChanged();
             List<Contact> contacts = Contact.listAll(Contact.class);
+            if (contacts.size() == 0) {
+                Utils.Visibility_no_data(1, true);
+            } else {
+                Utils.Visibility_no_data(1, false);
+            }
+
             Collections.reverse(contacts);
             mAdapter = new ContactAdapter(getActivity(), contacts);
             mRecyclerView.setAdapter(mAdapter);

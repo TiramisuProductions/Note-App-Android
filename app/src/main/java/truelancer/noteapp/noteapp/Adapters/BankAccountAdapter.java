@@ -37,6 +37,7 @@ import truelancer.noteapp.noteapp.EventB;
 import truelancer.noteapp.noteapp.MainActivity;
 import truelancer.noteapp.noteapp.MyApp;
 import truelancer.noteapp.noteapp.R;
+import truelancer.noteapp.noteapp.Utils;
 
 public class BankAccountAdapter extends RecyclerView.Adapter<BankAccountAdapter.MyView> {
     List<BankAccount> bankAccounts;
@@ -367,6 +368,11 @@ public class BankAccountAdapter extends RecyclerView.Adapter<BankAccountAdapter.
                                     bankAccount.delete();
                                     bankAccounts.remove(position);
                                     notifyDataSetChanged();
+                                    if(bankAccounts.size()==0){
+                                        Utils.Visibility_no_data(3,true);
+                                    }else {
+                                        Utils.Visibility_no_data(3,false);
+                                    }
                                     dialog.dismiss();
                                 }
                             });

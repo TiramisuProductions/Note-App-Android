@@ -626,8 +626,6 @@ public class PopUpService extends Service {
                             } else {
                                 contactTick2.setVisibility(View.INVISIBLE);
                             }
-
-
                         }
                     };
                     EditContactNo.addTextChangedListener(textWatcher01);

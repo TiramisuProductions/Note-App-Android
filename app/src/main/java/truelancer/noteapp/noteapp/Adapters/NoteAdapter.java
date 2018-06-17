@@ -40,6 +40,7 @@ import truelancer.noteapp.noteapp.MainActivity;
 import truelancer.noteapp.noteapp.MyApp;
 import truelancer.noteapp.noteapp.NoteActivity;
 import truelancer.noteapp.noteapp.R;
+import truelancer.noteapp.noteapp.Utils;
 
 import static com.orm.SugarRecord.findById;
 
@@ -340,6 +341,11 @@ public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.MyView> {
                                     note.delete();
                                     notes.remove(position);
                                     notifyDataSetChanged();
+                                    if(notes.size()==0){
+                                        Utils.Visibility_no_data(4,true);
+                                    }else {
+                                        Utils.Visibility_no_data(5,false);
+                                    }
                                     dialog.dismiss();
                                 }
                             });

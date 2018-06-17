@@ -10,9 +10,9 @@
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.PROCESS_OUTGOING_CALLS" />
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
-    <uses-permission android:name="android.permission.CAPTURE_AUDIO_OUTPUT"/>
+    <uses-permission android:name="android.permission.CAPTURE_AUDIO_OUTPUT" />
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
-    <uses-permission android:name="android.permission.CALL_PHONE"/>
+    <uses-permission android:name="android.permission.CALL_PHONE" />
 
     <meta-data
         android:name="DATABASE"
@@ -36,21 +36,22 @@
         android:supportsRtl="true"
         android:theme="@style/MyMaterialTheme"
         tools:replace="android:theme,android:icon">
-
-        <activity android:name=".IntroActivity">
-        <intent-filter>
-            <action android:name="android.intent.action.MAIN" />
-            <category android:name="android.intent.category.LAUNCHER" />
-        </intent-filter>
-            </activity>
-
-        <activity android:name=".MainActivity"
-            android:screenOrientation="portrait"
-            >
-        </activity>
-        <activity android:name=".Settings"
+        <activity
+            android:name=".MainActivity"
             android:screenOrientation="portrait">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
         </activity>
+        <activity
+            android:name=".IntroActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".Settings"
+            android:screenOrientation="portrait" />
+
         <receiver android:name=".Services.PhoneStateReceiver">
             <intent-filter>
                 <action android:name="android.intent.action.PHONE_STATE" />
@@ -62,16 +63,23 @@
             </intent-filter>
         </receiver>
 
-        <service android:name=".Services.PopUpService" />
+        <service
+            android:name=".Services.PopUpService"
+            android:screenOrientation="portrait" />
 
-        <activity android:name=".Search"
-            android:screenOrientation="portrait"/>
-        <activity android:name=".NoteActivity"
-            android:screenOrientation="portrait"
-            ></activity>
-
-        <activity android:name=".AboutUsActivity"></activity>
-        <activity android:name=".OpenSourceLicenceActivity"></activity>
+        <activity
+            android:name=".Search"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".NoteActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".AboutUsActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".OpenSourceLicenceActivity"
+            android:screenOrientation="portrait" />
+        <activity android:name=".Test"></activity>
     </application>
 
 </manifest>

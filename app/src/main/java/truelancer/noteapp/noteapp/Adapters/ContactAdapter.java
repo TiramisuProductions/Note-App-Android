@@ -6,7 +6,6 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-
 import android.provider.ContactsContract;
 import android.support.design.widget.TextInputEditText;
 import android.support.design.widget.TextInputLayout;
@@ -29,6 +28,8 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.facebook.rebound.ui.Util;
+
 import org.greenrobot.eventbus.EventBus;
 
 import java.text.SimpleDateFormat;
@@ -37,8 +38,8 @@ import java.util.List;
 
 import truelancer.noteapp.noteapp.Database.Contact;
 import truelancer.noteapp.noteapp.EventB;
+import truelancer.noteapp.noteapp.Fragments.ContactFragment;
 import truelancer.noteapp.noteapp.MainActivity;
-
 import truelancer.noteapp.noteapp.MyApp;
 import truelancer.noteapp.noteapp.R;
 import truelancer.noteapp.noteapp.Utils;
@@ -55,12 +56,10 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.MyView> 
 
     static final int RESULT_PICK_CONTACT = 4;
 
-
     public ContactAdapter(Activity activity, List<Contact> contacts) {
         this.activity = activity;
         this.contacts = contacts;
     }
-
 
     @Override
     public MyView onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -71,7 +70,7 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.MyView> 
     @Override
     public void onBindViewHolder(final MyView holder, final int position) {
 
-        if(!MyApp.defaultTheme){
+        if (!MyApp.defaultTheme) {
             holder.contactCardView.setCardBackgroundColor(itemContext.getResources().getColor(R.color.darker_card));
             holder.call_txt.setTextColor(itemContext.getResources().getColor(R.color.white));
             holder.calledName.setTextColor(itemContext.getResources().getColor(R.color.white));
@@ -83,26 +82,24 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.MyView> 
             holder.contactId1.setTextColor(itemContext.getResources().getColor(R.color.white));
             holder.contactId2.setTextColor(itemContext.getResources().getColor(R.color.white));
             holder.overflow.setColorFilter(itemContext.getResources().getColor(R.color.white));
-
         }
 
         //Checking incoming, outgoing calls or Saved from app
-        if(contacts.get(position).isSavedFromApp()){
+        if (contacts.get(position).isSavedFromApp()) {
             holder.state_of_call.setImageResource(R.drawable.ic_saved_from_app);
-            inout="Saved From App";
-        }else{
+            inout = "Saved From App";
+        } else {
             if (!contacts.get(position).isIncoming()) {
                 inout = "Call To";
                 holder.state_of_call.setImageResource(R.drawable.ic_outgoing);
-            }
-            else {
+            } else {
                 inout = "Call By";
                 holder.state_of_call.setImageResource(R.drawable.ic_incoming);
             }
         }
 
-         Log.d(""+inout,"qwerty");
-        Log.d("god",""+contacts.get(position).isIncoming());
+        Log.d("" + inout, "qwerty");
+        Log.d("god", "" + contacts.get(position).isIncoming());
         String tsMilli = contacts.get(position).getTsMilli();
         long tsLong = Long.parseLong(tsMilli);
         timeStampString = getDate(tsLong);
@@ -113,18 +110,18 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.MyView> 
         holder.calledName.setText(contacts.get(position).getCalledName());
         holder.calledNumber.setText(contacts.get(position).getCalledNumber());
 
-        holder.contactCardView.setOnClickListener(new View.OnClickListener() {
+    /*    holder.contactCardView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
             }
-        });
+        });*/
 
 
         holder.overflow.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Toast.makeText(itemContext,""+position,Toast.LENGTH_LONG).show();
+                Toast.makeText(itemContext, "" + position, Toast.LENGTH_LONG).show();
                 MainActivity.floatingActionMenu.close(true);
                 PopupMenu popup_overflow = new PopupMenu(activity, holder.overflow);
                 popup_overflow.getMenuInflater().inflate(R.menu.menu_overflow, popup_overflow.getMenu());
@@ -137,7 +134,7 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.MyView> 
                         String temp = item.getTitle().toString();
                         if (temp.equals("Share")) {//Share
 
-                            if(holder.calledNumber.getText().length()==0 && holder.calledNumber.getText().length()==0) {
+                            if (holder.calledNumber.getText().length() == 0 && holder.calledNumber.getText().length() == 0) {
                                 String shareText = "Date&Time: [" + timeStampString + "]\n"
                                         + inout + "\n"
                                         + "Saved Details\n"
@@ -153,20 +150,18 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.MyView> 
                                 } catch (Exception e) {
                                     e.printStackTrace();
                                 }
-                            }
-                            else{
+                            } else {
                                 if (!contacts.get(position).isIncoming()) {
                                     inout = "Call To";
                                     holder.state_of_call.setImageResource(R.drawable.ic_outgoing);
-                                }
-                                else {
+                                } else {
                                     inout = "Call By";
                                     holder.state_of_call.setImageResource(R.drawable.ic_incoming);
                                 }
 
                                 String shareText = "Date&Time: [" + timeStampString + "]\n"
                                         + inout + "\n" + contacts.get(position).getCalledName()
-                                        +":  "+ contacts.get(position).getCalledNumber() + "\n\n"
+                                        + ":  " + contacts.get(position).getCalledNumber() + "\n\n"
                                         + "Saved Details\n"
                                         + "Contact Name : " + contacts.get(position).getName() + "\n"
                                         + "Contact Number : " + contacts.get(position).getPhoneno();
@@ -195,6 +190,12 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.MyView> 
                                     contact.delete();
                                     contacts.remove(position);
                                     notifyDataSetChanged();
+                                    if(contacts.size()==0){
+                                        Utils.Visibility_no_data(1,true);
+                                    }else {
+                                        Utils.Visibility_no_data(1,false);
+                                    }
+                                //    Utils.Visibility_no_data(1);
                                     dialog.dismiss();
                                 }
                             });
@@ -209,31 +210,31 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.MyView> 
 
                             AlertDialog alert = builder.create();
                             alert.show();
-                        }else if(temp.equals("Edit")){
+                        } else if (temp.equals("Edit")) {
                             final Dialog dialog = new Dialog(itemContext);
                             dialog.setContentView(R.layout.edit_dialog);
                             dialog.setTitle("Edit");
                             dialog.setCancelable(false);
-                           // dialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);//Puts dialog on top of keyboard
-                            final TextInputLayout contactNameTextInputLayout =(TextInputLayout)dialog.findViewById(R.id.field1);//Edit Dialog Contact Name
-                            final TextInputLayout contactNumberTextInputLayout =(TextInputLayout)dialog.findViewById(R.id.field2);//Edit Dialog Contact Number
-                            final TextInputLayout calledNameTextInputLayout =(TextInputLayout)dialog.findViewById(R.id.field3);//Edit Dialog Called Name
-                            final TextInputLayout calledNumberTextInputLayout =(TextInputLayout)dialog.findViewById(R.id.field4);//Edit Dialog Called Number
+                            // dialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);//Puts dialog on top of keyboard
+                            final TextInputLayout contactNameTextInputLayout = (TextInputLayout) dialog.findViewById(R.id.field1);//Edit Dialog Contact Name
+                            final TextInputLayout contactNumberTextInputLayout = (TextInputLayout) dialog.findViewById(R.id.field2);//Edit Dialog Contact Number
+                            final TextInputLayout calledNameTextInputLayout = (TextInputLayout) dialog.findViewById(R.id.field3);//Edit Dialog Called Name
+                            final TextInputLayout calledNumberTextInputLayout = (TextInputLayout) dialog.findViewById(R.id.field4);//Edit Dialog Called Number
                             final TextInputEditText contactName = (TextInputEditText) dialog.findViewById(R.id.editContactName);
-                            final TextInputEditText contactNumber = (TextInputEditText)dialog.findViewById(R.id.editContactNumber);
-                            final TextInputEditText calledName =(TextInputEditText)dialog.findViewById(R.id.editCalledName);
-                            final TextInputEditText calledNumber = (TextInputEditText)dialog.findViewById(R.id.editCalledNumber);
-                            final ImageView tick1 = (ImageView)dialog.findViewById(R.id.tick_1);//Edit Dialog Contact Name
-                            final ImageView tick2 = (ImageView)dialog.findViewById(R.id.tick_2);//Edit Dialog Contact Number
-                            final ImageView tick3 = (ImageView)dialog.findViewById(R.id.tick_3);//Edit Dialog Called Name
-                            final ImageView tick4 = (ImageView)dialog.findViewById(R.id.tick_4);//Edit Dialog Called Number
-                            final Spinner calledState =(Spinner)dialog.findViewById(R.id.callstate);
-                            Button btnDone = (Button)dialog.findViewById(R.id.button_done);//Edit Dialog Done Button
-                            Button btnCancel = (Button)dialog.findViewById(R.id.btnCancel);//Edit Dialog Cancel Button
-                            TextView title=(TextView)dialog.findViewById(R.id.edit_dialog_text);
+                            final TextInputEditText contactNumber = (TextInputEditText) dialog.findViewById(R.id.editContactNumber);
+                            final TextInputEditText calledName = (TextInputEditText) dialog.findViewById(R.id.editCalledName);
+                            final TextInputEditText calledNumber = (TextInputEditText) dialog.findViewById(R.id.editCalledNumber);
+                            final ImageView tick1 = (ImageView) dialog.findViewById(R.id.tick_1);//Edit Dialog Contact Name
+                            final ImageView tick2 = (ImageView) dialog.findViewById(R.id.tick_2);//Edit Dialog Contact Number
+                            final ImageView tick3 = (ImageView) dialog.findViewById(R.id.tick_3);//Edit Dialog Called Name
+                            final ImageView tick4 = (ImageView) dialog.findViewById(R.id.tick_4);//Edit Dialog Called Number
+                            final Spinner calledState = (Spinner) dialog.findViewById(R.id.callstate);
+                            Button btnDone = (Button) dialog.findViewById(R.id.button_done);//Edit Dialog Done Button
+                            Button btnCancel = (Button) dialog.findViewById(R.id.btnCancel);//Edit Dialog Cancel Button
+                            TextView title = (TextView) dialog.findViewById(R.id.edit_dialog_text);
                             title.setText(R.string.edit_dialog_contact);
-                            String options[] = {"Incoming","Outgoing"};
-                            ArrayAdapter<String> adminSpinnerArrayAdapter = new ArrayAdapter<String>(itemContext,   android.R.layout.simple_spinner_item, options);
+                            String options[] = {"Incoming", "Outgoing"};
+                            ArrayAdapter<String> adminSpinnerArrayAdapter = new ArrayAdapter<String>(itemContext, android.R.layout.simple_spinner_item, options);
                             adminSpinnerArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item); // The drop down view
                             calledState.setAdapter(adminSpinnerArrayAdapter);
 
@@ -243,16 +244,18 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.MyView> 
                                 public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
 
                                 }
+
                                 @Override
                                 public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
 
-                                    if(String.valueOf(charSequence).length()>0){
+                                    if (String.valueOf(charSequence).length() > 0) {
                                         tick1.setVisibility(View.VISIBLE);
                                         contactNameTextInputLayout.setError(null);
-                                    }else{
+                                    } else {
                                         tick1.setVisibility(View.INVISIBLE);
                                     }
                                 }
+
                                 @Override
                                 public void afterTextChanged(Editable editable) {
 
@@ -264,15 +267,17 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.MyView> 
                                 public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
 
                                 }
+
                                 @Override
                                 public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                                    if(Utils.isValidMobile(String.valueOf(charSequence))){
+                                    if (Utils.isValidMobile(String.valueOf(charSequence))) {
                                         tick2.setVisibility(View.VISIBLE);
                                         contactNumberTextInputLayout.setError(null);
-                                    }else{
+                                    } else {
                                         tick2.setVisibility(View.INVISIBLE);
                                     }
                                 }
+
                                 @Override
                                 public void afterTextChanged(Editable editable) {
 
@@ -284,16 +289,18 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.MyView> 
                                 public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
 
                                 }
+
                                 @Override
                                 public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
 
-                                    if(String.valueOf(charSequence).length()>0){
+                                    if (String.valueOf(charSequence).length() > 0) {
                                         tick3.setVisibility(View.VISIBLE);
                                         calledNameTextInputLayout.setError(null);
-                                    }else{
+                                    } else {
                                         tick3.setVisibility(View.INVISIBLE);
                                     }
                                 }
+
                                 @Override
                                 public void afterTextChanged(Editable editable) {
 
@@ -305,15 +312,17 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.MyView> 
                                 public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
 
                                 }
+
                                 @Override
                                 public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                                    if(Utils.isValidMobile(String.valueOf(charSequence))){
+                                    if (Utils.isValidMobile(String.valueOf(charSequence))) {
                                         tick4.setVisibility(View.VISIBLE);
                                         calledNumberTextInputLayout.setError(null);
-                                    }else{
+                                    } else {
                                         tick4.setVisibility(View.INVISIBLE);
                                     }
                                 }
+
                                 @Override
                                 public void afterTextChanged(Editable editable) {
 
@@ -321,10 +330,9 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.MyView> 
                             });
 
                             //Edit Dialog set spinner
-                            if(contacts.get(position).isIncoming()){
+                            if (contacts.get(position).isIncoming()) {
                                 calledState.setSelection(0);
-                            }
-                            else {
+                            } else {
                                 calledState.setSelection(1);
                             }
 
@@ -333,44 +341,39 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.MyView> 
 
                                 public void onClick(View view) {
 
-                                    if(TextUtils.isEmpty(contactName.getText().toString())){
+                                    if (TextUtils.isEmpty(contactName.getText().toString())) {
                                         contactNameTextInputLayout.setError(itemContext.getString(R.string.hint_contact_name));
-                                    }else if(!Utils.isValidMobile(contactNumber.getText().toString())){
+                                    } else if (!Utils.isValidMobile(contactNumber.getText().toString())) {
                                         contactNumberTextInputLayout.setError(itemContext.getString(R.string.hint_contact_number));
-                                    }else if(calledName.getText().toString().length()>0||calledNumber.getText().toString().length()>0){
-                                         if (calledName.getText().toString().length()<=0){
-                                             calledNameTextInputLayout.setError(itemContext.getString(R.string.hint_called_name));
-                                         }
-                                         else if(calledNumber.getText().toString().length()<=0){
-                                             calledNumberTextInputLayout.setError(itemContext.getString(R.string.hint_called_number));
-                                         }
-                                         else {
-                                             Contact contact =  Contact.findById(Contact.class,contacts.get(position).getId());
-                                             contact.setPhoneno(contactNumber.getText().toString());
-                                             contact.setName(contactName.getText().toString());
-                                             contact.setCalledName(calledName.getText().toString());
-                                             contact.setCalledNumber(calledNumber.getText().toString());
-                                             if(calledState.getSelectedItemPosition()==0){
-                                                 contact.setIncoming(true);
-                                             }
-                                             else {
-                                                 contact.setIncoming(false);
-                                             }
-                                             contact.save();
-                                             EventBus.getDefault().post(new EventB("1"));
-                                             dialog.dismiss();
-                                         }
-                                    }
-                                    else{
-                                        Contact contact =  Contact.findById(Contact.class,contacts.get(position).getId());
+                                    } else if (calledName.getText().toString().length() > 0 || calledNumber.getText().toString().length() > 0) {
+                                        if (calledName.getText().toString().length() <= 0) {
+                                            calledNameTextInputLayout.setError(itemContext.getString(R.string.hint_called_name));
+                                        } else if (calledNumber.getText().toString().length() <= 0) {
+                                            calledNumberTextInputLayout.setError(itemContext.getString(R.string.hint_called_number));
+                                        } else {
+                                            Contact contact = Contact.findById(Contact.class, contacts.get(position).getId());
+                                            contact.setPhoneno(contactNumber.getText().toString());
+                                            contact.setName(contactName.getText().toString());
+                                            contact.setCalledName(calledName.getText().toString());
+                                            contact.setCalledNumber(calledNumber.getText().toString());
+                                            if (calledState.getSelectedItemPosition() == 0) {
+                                                contact.setIncoming(true);
+                                            } else {
+                                                contact.setIncoming(false);
+                                            }
+                                            contact.save();
+                                            EventBus.getDefault().post(new EventB("1"));
+                                            dialog.dismiss();
+                                        }
+                                    } else {
+                                        Contact contact = Contact.findById(Contact.class, contacts.get(position).getId());
                                         contact.setPhoneno(contactNumber.getText().toString());
                                         contact.setName(contactName.getText().toString());
                                         contact.setCalledName(calledName.getText().toString());
                                         contact.setCalledNumber(calledNumber.getText().toString());
-                                        if(calledState.getSelectedItemPosition()==0){
+                                        if (calledState.getSelectedItemPosition() == 0) {
                                             contact.setIncoming(true);
-                                        }
-                                        else {
+                                        } else {
                                             contact.setIncoming(false);
                                         }
                                         contact.save();
@@ -429,12 +432,11 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.MyView> 
     }
 
     public class MyView extends RecyclerView.ViewHolder {
-        public TextView contactName, contactNum, calledName, calledNumber, call_txt, date_time,savedDetails,contactId1,contactId2;
+        public TextView contactName, contactNum, calledName, calledNumber, call_txt, date_time, savedDetails, contactId1, contactId2;
         public CardView contactCardView;
         public ImageView overflow, state_of_call;
 
         public MyView(View itemView) {
-
             super(itemView);
             contactName = (TextView) itemView.findViewById(R.id.contact_name);
             contactNum = (TextView) itemView.findViewById(R.id.contact_number);
@@ -445,10 +447,9 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.MyView> 
             state_of_call = (ImageView) itemView.findViewById(R.id.stateOfCall);
             date_time = (TextView) itemView.findViewById(R.id.date_time_txt);
             overflow = (ImageView) itemView.findViewById(R.id.overflow);
-            savedDetails =(TextView)itemView.findViewById(R.id.saved_details);
-            contactId1 = (TextView)itemView.findViewById(R.id.contact_id);
-            contactId2 =(TextView)itemView.findViewById(R.id.contact_id2);
-
+            savedDetails = (TextView) itemView.findViewById(R.id.saved_details);
+            contactId1 = (TextView) itemView.findViewById(R.id.contact_id);
+            contactId2 = (TextView) itemView.findViewById(R.id.contact_id2);
             itemContext = itemView.getContext();
         }
     }
@@ -470,6 +471,7 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.MyView> 
 
         activity.startActivity(intent);
     }
+
     //Add to contact update existing contact
     private void update_contact(int position) {
 
@@ -479,6 +481,4 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.MyView> 
         ((Activity) activity).startActivityForResult(i, RESULT_PICK_CONTACT);
 
     }
-
-
 }

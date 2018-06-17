@@ -8,6 +8,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.RelativeLayout;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -21,6 +22,7 @@ import truelancer.noteapp.noteapp.Database.Email;
 import truelancer.noteapp.noteapp.EventB;
 import truelancer.noteapp.noteapp.MyApp;
 import truelancer.noteapp.noteapp.R;
+import truelancer.noteapp.noteapp.Utils;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -28,6 +30,7 @@ import truelancer.noteapp.noteapp.R;
 public class EmailFragment extends Fragment {
     public static RecyclerView mRecyclerView;
     private EmailAdapter mAdapter;
+    public static RelativeLayout REmail_no_data;
 
 
     public EmailFragment() {
@@ -41,7 +44,7 @@ public class EmailFragment extends Fragment {
 
 
         View rootView = inflater.inflate(R.layout.fragment_email, container, false);
-
+        REmail_no_data = (RelativeLayout)rootView.findViewById(R.id.Rlayout_no_data_email);
         // getActivity().setTheme(R.style.MyMaterialThemeDark);
         if (!EventBus.getDefault().isRegistered(this)) {
             EventBus.getDefault().register(this);
@@ -84,8 +87,14 @@ public class EmailFragment extends Fragment {
         // your implementation
         if (event.getMessage().equals("2")) {
             // mAdapter.notifyDataSetChanged();
+
             List<Email> emails = Email.listAll(Email.class);
             Collections.reverse(emails);
+            if (emails.size() == 0) {
+                Utils.Visibility_no_data(2, true);
+            } else {
+                Utils.Visibility_no_data(2, false);
+            }
             mAdapter = new EmailAdapter(getActivity(), emails);
 
             mRecyclerView.setAdapter(mAdapter);

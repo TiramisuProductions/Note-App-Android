@@ -28,10 +28,10 @@ public class SettingsAdapter extends RecyclerView.Adapter<SettingsAdapter.MyView
     private static final String SHARED_PREF_NAME = "hellonotepref";
 
     Context context;
-    ArrayList<String> settingsList = new ArrayList<>();
+    ArrayList<String> settingsList;
     CharSequence[] themes = {"Default", "Dark"};
-    CharSequence[] bubblePositions = {"Top ","Centre",  "Bottom "};
-    CharSequence[] callRecords = {"Voice Call", "Voice Communication"};
+    CharSequence[] bubblePositions = {"Top ", "Centre", "Bottom "};
+    //CharSequence[] callRecords = {"Voice Call", "Voice Communication"};
     SharedPreferences pref;
     SharedPreferences.Editor editor;
 
@@ -56,12 +56,12 @@ public class SettingsAdapter extends RecyclerView.Adapter<SettingsAdapter.MyView
         builder.setTitle("Select Theme");
 
         final Intent i = context.getPackageManager()
-                .getLaunchIntentForPackage( context.getPackageName() );
+                .getLaunchIntentForPackage(context.getPackageName());
         i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 
-        int checked =0;
+        int checked = 0;
 
-        if(!pref.getBoolean(context.getString(R.string.defaulttheme),true)) {
+        if (!pref.getBoolean(context.getString(R.string.defaulttheme), true)) {
             checked = 1;
         }
 
@@ -74,7 +74,7 @@ public class SettingsAdapter extends RecyclerView.Adapter<SettingsAdapter.MyView
                         //Toast.makeText(context, "" +which, Toast.LENGTH_SHORT).show();
                         editor.putBoolean(context.getString(R.string.defaulttheme), true);
                         editor.apply();
-                        MyApp.defaultTheme=true;
+                        MyApp.defaultTheme = true;
                         EventBus.getDefault().post(new EventB(context.getString(R.string.themechanged)));
                         notifyItemChanged(0);
                         dialog.dismiss();
@@ -101,7 +101,7 @@ public class SettingsAdapter extends RecyclerView.Adapter<SettingsAdapter.MyView
         alert.show();
     }
 
-    private void bubbleDialogBox(View v){
+    private void bubbleDialogBox(View v) {
         AlertDialog.Builder builder = new AlertDialog.Builder(v.getRootView().getContext());
         builder.setTitle("Select Theme");
         builder.setSingleChoiceItems(bubblePositions, -1, new DialogInterface.OnClickListener() {
@@ -110,17 +110,17 @@ public class SettingsAdapter extends RecyclerView.Adapter<SettingsAdapter.MyView
             public void onClick(DialogInterface dialog, int which) {
                 switch (which) {
                     case 0://Top
-                    editor.putString(context.getString(R.string.bubblelocation),"top");
-                    editor.commit();
-                    dialog.dismiss();
+                        editor.putString(context.getString(R.string.bubblelocation), "top");
+                        editor.commit();
+                        dialog.dismiss();
                         break;
                     case 1://Centre
-                        editor.putString(context.getString(R.string.bubblelocation),"centre");
+                        editor.putString(context.getString(R.string.bubblelocation), "centre");
                         editor.commit();
                         dialog.dismiss();
                         break;
                     case 2://Bottom
-                        editor.putString(context.getString(R.string.bubblelocation),"bottom");
+                        editor.putString(context.getString(R.string.bubblelocation), "bottom");
                         editor.commit();
                         dialog.dismiss();
                         break;
@@ -133,7 +133,7 @@ public class SettingsAdapter extends RecyclerView.Adapter<SettingsAdapter.MyView
         alert.show();
     }
 
-    private void callRecordDialog (View v){
+/*    private void callRecordDialog(View v) {
         AlertDialog.Builder builder = new AlertDialog.Builder(v.getRootView().getContext());
         builder.setTitle("Select configuration");
         builder.setSingleChoiceItems(callRecords, -1, new DialogInterface.OnClickListener() {
@@ -142,13 +142,13 @@ public class SettingsAdapter extends RecyclerView.Adapter<SettingsAdapter.MyView
             public void onClick(DialogInterface dialog, int which) {
                 switch (which) {
                     case 0://Voice call
-                        editor.putBoolean(context.getString(R.string.voicecall),true);
+                        editor.putBoolean(context.getString(R.string.voicecall), true);
                         editor.commit();
                         dialog.dismiss();
                         notifyDataSetChanged();
                         break;
                     case 1://Voice Communication
-                        editor.putBoolean(context.getString(R.string.voicecall),false);
+                        editor.putBoolean(context.getString(R.string.voicecall), false);
                         editor.commit();
                         dialog.dismiss();
                         notifyDataSetChanged();
@@ -159,15 +159,14 @@ public class SettingsAdapter extends RecyclerView.Adapter<SettingsAdapter.MyView
 
         AlertDialog alert = builder.create();
         alert.show();
-    }
-
+    }*/
 
 
     @Override
     public void onBindViewHolder(final SettingsAdapter.MyViewHolder holder, final int position) {
         holder.settingsText.setText(settingsList.get(position));
-        if(!MyApp.defaultTheme){
-            Log.d("hello","icecream");
+        if (!MyApp.defaultTheme) {
+            Log.d("hello", "icecream");
             holder.settingsText.setTextColor(context.getResources().getColor(R.color.white));
             holder.settingstate.setTextColor(context.getResources().getColor(R.color.white));
 
@@ -175,19 +174,19 @@ public class SettingsAdapter extends RecyclerView.Adapter<SettingsAdapter.MyView
         }
 
 
-        switch (position){
+        switch (position) {
             case 0:
-                if(!MyApp.defaultTheme){
+                if (!MyApp.defaultTheme) {
                     holder.settingstate.setText("Dark Theme");
-                }else {
+                } else {
                     holder.settingstate.setText("Default Theme");
                 }
                 break;
 
             case 2:
-                if(pref.getBoolean(context.getString(R.string.voicecall),true)){
+                if (pref.getBoolean(context.getString(R.string.voicecall), true)) {
                     holder.settingstate.setText("Voice Call");
-                }else {
+                } else {
                     holder.settingstate.setText("Voice Communication");
                 }
                 break;
@@ -196,7 +195,6 @@ public class SettingsAdapter extends RecyclerView.Adapter<SettingsAdapter.MyView
                 holder.settingstate.setText("");
                 break;
         }
-
 
 
         holder.itemLayout.setOnClickListener(new View.OnClickListener() {
@@ -235,13 +233,10 @@ public class SettingsAdapter extends RecyclerView.Adapter<SettingsAdapter.MyView
             settingsText = (TextView) itemView.findViewById(R.id.setting_item);
             settingstate = (TextView) itemView.findViewById(R.id.settingstate);
             divider = (View) itemView.findViewById(R.id.divider);
-            itemLayout = (ConstraintLayout)itemView.findViewById(R.id.item_layout);
-
-
+            itemLayout = (ConstraintLayout) itemView.findViewById(R.id.item_layout);
 
 
         }
-
 
 
     }

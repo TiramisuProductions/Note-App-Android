@@ -53,6 +53,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.github.clans.fab.FloatingActionMenu;
+import com.github.paolorotolo.appintro.AppIntroFragment;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
@@ -169,7 +170,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     GoogleSignInClient mGoogleSignInClient;
     String jsonString = "";
     String TAG = "MainActivity";
-    SharedPreferences pref;
     private ContactAdapter contactSearchAdapter;
     private EmailAdapter emailSearchAdapter;
     private BankAccountAdapter bankSearchAdapter;
@@ -181,20 +181,27 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     AlertDialog.Builder progressDialogBuilder;
     InputMethodManager inputMethodManager;
 
+    SharedPreferences.Editor editor;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        ShowProgressDialog("Setting things Up");
-        Log.d("Loading", "Loading");
+        SharedPreferences pref = getApplicationContext().getSharedPreferences(getString(R.string.shared_pref), 0); // 0 - for private mode
+        editor = pref.edit();
+
+        MyApp.defaultTheme = pref.getBoolean(getString(R.string.defaulttheme), true);
+
+        if (pref.getBoolean(getString(R.string.shared_pref_first_time), true)) {
+
+            startActivity(new Intent(this, IntroActivity.class));
+        }
+
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
         inputMethodManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);//Controls keyboard
-        pref = getApplicationContext().getSharedPreferences(getString(R.string.shared_pref), MODE_PRIVATE);
         floatingActionMenu = (FloatingActionMenu) findViewById(R.id.fab_menu);
         floatingActionMenu.setVisibility(View.VISIBLE);
         if (MyApp.defaultTheme) {
-
-
         } else {
             Toast.makeText(this, "Default Theme", Toast.LENGTH_LONG).show();
             searchToolbar.setBackgroundColor(getResources().getColor(R.color.dark));
@@ -211,6 +218,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         emailFab.setOnClickListener(this);
         bankAccountFab.setOnClickListener(this);
         lastNoteFab.setOnClickListener(this);
+
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(false); //To disable back button on toolbar
 
@@ -224,8 +232,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         homeViewPager.setOffscreenPageLimit(5);
 
-        Log.d("Loading", "Loading Done");
-        HideProgressDialog();
     }
 
     private void setupViewPager(ViewPager viewPager) {
@@ -291,15 +297,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         RecyclerView.LayoutManager mLayoutManager1 = new LinearLayoutManager(getApplicationContext());
         contactSearchRecycler.setLayoutManager(mLayoutManager1);
         RecyclerView.LayoutManager mLayoutManager2 = new LinearLayoutManager(getApplicationContext());
-
         emailSearchRecycler.setLayoutManager(mLayoutManager2);
-
         RecyclerView.LayoutManager mLayoutManager3 = new LinearLayoutManager(getApplicationContext());
-
         bankSearchRecycler.setLayoutManager(mLayoutManager3);
-
         RecyclerView.LayoutManager mLayoutManager4 = new LinearLayoutManager(getApplicationContext());
-
         noteSearchRecycler.setLayoutManager(mLayoutManager4);
     }
 
@@ -344,8 +345,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         // start the animation
         anim.start();
-
-
     }
 
     //Searching
@@ -364,8 +363,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         searchToolbar.setVisibility(View.GONE);
                         homeTabLayout.setVisibility(View.VISIBLE);
                     }
-
-
                 }
             });
 
@@ -400,21 +397,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             });
 
             initSearchView();
-
-
         } else
             Log.d("toolbar", "setSearchtollbar: NULL");
     }
 
-
     public void initSearchView() {
-
-
         initSearchLayout();
 
         Log.d(TAG, "SearchView");
         final SearchView searchView = (SearchView) search_menu.findItem(R.id.action_filter_search).getActionView();
-
 
         // Enable/Disable Submit button in the keyboard
 
@@ -424,7 +415,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         ImageView closeButton = (ImageView) searchView.findViewById(R.id.search_close_btn);
         closeButton.setImageResource(R.drawable.ic_close);
-
 
         // set hint and the text colors
 
@@ -547,7 +537,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 emailFilterList.add(emails.get(i));
             } else {
             }
-
         }
 
         emailSearchAdapter = new EmailAdapter(this, emailFilterList);
@@ -562,7 +551,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             String calledNoAll = "";
             String calledNameAll = "";
             boolean savedFromApp = bankAccounts.get(i).isSavedFromApp();
-
 
             if (!savedFromApp) {
                 calledNoAll = bankAccounts.get(i).getCalledNumber().toLowerCase();
@@ -581,7 +569,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 bankFilterList.add(bankAccounts.get(i));
             } else {
             }
-
         }
 
         bankSearchAdapter = new BankAccountAdapter(this, bankFilterList);
@@ -599,17 +586,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 callednameAll = notes.get(i).getCalledName().toLowerCase();
             }
 
-
             if (noteAll.contains(searchWord)) {
                 noteFilterList.add(notes.get(i));
             } else if (callednameAll.contains(searchWord)) {
                 noteFilterList.add(notes.get(i));
             } else if (callednoAll.contains(searchWord)) {
                 noteFilterList.add(notes.get(i));
-            } else {
             }
-
         }
+
         noteSearchAdapter = new NoteAdapter(this, noteFilterList);
         noteSearchRecycler.setAdapter(noteSearchAdapter);
 
@@ -636,9 +621,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         } else {
             noteText.setVisibility(View.VISIBLE);
             notFoundText.setVisibility(View.INVISIBLE);
-
         }
-
 
         if (contactFilterList.isEmpty()) {
             if (emailFilterList.isEmpty()) {
@@ -649,7 +632,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     }
                 }
             }
-
         }
     }
 
@@ -679,8 +661,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         switch (item.getItemId()) {
             case R.id.menu_export:
-                ShowProgressDialog("Exporting");
-                signIn();
+                if (Utils.isOnline(getApplicationContext())) {
+                    Toast.makeText(this, "Internet Available", Toast.LENGTH_SHORT).show();
+                   /* ShowProgressDialog("Exporting");
+                    signIn();*/
+                } else {
+                    Toast.makeText(this, "Internet Unavailable", Toast.LENGTH_SHORT).show();
+                }
+
                 return true;
 
             case R.id.menu_search:
@@ -699,9 +687,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 return true;
 
             case R.id.menu_import:
-                ShowProgressDialog("Importing");
-                isImport = true;
-                signIn();
+                if (Utils.isOnline(getApplicationContext())) {
+                    Toast.makeText(this, "Internet Available", Toast.LENGTH_SHORT).show();
+                    /*ShowProgressDialog("Importing");
+                    isImport = true;
+                    signIn();*/
+                } else {
+                    Toast.makeText(this, "Internet Unavailable", Toast.LENGTH_SHORT).show();
+                }
                 return true;
 
             case R.id.menu_email_to_admin:
@@ -727,14 +720,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     }
                 });
 
-
                 dialog.show();
                 return true;
-
 
             case R.id.settings:
                 startActivity(new Intent(this, Settings.class));
 
+                //startActivity(new Intent(MainActivity.this,Test.class));
 
             default:
                 return super.onOptionsItemSelected(item);
@@ -870,46 +862,46 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.KITKAT) {
 
-                Tasks.whenAll(appFolderTask, createContentsTask)
-                        .continueWithTask(new Continuation<Void, Task<DriveFile>>() {
-                            @Override
-                            public Task<DriveFile> then(@NonNull Task<Void> task) throws Exception {
-                                DriveFolder parent = appFolderTask.getResult();
-                                DriveContents contents = createContentsTask.getResult();
+            Tasks.whenAll(appFolderTask, createContentsTask)
+                    .continueWithTask(new Continuation<Void, Task<DriveFile>>() {
+                        @Override
+                        public Task<DriveFile> then(@NonNull Task<Void> task) throws Exception {
+                            DriveFolder parent = appFolderTask.getResult();
+                            DriveContents contents = createContentsTask.getResult();
 
-                                OutputStream outputStream = contents.getOutputStream();
+                            OutputStream outputStream = contents.getOutputStream();
 
-                                try (Writer writer = new OutputStreamWriter(outputStream)) {
-                                    writer.write(jsonString);
+                            try (Writer writer = new OutputStreamWriter(outputStream)) {
+                                writer.write(jsonString);
+                            }
+
+                            MetadataChangeSet changeSet = new MetadataChangeSet.Builder()
+                                    .setTitle(Config.BACKUP_FILE_NAME)
+                                    .setMimeType("json/application")
+                                    .setStarred(true)
+                                    .build();
+
+                            return mDriveResourceClient.createFile(parent, changeSet, contents);
+                        }
+                    })
+
+                    .addOnSuccessListener(this,
+                            new OnSuccessListener<DriveFile>() {
+                                @Override
+                                public void onSuccess(DriveFile driveFile) {
+                                    HideProgressDialog();
+                                    Log.d("abc", "Working");
+
                                 }
-
-                                MetadataChangeSet changeSet = new MetadataChangeSet.Builder()
-                                        .setTitle(Config.BACKUP_FILE_NAME)
-                                        .setMimeType("json/application")
-                                        .setStarred(true)
-                                        .build();
-
-                                return mDriveResourceClient.createFile(parent, changeSet, contents);
-                            }
-                        })
-
-                        .addOnSuccessListener(this,
-                                new OnSuccessListener<DriveFile>() {
-                                    @Override
-                                    public void onSuccess(DriveFile driveFile) {
-                                        HideProgressDialog();
-                                        Log.d("abc", "Working");
-
-                                    }
-                                })
-                        .addOnFailureListener(this, new OnFailureListener() {
-                            @Override
-                            public void onFailure(@NonNull Exception e) {
-                                Log.e(TAG, "Unable to create file", e);
-                                //finish();
-                                HideProgressDialog();
-                            }
-                        });
+                            })
+                    .addOnFailureListener(this, new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            Log.e(TAG, "Unable to create file", e);
+                            //finish();
+                            HideProgressDialog();
+                        }
+                    });
 
         }
     }
@@ -1165,7 +1157,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         List<Note> notes2 = Note.listAll(Note.class);
 
         for (int i = 0; i < notes2.size(); i++) {
-            if(noteTSfromtasklist.equals(notes2.get(i).getTsMilli())){
+            if (noteTSfromtasklist.equals(notes2.get(i).getTsMilli())) {
                 return notes2.get(i).getId().toString();
             }
         }

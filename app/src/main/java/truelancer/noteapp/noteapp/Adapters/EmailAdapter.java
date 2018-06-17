@@ -185,6 +185,11 @@ public class EmailAdapter extends RecyclerView.Adapter<EmailAdapter.MyView> {
                                     email.delete();
                                     emails.remove(position);
                                     notifyDataSetChanged();
+                                    if(emails.size()==0){
+                                        Utils.Visibility_no_data(2,true);
+                                    }else {
+                                        Utils.Visibility_no_data(2,false);
+                                    }
                                     dialog.dismiss();
                                 }
                             });

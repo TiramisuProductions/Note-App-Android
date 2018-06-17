@@ -67,9 +67,12 @@ public class PhoneStateReceiver extends BroadcastReceiver {
                 app.bindService();
 
             } else {
-                app.checkForDraft(ringingNumber, getContactDisplayNameByNumber(ringingNumber, context), true, tsMilli);
-                app.popUpService.removeAllChatHeads();
-                app.popUpService.addChatHead(ringingNumber, getContactDisplayNameByNumber(ringingNumber, context), true, tsMilli);
+                if (app != null) {
+                    app.checkForDraft(ringingNumber, getContactDisplayNameByNumber(ringingNumber, context), true, tsMilli);
+                    app.popUpService.removeAllChatHeads();
+                    app.popUpService.addChatHead(ringingNumber, getContactDisplayNameByNumber(ringingNumber, context), true, tsMilli);
+                }
+
             }
 
             Toast.makeText(context, "Ringing State Name is -" + getContactDisplayNameByNumber(ringingNumber, context), Toast.LENGTH_SHORT).show();
@@ -112,7 +115,7 @@ public class PhoneStateReceiver extends BroadcastReceiver {
                 name = contactLookup.getString(contactLookup.getColumnIndex(ContactsContract.Data.DISPLAY_NAME));
 
 
-                Log.d("wood", "name: "+name);
+                Log.d("wood", "name: " + name);
             }
         } finally {
             if (contactLookup != null) {

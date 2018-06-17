@@ -39,6 +39,7 @@ import java.util.List;
 import truelancer.noteapp.noteapp.Database.CallRecording;
 import truelancer.noteapp.noteapp.MyApp;
 import truelancer.noteapp.noteapp.R;
+import truelancer.noteapp.noteapp.Utils;
 
 /**
  * Created by Siddhant Naique on 10-04-2018.
@@ -417,6 +418,11 @@ public class RecordingAdapter extends RecyclerView.Adapter<RecordingAdapter.MyVi
                                     callRecording.delete();
                                     callRecordings.remove(position);
                                     notifyDataSetChanged();
+                                    if(callRecordings.size()==0){
+                                        Utils.Visibility_no_data(5,true);
+                                    }else {
+                                        Utils.Visibility_no_data(5,false);
+                                    }
                                     dialog.dismiss();
                                 }
                             });
