@@ -49,7 +49,7 @@
                 android:background="@drawable/rounded_edit_text"
                 android:ems="10"
                 android:hint="@string/hint_contact_name"
-                android:inputType="textPersonName"
+                android:inputType="textCapWords|textPersonName"
                 android:paddingLeft="10dp"
                 android:paddingRight="10dp"
                 android:textColor="#000"

@@ -130,6 +130,7 @@ public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.MyView> {
             @Override
             public void onClick(View view) {
 
+                MainActivity.floatingActionMenu.close(true);
                 Intent intent = new Intent(activity, NoteActivity.class);
                 intent.putExtra("noteText", notes.get(position).getNote());
 
@@ -137,9 +138,21 @@ public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.MyView> {
                 intent.putExtra("calledNumber", notes.get(position).getCalledNumber());
                 intent.putExtra("noteId",""+notes.get(position).getId());
 
-                String income = "" + notes.get(position).isIncoming();
-                intent.putExtra("incoming", income);
-
+                //boolean income =  notes.get(position).isIncoming();
+                //intent.putExtra("incoming", income);
+                if (notes.get(position).isSavedFromApp()){
+                    inout="Saved From App";
+                    intent.putExtra("incoming",inout);
+                }
+                else {
+                    if (notes.get(position).isIncoming()) {
+                        inout = "Call By";
+                        intent.putExtra("incoming", inout);
+                    } else {
+                        inout = "Call To";
+                        intent.putExtra("incoming", inout);
+                    }
+                }
                 String tsMilli = notes.get(position).getTsMilli();
                 long tsLong = Long.parseLong(tsMilli);
                 String timeStampString2 = getDate(tsLong);

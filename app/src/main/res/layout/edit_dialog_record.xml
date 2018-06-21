@@ -53,7 +53,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="@string/recording_name"
-                    android:inputType="text"
+                    android:inputType="text|textCapWords"
                     android:singleLine="true" />
             </android.support.design.widget.TextInputLayout>
 
@@ -73,7 +73,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="@string/hint_called_name"
-                    android:inputType="textPersonName"
+                    android:inputType="textCapWords|textPersonName"
                     android:singleLine="true" />
             </android.support.design.widget.TextInputLayout>
 

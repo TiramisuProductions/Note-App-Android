@@ -22,19 +22,19 @@ import truelancer.noteapp.noteapp.EventB;
 import truelancer.noteapp.noteapp.MyApp;
 import truelancer.noteapp.noteapp.R;
 
-
-public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.MyView> {
+public class TaskDoneAdapter extends RecyclerView.Adapter<TaskDoneAdapter.MyView> {
     List<Task> tasks;
     Context context;
-    Task task;
     String noteId;
+    Task task;
 
-    public TaskAdapter(Context context, List<Task> tasks) {
+    public TaskDoneAdapter(Context context, List<Task> tasks) {
 
         this.context=context;
         this.tasks=tasks;
+        this.task=task;
 
-        this.noteId=noteId;
+
     }
 
     @Override
@@ -46,31 +46,33 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.MyView> {
     @Override
     public void onBindViewHolder(MyView holder,final int position) {
         final Task task = tasks.get(position);
-        holder.checkBoxText.setChecked(false);
+        holder.checkBoxText.setChecked(true);
         holder.textViewTask.setText(tasks.get(position).getTaskText());
+        holder.textViewTask.setPaintFlags(holder.textViewTask.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
         if(!MyApp.defaultTheme){
             holder.noteCardView.setBackgroundColor(context.getResources().getColor(R.color.darker_card));
             holder.textViewTask.setTextColor(context.getResources().getColor(R.color.white));
 
         }
+
         holder.deleteTask.setOnClickListener(new View.OnClickListener() {
-    @Override
-    public void onClick(View view) {
-        Task taskDelete = Task.findById(Task.class, task.getId());
-        taskDelete.delete();
-        EventBus.getDefault().post(new EventB("updateTask"));
-    }
-    });
+            @Override
+            public void onClick(View view) {
+                Task taskDelete = Task.findById(Task.class, task.getId());
+                taskDelete.delete();
+                EventBus.getDefault().post(new EventB("updateTask"));
+            }
+        });
 
 
 
         holder.checkBoxText.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if(isChecked)
+                if(!isChecked)
                 {
-                    Task task1=  Task.findById(Task.class,task.getId());
-                    task1.isDone=true;
+                    Task task1= Task.findById(Task.class,task.getId());
+                    task1.isDone=false;
                     task1.save();
                     EventBus.getDefault().post(new EventB("updateTask"));
 
@@ -82,7 +84,7 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.MyView> {
 
     @Override
     public int getItemCount() {
-        Log.d("done",""+tasks.size());
+        Log.d("hello",""+tasks.size());
         return tasks.size();
     }
 

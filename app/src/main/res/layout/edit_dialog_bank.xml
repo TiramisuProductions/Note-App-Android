@@ -45,7 +45,7 @@
             <android.support.design.widget.TextInputLayout
                 android:id="@+id/field1"
                 android:layout_width="0dp"
-                android:layout_height="57dp"
+                android:layout_height="wrap_content"
                 android:layout_marginEnd="8dp"
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="8dp"
@@ -58,7 +58,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:hint="@string/hint_contact_name"
-                    android:inputType="textPersonName"
+                    android:inputType="textCapWords|textPersonName"
                     android:singleLine="true" />
             </android.support.design.widget.TextInputLayout>
 
@@ -191,7 +191,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="@string/hint_called_name"
-                    android:inputType="textPersonName"
+                    android:inputType="textCapWords|textPersonName"
                     android:singleLine="true" />
             </android.support.design.widget.TextInputLayout>
 
