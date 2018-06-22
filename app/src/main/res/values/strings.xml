@@ -107,4 +107,34 @@
     <string name="no_data_bank">Your bank account list is empty!</string>
     <string name="no_data_note">Your last note list is empty!</string>
     <string name="no_data_record">Your recording list is empty!</string>
+
+
+    <!-- Settings_main.xml -->
+    <string name="key_dark_theme">key_dark_theme</string>
+    <string name="dark_theme">Dark Theme</string>
+
+    <string name="key_bubble_persists">key_bubble_persists</string>
+    <string name="bubble_persists">Persistent Bubble</string>
+    <string name="summary_bubble_persists">The bubble will persist on the screen even after call is over.</string>
+
+    <string name="key_app_service_in_background_notification">key_app_service_in_background_notification</string>
+    <string name="app_service_in_background_notification">Persistent Notification</string>
+    <string name="summary_app_service_in_background_notification">Persistent notification about HelloNote service running in background.</string>
+
+    <string name="key_share_with_friends">key_share_with_friends</string>
+    <string name="share_with_friends">Share with friends</string>
+
+    <string name="key_rate_us">key_rate_us</string>
+    <string name="rate_us">Rate us</string>
+
+    <string name="key_feedback">key_feedback</string>
+    <string name="feedback">Send Feedback</string>
+
+    <string name="key_privacy_policy">key_privacy_policy</string>
+    <string name="privacy_policy">Privacy Policy</string>
+
+    <string name="key_about_us">key_about_us</string>
+    <string name="about_us">About us</string>
+
+    <string name="choose_email_client">Choose email client</string>
 </resources>

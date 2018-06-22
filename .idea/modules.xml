@@ -3,9 +3,6 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/Note-App-Android.iml" filepath="$PROJECT_DIR$/Note-App-Android.iml" />
-      <module fileurl="file://$PROJECT_DIR$/Note-App-Android-Sharmad.iml" filepath="$PROJECT_DIR$/Note-App-Android-Sharmad.iml" />
-      <module fileurl="file://$PROJECT_DIR$/Note-App-Android-merged.iml" filepath="$PROJECT_DIR$/Note-App-Android-merged.iml" />
-      <module fileurl="file://$PROJECT_DIR$/Note-App-Android-sarvesh.iml" filepath="$PROJECT_DIR$/Note-App-Android-sarvesh.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
     </modules>
   </component>

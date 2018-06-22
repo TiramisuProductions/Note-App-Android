@@ -724,9 +724,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 return true;
 
             case R.id.settings:
-                startActivity(new Intent(this, Settings.class));
+                //startActivity(new Intent(this, Settings.class));
 
-                //startActivity(new Intent(MainActivity.this,Test.class));
+                startActivity(new Intent(MainActivity.this,SettingsActivity.class));
+
+                overridePendingTransition(R.anim.enter_from_right, R.anim.exit_to_left);
 
             default:
                 return super.onOptionsItemSelected(item);

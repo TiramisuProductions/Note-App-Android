@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <Preference>
+        <!--DO NOT REMOVE THIS PREFERENCE-->
+    </Preference>
+    <PreferenceCategory android:title="General">
+
+        <SwitchPreference
+            android:defaultValue="false"
+            android:icon="@drawable/places_ic_search"
+            android:key="@string/key_dark_theme"
+            android:title="@string/dark_theme" />
+
+        <SwitchPreference
+            android:icon="@drawable/places_ic_search"
+            android:key="@string/key_bubble_persists"
+            android:summary="@string/summary_bubble_persists"
+            android:title="@string/bubble_persists" />
+
+        <SwitchPreference
+            android:icon="@drawable/places_ic_search"
+            android:key="@string/key_app_service_in_background_notification"
+            android:summary="@string/summary_app_service_in_background_notification"
+            android:title="@string/app_service_in_background_notification" />
+
+    </PreferenceCategory>
+
+    <PreferenceCategory android:title="Support Us">
+
+        <Preference
+            android:icon="@drawable/places_ic_search"
+            android:key="@string/key_share_with_friends"
+            android:title="@string/share_with_friends" />
+
+        <Preference
+            android:icon="@drawable/places_ic_search"
+            android:key="@string/key_rate_us"
+            android:title="@string/rate_us" />
+
+        <Preference
+            android:icon="@drawable/places_ic_search"
+            android:key="@string/key_feedback"
+            android:title="@string/feedback" />
+
+
+    </PreferenceCategory>
+
+    <PreferenceCategory android:title="About">
+        <Preference
+            android:icon="@drawable/places_ic_search"
+            android:key="@string/key_privacy_policy"
+            android:title="@string/privacy_policy" />
+
+        <Preference
+            android:icon="@drawable/places_ic_search"
+            android:key="@string/key_about_us"
+            android:title="@string/about_us" />
+    </PreferenceCategory>
+</PreferenceScreen>
