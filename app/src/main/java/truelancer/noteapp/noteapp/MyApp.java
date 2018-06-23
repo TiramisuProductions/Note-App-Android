@@ -27,6 +27,7 @@ public class MyApp extends SugarApp {
     String defaultValue = "default";
     public boolean firstRun = true;
     public static boolean defaultTheme = true;
+    public static Context context;
     public static EditText editContactNameToSave, editContactNumberToSave,editEmailContactNameToSave,editEmailAdressToSave,editBankContactNameToSave,editBankAccountNoToSave,editBankOthersNoToSave,editNoteToSave;
 
 
@@ -144,6 +145,7 @@ public class MyApp extends SugarApp {
     @Override
     public void onCreate() {
         super.onCreate();
+        context = getApplicationContext();
 
         // font from assets: "assets/fonts/Roboto-Regular.ttf
         /*FontsOverride.setDefaultFont(this, "DEFAULT", "font.ttf");

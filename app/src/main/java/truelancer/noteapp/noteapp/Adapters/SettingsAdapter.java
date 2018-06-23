@@ -170,7 +170,6 @@ public class SettingsAdapter extends RecyclerView.Adapter<SettingsAdapter.MyView
             holder.settingsText.setTextColor(context.getResources().getColor(R.color.white));
             holder.settingstate.setTextColor(context.getResources().getColor(R.color.white));
 
-
         }
 
 
