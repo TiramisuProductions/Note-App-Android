@@ -60,13 +60,6 @@ public class BankAccountFragment extends Fragment {
             rootView.setBackgroundColor(getResources().getColor(R.color.dark));
         }
 
-      /*  List<BankAccount> bankAccounts = BankAccount.listAll(BankAccount.class);
-        Collections.reverse(bankAccounts);
-
-        mAdapter = new BankAccountAdapter(getActivity(), bankAccounts);
-        mRecycleView.setAdapter(mAdapter);
-        onResume();*/
-
         return rootView;
     }
 
@@ -75,7 +68,7 @@ public class BankAccountFragment extends Fragment {
     public void onEvent(EventB event) {
         // your implementation
         if (event.getMessage().equals("3")) {
-            //mAdapter.notifyDataSetChanged();
+
             List<BankAccount> banks = BankAccount.listAll(BankAccount.class);
             Collections.reverse(banks);
             if (banks.size() == 0) {
@@ -84,7 +77,28 @@ public class BankAccountFragment extends Fragment {
                 Utils.Visibility_no_data(3, false);
             }
             mAdapter = new BankAccountAdapter(getActivity(), banks);
+            mRecycleView.setAdapter(mAdapter);
+        }
+        if(event.getMessage().equals("8")){
+            List<BankAccount> bankAccounts = null;
 
+            if (MyApp.isIncomingFilterHighlighted) {
+                bankAccounts = BankAccount.findWithQuery(BankAccount.class, "Select * from Bank_account where incoming = ? and is_saved_from_app = ?", "1", "0");
+            }
+            if (MyApp.isOutgoingFilterHighlighted) {
+                bankAccounts = BankAccount.findWithQuery(BankAccount.class, "Select * from Bank_account where incoming = ? and is_saved_from_app = ?", "0", "0");
+            }
+            if (MyApp.isSavedFromAppFilterHighlighted) {
+                bankAccounts = BankAccount.findWithQuery(BankAccount.class, "Select * from Bank_account where is_saved_from_app = ?", "1");
+            }
+
+            Collections.reverse(bankAccounts);
+            if (bankAccounts.size() == 0) {
+                Utils.Visibility_no_data(3, true);
+            } else {
+                Utils.Visibility_no_data(3, false);
+            }
+            mAdapter = new BankAccountAdapter(getActivity(), bankAccounts);
             mRecycleView.setAdapter(mAdapter);
         }
     }

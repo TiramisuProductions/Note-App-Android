@@ -89,6 +89,28 @@ public class NoteFragment extends Fragment {
             mAdapter = new NoteAdapter(getActivity(), notes);
             mRecyclerView.setAdapter(mAdapter);
         }
+        if (event.getMessage().equals("9")){
+            List<Note> notes = null;
+
+            if (MyApp.isIncomingFilterHighlighted) {
+                notes = Note.findWithQuery(Note.class, "Select * from Note where incoming = ? and is_saved_from_app = ?", "1", "0");
+            }
+            if (MyApp.isOutgoingFilterHighlighted) {
+                notes = Note.findWithQuery(Note.class, "Select * from Note where incoming = ? and is_saved_from_app = ?", "0");
+            }
+            if (MyApp.isSavedFromAppFilterHighlighted) {
+                notes = Note.findWithQuery(Note.class, "Select * from Note where is_saved_from_app = ?", "1");
+            }
+
+            Collections.reverse(notes);
+            if (notes.size() == 0) {
+                Utils.Visibility_no_data(4, true);
+            } else {
+                Utils.Visibility_no_data(4, false);
+            }
+            mAdapter = new NoteAdapter(getActivity(), notes);
+            mRecyclerView.setAdapter(mAdapter);
+        }
     }
 
 

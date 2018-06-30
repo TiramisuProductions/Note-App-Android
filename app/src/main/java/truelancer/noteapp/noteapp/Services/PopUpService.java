@@ -507,7 +507,18 @@ public class PopUpService extends Service {
                 if (nameByUser.length() > 0) {
                     CallRecording callRecording = new CallRecording(nameByUser, file_path, calledNumber, calledName, incomingCall, timeStampMilli);
                     callRecording.save();
-                    EventBus.getDefault().post(new EventB("5"));
+
+                    if (MyApp.isFilterTabsShowing){
+                        Log.d("wood", "filter tabs is showing");
+                        EventBus.getDefault().post(new EventB("10"));
+
+                    }else {
+                        Log.d("wood", "filter tabs not showing");
+                        EventBus.getDefault().post(new EventB("5"));
+                    }
+                    //EventBus.getDefault().post(new EventB("5"));
+
+
                     alertDialog.dismiss();
                 } else {
                     Toast.makeText(PopUpService.this, "Enter Recording Name", Toast.LENGTH_SHORT).show();
@@ -888,7 +899,7 @@ public class PopUpService extends Service {
         @Subscribe
         public void onEvent(EventB event) {
             // your implementation
-            if (event.getMessage().equals("0")) {
+            if (event.getMessage().equals("0")) {//Contact
                 if (TextUtils.isEmpty(MyApp.editContactNameToSave.getText().toString())) {
                     MyApp.editContactNameToSave.setError(mContext.getString(R.string.hint_contact_name));
                     MyApp.editEmailAdressToSave.setError(null);
@@ -899,11 +910,19 @@ public class PopUpService extends Service {
                     Contact contact = new Contact(MyApp.editContactNameToSave.getText().toString(), MyApp.editContactNumberToSave.getText().toString(), calledNumber, calledName, incomingCall, timeStampMilli);
                     contact.save();
                     Toast.makeText(mContext, "Successfully Saved", Toast.LENGTH_LONG).show();
-                    EventBus.getDefault().post(new EventB("1"));
+                    if (MyApp.isFilterTabsShowing){
+
+                        EventBus.getDefault().post(new EventB("6"));
+
+                    }else {
+
+                        EventBus.getDefault().post(new EventB("1"));
+                    }
+
                     MyApp.editContactNameToSave.setText(null);
                     MyApp.editContactNumberToSave.setText(null);
                 }
-            } else if (event.getMessage().equals("1")) {
+            } else if (event.getMessage().equals("1")) {//Email
                 if (TextUtils.isEmpty(MyApp.editEmailContactNameToSave.getText().toString())) {
                     MyApp.editEmailContactNameToSave.setError(mContext.getString(R.string.hint_contact_name));
                 } else if (!isValidEmail(MyApp.editEmailAdressToSave.getText().toString())) {
@@ -912,12 +931,20 @@ public class PopUpService extends Service {
                     Email email = new Email(MyApp.editEmailContactNameToSave.getText().toString(), MyApp.editEmailAdressToSave.getText().toString(), calledNumber, calledName, incomingCall, timeStampMilli);
                     email.save();
                     Toast.makeText(mContext, "Successfully Saved", Toast.LENGTH_LONG).show();
-                    EventBus.getDefault().post(new EventB("2"));
+                    if (MyApp.isFilterTabsShowing){
+
+                        EventBus.getDefault().post(new EventB("7"));
+
+                    }else {
+
+                        EventBus.getDefault().post(new EventB("2"));
+                    }
+                    //EventBus.getDefault().post(new EventB("2"));
                     MyApp.editEmailContactNameToSave.setText(null);
                     MyApp.editEmailAdressToSave.setText(null);
                 }
 
-            } else if (event.getMessage().equals("2")) {
+            } else if (event.getMessage().equals("2")) {//BAnk Account
                 if (TextUtils.isEmpty(MyApp.editBankContactNameToSave.getText().toString())) {
                     MyApp.editBankContactNameToSave.setError(mContext.getString(R.string.hint_contact_name));
                 } else if (TextUtils.isEmpty(MyApp.editBankAccountNoToSave.getText().toString())) {
@@ -926,7 +953,15 @@ public class PopUpService extends Service {
                     BankAccount bankAccount = new BankAccount(MyApp.editBankContactNameToSave.getText().toString(), MyApp.editBankAccountNoToSave.getText().toString(), MyApp.editBankOthersNoToSave.getText().toString(), calledNumber, calledName, incomingCall, timeStampMilli);
                     bankAccount.save();
                     Toast.makeText(mContext, "Successfully Saved", Toast.LENGTH_LONG).show();
-                    EventBus.getDefault().post(new EventB("3"));
+                    if (MyApp.isFilterTabsShowing){
+                        Log.d("wood", "filter tabs is showing");
+                        EventBus.getDefault().post(new EventB("8"));
+
+                    }else {
+                        Log.d("wood", "filter tabs not showing");
+                        EventBus.getDefault().post(new EventB("3"));
+                    }
+                    //EventBus.getDefault().post(new EventB("3"));
                     MyApp.editBankContactNameToSave.setText(null);
                     MyApp.editBankAccountNoToSave.setText(null);
                     MyApp.editBankOthersNoToSave.setText(null);
@@ -938,7 +973,15 @@ public class PopUpService extends Service {
                     Note noteN = new Note(MyApp.editNoteToSave.getText().toString(), calledName, calledNumber, timeStampMilli, incomingCall);
                     noteN.save();
                     Toast.makeText(mContext, "Successfully Saved", Toast.LENGTH_LONG).show();
-                    EventBus.getDefault().post(new EventB("4"));
+                    if (MyApp.isFilterTabsShowing){
+                        Log.d("wood", "filter tabs is showing");
+                        EventBus.getDefault().post(new EventB("9"));
+
+                    }else {
+                        Log.d("wood", "filter tabs not showing");
+                        EventBus.getDefault().post(new EventB("4"));
+                    }
+                    //EventBus.getDefault().post(new EventB("4"));
                     MyApp.editNoteToSave.setText(null);
                 }
             }

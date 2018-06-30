@@ -20,20 +20,26 @@
         android:title="Search"
         android:orderInCategory="200"
         android:icon="@drawable/ic_search"
-        app:showAsAction="ifRoom"
+        app:showAsAction="always"
+        />
+    <item
+        android:id="@+id/filter"
+        android:title="Filter"
+        android:orderInCategory="200"
+        android:icon="@drawable/ic_vol_type_speaker_group_light"
+        app:showAsAction="always"
         />
 
     <item
         android:id="@+id/menu_email_to_admin"
         android:title="Contact Admin"
         android:orderInCategory="300"
-        android:icon="@drawable/ic_email"></item>
+        android:icon="@drawable/ic_email"/>
 
     <item
         android:id="@+id/settings"
         android:title="Settings"
-        android:orderInCategory="300"
-       ></item>
+        android:orderInCategory="300"/>
 
 
 

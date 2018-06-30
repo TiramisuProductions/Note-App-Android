@@ -2,7 +2,6 @@ package truelancer.noteapp.noteapp;
 
 import android.app.Activity;
 import android.os.AsyncTask;
-import android.util.Log;
 import android.view.View;
 
 import java.util.Collections;
@@ -24,6 +23,8 @@ import truelancer.noteapp.noteapp.Fragments.EmailFragment;
 import truelancer.noteapp.noteapp.Fragments.NoteFragment;
 import truelancer.noteapp.noteapp.Fragments.RecordingFragment;
 
+import static com.google.android.gms.internal.zzahn.runOnUiThread;
+
 public class AsyncTaskModel extends AsyncTask<String, String, String> {
     public AsyncTaskModel() {
         super();
@@ -39,10 +40,12 @@ public class AsyncTaskModel extends AsyncTask<String, String, String> {
     public int no;
 
 
+
     public AsyncTaskModel(Activity context1, int no1) {
         this.context = context1;
         this.no = no1;
     }
+
 
     @Override
     protected String doInBackground(String... strings) {
@@ -50,47 +53,123 @@ public class AsyncTaskModel extends AsyncTask<String, String, String> {
         switch (no) {
             case 1:
                 contacts = Contact.listAll(Contact.class);
+                //contacts = Contact.findWithQuery(Contact.class, "Select * from Contact where incoming = ?", "1");
+
                 Collections.reverse(contacts);
-                if (contacts.size()==0){
-                   ContactFragment.RContact_no_data.setVisibility(View.VISIBLE);
-                }else {
-                    ContactFragment.RContact_no_data.setVisibility(View.GONE);
+                if (contacts.size() == 0) {
+                    runOnUiThread(new Runnable() {
+
+                        @Override
+                        public void run() {
+
+                            ContactFragment.RContact_no_data.setVisibility(View.VISIBLE);
+                        }
+                    });
+                } else {
+                    runOnUiThread(new Runnable() {
+
+                        @Override
+                        public void run() {
+
+                            ContactFragment.RContact_no_data.setVisibility(View.GONE);
+                        }
+                    });
                 }
                 break;
             case 2:
                 emails = Email.listAll(Email.class);
                 Collections.reverse(emails);
-                if (emails.size()==0){
-                    EmailFragment.REmail_no_data.setVisibility(View.VISIBLE);
-                }else {
-                    EmailFragment.REmail_no_data.setVisibility(View.GONE);
+
+                if (emails.size() == 0) {
+                    runOnUiThread(new Runnable() {
+
+                        @Override
+                        public void run() {
+
+                            EmailFragment.REmail_no_data.setVisibility(View.VISIBLE);
+                        }
+                    });
+                } else {
+                    runOnUiThread(new Runnable() {
+
+                        @Override
+                        public void run() {
+
+                            EmailFragment.REmail_no_data.setVisibility(View.GONE);
+                        }
+                    });
                 }
                 break;
             case 3:
                 bankAccounts = BankAccount.listAll(BankAccount.class);
                 Collections.reverse(bankAccounts);
-                if (bankAccounts.size()==0){
-                    BankAccountFragment.RBank_no_data.setVisibility(View.VISIBLE);
-                }else {
-                    BankAccountFragment.RBank_no_data.setVisibility(View.GONE);
+
+                if (bankAccounts.size() == 0) {
+                    runOnUiThread(new Runnable() {
+
+                        @Override
+                        public void run() {
+
+                            BankAccountFragment.RBank_no_data.setVisibility(View.VISIBLE);
+                        }
+                    });
+                } else {
+                    runOnUiThread(new Runnable() {
+
+                        @Override
+                        public void run() {
+
+                            BankAccountFragment.RBank_no_data.setVisibility(View.GONE);
+                        }
+                    });
                 }
                 break;
             case 4:
                 notes = Note.listAll(Note.class);
                 Collections.reverse(notes);
-                if (notes.size()==0){
-                  NoteFragment.RNote_no_data.setVisibility(View.VISIBLE);
-                }else {
-                    NoteFragment.RNote_no_data.setVisibility(View.GONE);
+
+                if (notes.size() == 0) {
+                    runOnUiThread(new Runnable() {
+
+                        @Override
+                        public void run() {
+
+                            NoteFragment.RNote_no_data.setVisibility(View.VISIBLE);
+                        }
+                    });
+                } else {
+                    runOnUiThread(new Runnable() {
+
+                        @Override
+                        public void run() {
+
+                            NoteFragment.RNote_no_data.setVisibility(View.GONE);
+                        }
+                    });
                 }
                 break;
             case 5:
                 callRecordings = CallRecording.listAll(CallRecording.class);
                 Collections.reverse(callRecordings);
-                if (callRecordings.size()==0){
-                    RecordingFragment.RRecord_no_data.setVisibility(View.VISIBLE);
-                }else {
-                    RecordingFragment.RRecord_no_data.setVisibility(View.GONE);
+
+                if (callRecordings.size() == 0) {
+                    runOnUiThread(new Runnable() {
+
+                        @Override
+                        public void run() {
+
+                            RecordingFragment.RRecord_no_data.setVisibility(View.VISIBLE);
+                        }
+                    });
+                } else {
+                    runOnUiThread(new Runnable() {
+
+                        @Override
+                        public void run() {
+
+                            RecordingFragment.RRecord_no_data.setVisibility(View.GONE);
+                        }
+                    });
                 }
                 break;
         }
@@ -108,6 +187,7 @@ public class AsyncTaskModel extends AsyncTask<String, String, String> {
         super.onPostExecute(s);
 
         switch (no) {
+
             case 1:
                 ContactAdapter contactAdapter = new ContactAdapter(context, contacts);
                 ContactFragment.mRecyclerView.setAdapter(contactAdapter);

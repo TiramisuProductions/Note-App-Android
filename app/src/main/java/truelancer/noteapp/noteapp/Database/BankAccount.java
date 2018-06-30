@@ -15,7 +15,7 @@ public class BankAccount extends SugarRecord {
     String calledName;
     boolean incoming;
     String tsMilli;
-    boolean savedFromApp;
+    boolean isSavedFromApp;
 
     public BankAccount() {
     }
@@ -25,7 +25,7 @@ public class BankAccount extends SugarRecord {
         this.accountNo = accountNo;
         this.ifscCode = ifscCode;
         this.tsMilli = tsMilli;
-        this.savedFromApp = savedFromApp;
+        this.isSavedFromApp = savedFromApp;
     }
 
     public BankAccount(String name, String accountNo, String ifscCode, String calledNumber, String calledName, boolean incoming, String tsMilli) {
@@ -39,7 +39,7 @@ public class BankAccount extends SugarRecord {
     }
 
     public boolean isSavedFromApp() {
-        return savedFromApp;
+        return isSavedFromApp;
     }
 
     public String getName() {

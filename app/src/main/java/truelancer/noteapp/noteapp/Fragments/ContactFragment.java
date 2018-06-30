@@ -62,13 +62,7 @@ public class ContactFragment extends Fragment {
             mRecyclerView.setBackgroundColor(getResources().getColor(R.color.dark));
             rootView.setBackgroundColor(getResources().getColor(R.color.dark));
         }
-        /*List<Contact> contacts = Contact.listAll(Contact.class);
-        Collections.reverse(contacts);
 
-        mAdapter = new ContactAdapter(getActivity(), contacts);
-        mRecyclerView.setAdapter(mAdapter);*/
-
-        /*onResume();*/
         return rootView;
     }
 
@@ -93,6 +87,26 @@ public class ContactFragment extends Fragment {
                 Utils.Visibility_no_data(1, false);
             }
 
+            Collections.reverse(contacts);
+            mAdapter = new ContactAdapter(getActivity(), contacts);
+            mRecyclerView.setAdapter(mAdapter);
+        }
+        if(event.getMessage().equals("6")){
+            List<Contact> contacts = null;
+            if(MyApp.isIncomingFilterHighlighted){
+                contacts = Contact.findWithQuery(Contact.class, "Select * from Contact where incoming = ? and is_saved_from_app = ?", "1", "0");
+            }
+            if (MyApp.isOutgoingFilterHighlighted){
+                contacts = Contact.findWithQuery(Contact.class, "Select * from Contact where incoming = ? and is_saved_from_app = ?", "0", "0");
+            }
+            if(MyApp.isSavedFromAppFilterHighlighted){
+                contacts = Contact.findWithQuery(Contact.class, "Select * from Contact where is_saved_from_app = ?", "1");
+            }
+            if (contacts.size() == 0) {
+                Utils.Visibility_no_data(1, true);
+            } else {
+                Utils.Visibility_no_data(1, false);
+            }
             Collections.reverse(contacts);
             mAdapter = new ContactAdapter(getActivity(), contacts);
             mRecyclerView.setAdapter(mAdapter);

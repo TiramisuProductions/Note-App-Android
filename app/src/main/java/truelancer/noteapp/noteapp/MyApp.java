@@ -23,17 +23,17 @@ public class MyApp extends SugarApp {
     public PopUpService popUpService;
     private boolean bound;
     public boolean toHideBubble;
-    static public boolean toSave,off_hook=false,recording_in_progress = false;
+    static public boolean toSave, off_hook = false, recording_in_progress = false;
     String defaultValue = "default";
     public boolean firstRun = true;
     public static boolean defaultTheme = true;
     public static Context context;
-    public static EditText editContactNameToSave, editContactNumberToSave,editEmailContactNameToSave,editEmailAdressToSave,editBankContactNameToSave,editBankAccountNoToSave,editBankOthersNoToSave,editNoteToSave;
+    public static EditText editContactNameToSave, editContactNumberToSave, editEmailContactNameToSave, editEmailAdressToSave, editBankContactNameToSave, editBankAccountNoToSave, editBankOthersNoToSave, editNoteToSave;
+    public static boolean isFilterTabsShowing = false;
+    public static boolean isIncomingFilterHighlighted = false,isOutgoingFilterHighlighted =false,isSavedFromAppFilterHighlighted =false;
 
 
-
-
-    public static String firstRunRingingNumber,firstRunContactName,firstRuntsMilli;
+    public static String firstRunRingingNumber, firstRunContactName, firstRuntsMilli;
     public static Boolean firstRunIsIncoming;
 
     static public String contactName0 = "", contactNumber0 = "",
@@ -98,7 +98,7 @@ public class MyApp extends SugarApp {
         }
         ////////////////////////// BANK ACCOUNT CHECK///////////////////////////////////
         if (contactName2.equals("") && accountNumber2.equals("") && ifsc2.equals("")) {
-            Log.d(TAG, "checkForDraft: if 2:" + contactName2 + " " + accountNumber2 + " "+ ifsc2);
+            Log.d(TAG, "checkForDraft: if 2:" + contactName2 + " " + accountNumber2 + " " + ifsc2);
         } else {
             if (contactName2.equals("")) {
                 contactName2 = defaultValue;
@@ -114,20 +114,23 @@ public class MyApp extends SugarApp {
             bankAccount.save();
 
             Log.d(TAG, "checkForDraft: else 2:" + contactName2 + " " + accountNumber2 + "" + ifsc2);
-            contactName2 ="";
+            contactName2 = "";
             accountNumber2 = "";
-            ifsc2 ="";
+            ifsc2 = "";
         }
         //////////////////////////Note CHECK///////////////////////////////////
 
-        if(contactName3.equals("") && note3.equals("")){
+        if (contactName3.equals("") && note3.equals("")) {
             Log.d(TAG, "checkForDraft: if 3:" + contactName3 + " " + note3);
-        }
-        else {
-            if(contactName3.equals("")){contactName3 = defaultValue;}
-            if(note3.equals("")){note3 = defaultValue;}
+        } else {
+            if (contactName3.equals("")) {
+                contactName3 = defaultValue;
+            }
+            if (note3.equals("")) {
+                note3 = defaultValue;
+            }
 
-            Note noteN = new Note( note3, calledNumber, calledName,  tsMilli,incomingCall);
+            Note noteN = new Note(note3, calledNumber, calledName, tsMilli, incomingCall);
             noteN.save();
             Log.d(TAG, "checkForDraft: if 3:" + contactName3 + " " + note3);
             contactName3 = "";
@@ -136,7 +139,7 @@ public class MyApp extends SugarApp {
     }
 
 
-    public void bindService(){
+    public void bindService() {
         Intent intent = new Intent(getApplicationContext(), PopUpService.class);
         startService(intent);
         bindService(intent, mConnection, Context.BIND_AUTO_CREATE);
@@ -146,11 +149,5 @@ public class MyApp extends SugarApp {
     public void onCreate() {
         super.onCreate();
         context = getApplicationContext();
-
-        // font from assets: "assets/fonts/Roboto-Regular.ttf
-        /*FontsOverride.setDefaultFont(this, "DEFAULT", "font.ttf");
-        FontsOverride.setDefaultFont(this, "MONOSPACE", "font.ttf");
-        FontsOverride.setDefaultFont(this, "SERIF", "font.ttf");
-        FontsOverride.setDefaultFont(this, "SANS_SERIF", "font.ttf");*/
     }
 }

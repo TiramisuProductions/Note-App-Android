@@ -171,7 +171,9 @@ public class Search extends AppCompatActivity {
 
     public void showInputMethod() {
         InputMethodManager imm = (InputMethodManager) getApplicationContext().getSystemService(Context.INPUT_METHOD_SERVICE);
-        imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, InputMethodManager.HIDE_IMPLICIT_ONLY);
+        if (imm != null) {
+            imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, InputMethodManager.HIDE_IMPLICIT_ONLY);
+        }
     }
 
     public void execute(String searchWord1) {
@@ -265,7 +267,6 @@ public class Search extends AppCompatActivity {
                 noteFilterList.add(notes.get(i));
             } else if (callednoAll.contains(searchWord)) {
                 noteFilterList.add(notes.get(i));
-            } else {
             }
 
         }
@@ -294,7 +295,7 @@ public class Search extends AppCompatActivity {
         }
 
 
-
+        //check if all list are empty, then show not found iamge
         if (contactFilterList.isEmpty()) {
             if (emailFilterList.isEmpty()) {
                 if (bankFilterList.isEmpty()) {
@@ -308,7 +309,6 @@ public class Search extends AppCompatActivity {
                     }
                 }
             }
-
         }
     }
 
@@ -318,7 +318,9 @@ public class Search extends AppCompatActivity {
 
         view = this.getCurrentFocus();
         InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-        imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+        if (imm != null) {
+            imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+        }
 
     }
 
@@ -328,7 +330,9 @@ public class Search extends AppCompatActivity {
 
         view = this.getCurrentFocus();
         InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-        imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+        if (imm != null) {
+            imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+        }
     }
 
     @Override
@@ -337,7 +341,9 @@ public class Search extends AppCompatActivity {
 
         view = this.getCurrentFocus();
         InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-        imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+        if (imm != null) {
+            imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+        }
     }
 
     @Override

@@ -44,7 +44,7 @@ public class EmailFragment extends Fragment {
 
 
         View rootView = inflater.inflate(R.layout.fragment_email, container, false);
-        REmail_no_data = (RelativeLayout)rootView.findViewById(R.id.Rlayout_no_data_email);
+        REmail_no_data = (RelativeLayout) rootView.findViewById(R.id.Rlayout_no_data_email);
         // getActivity().setTheme(R.style.MyMaterialThemeDark);
         if (!EventBus.getDefault().isRegistered(this)) {
             EventBus.getDefault().register(this);
@@ -86,8 +86,6 @@ public class EmailFragment extends Fragment {
     public void onEvent(EventB event) {
         // your implementation
         if (event.getMessage().equals("2")) {
-            // mAdapter.notifyDataSetChanged();
-
             List<Email> emails = Email.listAll(Email.class);
             Collections.reverse(emails);
             if (emails.size() == 0) {
@@ -96,7 +94,26 @@ public class EmailFragment extends Fragment {
                 Utils.Visibility_no_data(2, false);
             }
             mAdapter = new EmailAdapter(getActivity(), emails);
-
+            mRecyclerView.setAdapter(mAdapter);
+        }
+        if (event.getMessage().equals("7")) {
+            List<Email> emails = null;
+            if (MyApp.isIncomingFilterHighlighted) {
+                emails = Email.findWithQuery(Email.class, "Select * from Email where incoming = ? and is_saved_from_app = ?", "1", "0");
+            }
+            if (MyApp.isOutgoingFilterHighlighted) {
+                emails = Email.findWithQuery(Email.class, "Select * from Email where incoming = ? and is_saved_from_app = ?", "0", "0");
+            }
+            if (MyApp.isSavedFromAppFilterHighlighted) {
+                emails = Email.findWithQuery(Email.class, "Select * from Email where is_saved_from_app = ?", "1");
+            }
+            Collections.reverse(emails);
+            if (emails.size() == 0) {
+                Utils.Visibility_no_data(2, true);
+            } else {
+                Utils.Visibility_no_data(2, false);
+            }
+            mAdapter = new EmailAdapter(getActivity(), emails);
             mRecyclerView.setAdapter(mAdapter);
         }
     }

@@ -11,10 +11,11 @@ import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
 import android.preference.SwitchPreference;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.app.AppCompatDelegate;
 import android.util.Log;
 import android.view.MenuItem;
 
-public class SettingsActivity extends AppCompatActivity {
+public class SettingsActivity extends AppCompatPreferenceActivity {
 
     private static final String TAG = SettingsActivity.class.getSimpleName();
     Context context;
@@ -30,12 +31,12 @@ public class SettingsActivity extends AppCompatActivity {
         pref = MyApp.context.getSharedPreferences(MyApp.context.getString(R.string.shared_pref), Context.MODE_PRIVATE);
 
 
-        if (pref.getBoolean(getString(R.string.defaulttheme),false)) {
+   /*     if (pref.getBoolean(getString(R.string.defaulttheme),false)) {
             setTheme(R.style.MyMaterialTheme);
         } else {
             setTheme(R.style.MyMaterialThemeDark);
 
-        }
+        }*/
         // load settings fragment
         getFragmentManager().beginTransaction().replace(android.R.id.content, new MainPreferenceFragment()).commit();
     }
@@ -49,7 +50,7 @@ public class SettingsActivity extends AppCompatActivity {
         public void onCreate(final Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
 
-
+            //AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
             addPreferencesFromResource(R.xml.settings_main);
             context = getActivity();
 
@@ -72,6 +73,8 @@ public class SettingsActivity extends AppCompatActivity {
             });*/
         }
     }
+
+
 
 
     @Override
@@ -106,6 +109,7 @@ public class SettingsActivity extends AppCompatActivity {
             pref = MyApp.context.getSharedPreferences(MyApp.context.getString(R.string.shared_pref), Context.MODE_PRIVATE);
             editor = pref.edit();
 
+
             if (preference instanceof SwitchPreference) {
                 //Log.d("wood", "switch is onjj: " + preference.getKey());
 
@@ -115,28 +119,33 @@ public class SettingsActivity extends AppCompatActivity {
                         pref = MyApp.context.getSharedPreferences(MyApp.context.getString(R.string.shared_pref), Context.MODE_PRIVATE);
                         editor = pref.edit();
                         editor.apply();
-                        MyApp.defaultTheme = true;
+                        /*MyApp.defaultTheme = true;
+                        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);*/
+
 
                     } else {
                         editor.putBoolean(MyApp.context.getString(R.string.defaulttheme), false);
                         pref = MyApp.context.getSharedPreferences(MyApp.context.getString(R.string.shared_pref), Context.MODE_PRIVATE);
                         editor = pref.edit();
                         editor.apply();
-                        MyApp.defaultTheme = false;
+                       /* MyApp.defaultTheme = false;
+                        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);*/
                     }
 
                     Log.d("wood", "switch is on? checked: " + ((SwitchPreference) preference).isChecked());
-                } else if (preference.getKey().equals("key_bubble_persists")) {
+                }/* else if (preference.getKey().equals("key_bubble_persists")) {
 
                     Log.d("wood", "switch is on? checked: " + ((SwitchPreference) preference).isChecked());
                 } else if (preference.getKey().equals("key_app_service_in_background_notification")) {
                     Log.d("wood", "switch is on? enable: " + preference.isEnabled());
                     Log.d("wood", "switch is on? checked: " + ((SwitchPreference) preference).isChecked());
-                }
+                }*/
             }
             return true;
         }
     };
+
+
 
 
 }

@@ -19,6 +19,7 @@ import java.util.List;
 import truelancer.noteapp.noteapp.Adapters.RecordingAdapter;
 import truelancer.noteapp.noteapp.AsyncTaskModel;
 import truelancer.noteapp.noteapp.Database.CallRecording;
+import truelancer.noteapp.noteapp.Database.Note;
 import truelancer.noteapp.noteapp.EventB;
 import truelancer.noteapp.noteapp.MyApp;
 import truelancer.noteapp.noteapp.R;
@@ -50,7 +51,6 @@ public class RecordingFragment extends Fragment {
             EventBus.getDefault().register(this);
         }
 
-
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getActivity());
         mRecyclerView = (RecyclerView) rootView.findViewById(R.id.recycler_recording);
         mRecyclerView.setLayoutManager(mLayoutManager);
@@ -81,6 +81,29 @@ public class RecordingFragment extends Fragment {
         if (event.getMessage().equals("5")) {
             //mAdapter.notifyDataSetChanged();
             List<CallRecording> callRecordings = CallRecording.listAll(CallRecording.class);
+            Collections.reverse(callRecordings);
+            if (callRecordings.size() == 0) {
+                Utils.Visibility_no_data(5, true);
+            } else {
+                Utils.Visibility_no_data(5, false);
+            }
+            mAdapter = new RecordingAdapter(getActivity(), callRecordings);
+            mRecyclerView.setAdapter(mAdapter);
+        }
+        if(event.getMessage().equals("5")){
+            List<CallRecording> callRecordings = null;
+
+            if (MyApp.isIncomingFilterHighlighted) {
+                callRecordings = CallRecording.findWithQuery(CallRecording.class, "Select * from Call_recording where incoming = ?", "1");
+            }
+            if (MyApp.isOutgoingFilterHighlighted) {
+                callRecordings = CallRecording.findWithQuery(CallRecording.class, "Select * from Call_recording where incoming = ?",  "0");
+            }
+            if (MyApp.isSavedFromAppFilterHighlighted) {
+                callRecordings = CallRecording.listAll(CallRecording.class);
+                callRecordings.clear();
+            }
+
             Collections.reverse(callRecordings);
             if (callRecordings.size() == 0) {
                 Utils.Visibility_no_data(5, true);

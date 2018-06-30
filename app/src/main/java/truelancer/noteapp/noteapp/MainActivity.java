@@ -18,7 +18,7 @@ import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.support.annotation.NonNull;
 import android.support.annotation.RequiresApi;
-import android.support.constraint.ConstraintLayout;
+import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.TabLayout;
 import android.support.design.widget.TextInputEditText;
 import android.support.design.widget.TextInputLayout;
@@ -53,7 +53,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.github.clans.fab.FloatingActionMenu;
-import com.github.paolorotolo.appintro.AppIntroFragment;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
@@ -117,6 +116,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private static final int REQUEST_CODE_SIGN_IN = 0;
     public static String dataFromAdapter;
     public static FloatingActionMenu floatingActionMenu;
+    public boolean isFiltertabsShowing_home = false;
 
     @BindView(R.id.fab_contact)
     com.github.clans.fab.FloatingActionButton contactFab;
@@ -133,6 +133,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     ViewPager homeViewPager;
     @BindView(R.id.tabs)
     TabLayout homeTabLayout;
+    @BindView(R.id.filter_tabs)
+    TabLayout filtertabs;
     @BindView(R.id.toolbar)
     Toolbar toolbar;
     @BindView(R.id.searchtoolbar)
@@ -158,7 +160,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @BindView(R.id.not_found_img)
     ImageView notFoundImg;
     @BindView(R.id.mainactivity)
-    ConstraintLayout mainActivity;
+    CoordinatorLayout mainActivity;
     List<Contact> contactFilterList = new ArrayList<Contact>();
     List<Email> emailFilterList = new ArrayList<Email>();
     List<BankAccount> bankFilterList = new ArrayList<BankAccount>();
@@ -170,10 +172,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     GoogleSignInClient mGoogleSignInClient;
     String jsonString = "";
     String TAG = "MainActivity";
-    private ContactAdapter contactSearchAdapter;
-    private EmailAdapter emailSearchAdapter;
-    private BankAccountAdapter bankSearchAdapter;
-    private NoteAdapter noteSearchAdapter;
     private DriveClient mDriveClient;
     private DriveResourceClient mDriveResourceClient;
 
@@ -201,8 +199,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         inputMethodManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);//Controls keyboard
         floatingActionMenu = (FloatingActionMenu) findViewById(R.id.fab_menu);
         floatingActionMenu.setVisibility(View.VISIBLE);
-        if (MyApp.defaultTheme) {
-        } else {
+        if (!MyApp.defaultTheme) {
             Toast.makeText(this, "Default Theme", Toast.LENGTH_LONG).show();
             searchToolbar.setBackgroundColor(getResources().getColor(R.color.dark));
             mainActivity.setBackgroundColor(getResources().getColor(R.color.dark));
@@ -224,13 +221,69 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         homeTabLayout.setupWithViewPager(homeViewPager);
 
+
         setupViewPager(homeViewPager);
-        homeTabLayout.setupWithViewPager(homeViewPager);
+        //homeTabLayout.setupWithViewPager(homeViewPager);
 
         homeTabLayout.setTabTextColors(R.color.grey, R.color.black);
         setupTabIcons();//icons on tabs
+        setupTabs_filter();
 
         homeViewPager.setOffscreenPageLimit(5);
+
+
+        filtertabs.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+            @Override
+            public void onTabSelected(TabLayout.Tab tab) {
+                switch (tab.getPosition()) {
+                    case 0://All
+                        MyApp.isIncomingFilterHighlighted = false;
+                        MyApp.isOutgoingFilterHighlighted = false;
+                        MyApp.isSavedFromAppFilterHighlighted = false;
+                        setupViewPager(homeViewPager);
+                        setupTabIcons();
+                        Log.d("wood", "All");
+                        break;
+
+                    case 1://Incoming
+                        MyApp.isIncomingFilterHighlighted = true;
+                        MyApp.isOutgoingFilterHighlighted = false;
+                        MyApp.isSavedFromAppFilterHighlighted = false;
+                        AsyncTaskFilterModel asyncTaskFilterModel1 = new AsyncTaskFilterModel(MainActivity.this, 1);
+                        asyncTaskFilterModel1.execute();
+                        Log.d("wood", "Incoming");
+                        break;
+
+                    case 2://Outgoing
+                        MyApp.isOutgoingFilterHighlighted = true;
+                        MyApp.isIncomingFilterHighlighted = false;
+                        MyApp.isSavedFromAppFilterHighlighted = false;
+                        AsyncTaskFilterModel asyncTaskFilterModel2 = new AsyncTaskFilterModel(MainActivity.this, 2);
+                        asyncTaskFilterModel2.execute();
+                        Log.d("wood", "Outgoing");
+                        break;
+
+                    case 3://Saved_from_app
+                        MyApp.isSavedFromAppFilterHighlighted=true;
+                        MyApp.isIncomingFilterHighlighted = false;
+                        MyApp.isOutgoingFilterHighlighted = false;
+                        AsyncTaskFilterModel asyncTaskFilterModel3 = new AsyncTaskFilterModel(MainActivity.this, 3);
+                        asyncTaskFilterModel3.execute();
+                        Log.d("wood", "Saved from App");
+                        break;
+                }
+            }
+
+            @Override
+            public void onTabUnselected(TabLayout.Tab tab) {
+
+            }
+
+            @Override
+            public void onTabReselected(TabLayout.Tab tab) {
+
+            }
+        });
 
     }
 
@@ -270,6 +323,16 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         tabRecordings.setText("Records");
         tabRecordings.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_note, 0, 0);
         homeTabLayout.getTabAt(4).setCustomView(tabRecordings);
+    }
+
+    private void setupTabs_filter() {
+
+        filtertabs.addTab(filtertabs.newTab().setText("All"));
+        filtertabs.addTab(filtertabs.newTab().setText("Incoming"));
+        filtertabs.addTab(filtertabs.newTab().setText("Outgoing"));
+        filtertabs.addTab(filtertabs.newTab().setText("Saved from app"));
+        filtertabs.setTabTextColors(Color.parseColor("#ffffff"), Color.parseColor("#424242"));
+        filtertabs.setSelectedTabIndicatorHeight(0);
     }
 
     public void initSearchLayout() {
@@ -423,7 +486,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         txtSearch.setHintTextColor(Color.DKGRAY);
         txtSearch.setTextColor(getResources().getColor(R.color.colorPrimary));
 
-
         // set the cursor
 
         AutoCompleteTextView searchTextView = (AutoCompleteTextView) searchView.findViewById(android.support.v7.appcompat.R.id.search_src_text);
@@ -503,13 +565,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 contactFilterList.add(contacts.get(i));
             } else if (calledNoAll.contains(searchWord) && !savedFromApp) {
                 contactFilterList.add(contacts.get(i));
-            } else {
-
             }
-
         }
 
-        contactSearchAdapter = new ContactAdapter(this, contactFilterList);
+        ContactAdapter contactSearchAdapter = new ContactAdapter(this, contactFilterList);
         contactSearchRecycler.setAdapter(contactSearchAdapter);
         List<Email> emails = Email.listAll(Email.class);
         Collections.reverse(emails);
@@ -535,11 +594,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 emailFilterList.add(emails.get(i));
             } else if (calledNoAll.contains(searchWord) && !savedFromApp) {
                 emailFilterList.add(emails.get(i));
-            } else {
             }
         }
 
-        emailSearchAdapter = new EmailAdapter(this, emailFilterList);
+        EmailAdapter emailSearchAdapter = new EmailAdapter(this, emailFilterList);
         emailSearchRecycler.setAdapter(emailSearchAdapter);
         List<BankAccount> bankAccounts = BankAccount.listAll(BankAccount.class);
         Collections.reverse(bankAccounts);
@@ -567,11 +625,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 bankFilterList.add(bankAccounts.get(i));
             } else if (calledNoAll.contains(searchWord) && !savedFromApp) {
                 bankFilterList.add(bankAccounts.get(i));
-            } else {
             }
         }
 
-        bankSearchAdapter = new BankAccountAdapter(this, bankFilterList);
+        BankAccountAdapter bankSearchAdapter = new BankAccountAdapter(this, bankFilterList);
         bankSearchRecycler.setAdapter(bankSearchAdapter);
         List<Note> notes = Note.listAll(Note.class);
         Collections.reverse(notes);
@@ -595,7 +652,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             }
         }
 
-        noteSearchAdapter = new NoteAdapter(this, noteFilterList);
+        NoteAdapter noteSearchAdapter = new NoteAdapter(this, noteFilterList);
         noteSearchRecycler.setAdapter(noteSearchAdapter);
 
         if (contactFilterList.isEmpty()) {
@@ -671,6 +728,17 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
                 return true;
 
+            case R.id.menu_import:
+                if (Utils.isOnline(getApplicationContext())) {
+                    Toast.makeText(this, "Internet Available", Toast.LENGTH_SHORT).show();
+                    /*ShowProgressDialog("Importing");
+                    isImport = true;
+                    signIn();*/
+                } else {
+                    Toast.makeText(this, "Internet Unavailable", Toast.LENGTH_SHORT).show();
+                }
+                return true;
+
             case R.id.menu_search:
 
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
@@ -686,15 +754,24 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 item_search.expandActionView();
                 return true;
 
-            case R.id.menu_import:
-                if (Utils.isOnline(getApplicationContext())) {
-                    Toast.makeText(this, "Internet Available", Toast.LENGTH_SHORT).show();
-                    /*ShowProgressDialog("Importing");
-                    isImport = true;
-                    signIn();*/
+            case R.id.filter:
+
+                if (isFiltertabsShowing_home) {
+                    filtertabs.setVisibility(View.GONE);
+                    setupViewPager(homeViewPager);
+                    setupTabIcons();
+                    MyApp.isIncomingFilterHighlighted = false;
+                    MyApp.isOutgoingFilterHighlighted = false;
+                    MyApp.isSavedFromAppFilterHighlighted = false;
+                    MyApp.isFilterTabsShowing = false;
+                    Log.d("wood", "isFiltertabs showing if"+MyApp.isFilterTabsShowing);
                 } else {
-                    Toast.makeText(this, "Internet Unavailable", Toast.LENGTH_SHORT).show();
+                    filtertabs.setVisibility(View.VISIBLE);
+                    MyApp.isFilterTabsShowing = true;
+                    Log.d("wood", "isFiltertabs showing else"+MyApp.isFilterTabsShowing);
                 }
+                isFiltertabsShowing_home = !isFiltertabsShowing_home;
+
                 return true;
 
             case R.id.menu_email_to_admin:
@@ -726,7 +803,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             case R.id.settings:
                 //startActivity(new Intent(this, Settings.class));
 
-                startActivity(new Intent(MainActivity.this,SettingsActivity.class));
+                startActivity(new Intent(MainActivity.this, SettingsActivity.class));
 
                 overridePendingTransition(R.anim.enter_from_right, R.anim.exit_to_left);
 
@@ -790,7 +867,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 if (data != null) {
                     Uri uri = data.getData();
                     mCursor = getContentResolver().query(uri, null, null, null, null);
-                    mCursor.moveToFirst();
+                    if (mCursor != null) {
+                        mCursor.moveToFirst();
+                    }
 
                     mLookupKeyIndex = mCursor.getColumnIndex(ContactsContract.Contacts.LOOKUP_KEY);
 
@@ -1265,7 +1344,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                             contact.save();
                             inputMethodManager.hideSoftInputFromWindow(contactNumber.getWindowToken(), 0);
                             dialog.dismiss();
-                            EventBus.getDefault().post(new EventB("1"));
+                            if (MyApp.isFilterTabsShowing){
+
+                                EventBus.getDefault().post(new EventB("6"));
+
+                            }else {
+
+                                EventBus.getDefault().post(new EventB("1"));
+                            }
+                            //EventBus.getDefault().post(new EventB("1"));
                         }
                     }
                 });
@@ -1358,8 +1445,16 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                             email.save();
                             inputMethodManager.hideSoftInputFromWindow(contactEmail.getWindowToken(), 0);
                             dialog.dismiss();
+                            if (MyApp.isFilterTabsShowing){
 
-                            EventBus.getDefault().post(new EventB("2"));
+                                EventBus.getDefault().post(new EventB("7"));
+
+                            }else {
+
+                                EventBus.getDefault().post(new EventB("2"));
+                            }
+
+                            //EventBus.getDefault().post(new EventB("2"));
                         }
                     }
                 });
@@ -1467,7 +1562,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                             bankAccount.save();
                             inputMethodManager.hideSoftInputFromWindow(contactIFSC.getWindowToken(), 0);
                             dialog.dismiss();
-                            EventBus.getDefault().post(new EventB("3"));
+                            if (MyApp.isFilterTabsShowing){
+                                Log.d("wood", "filter tabs is showing");
+                                EventBus.getDefault().post(new EventB("8"));
+
+                            }else {
+                                Log.d("wood", "filter tabs not showing");
+                                EventBus.getDefault().post(new EventB("3"));
+                            }
+                           // EventBus.getDefault().post(new EventB("3"));
                         }
                     }
                 });
@@ -1544,82 +1647,86 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                             note.save();
                             inputMethodManager.hideSoftInputFromWindow(noteEditText.getWindowToken(), 0);
                             dialog.dismiss();
+                            if (MyApp.isFilterTabsShowing){
+                                Log.d("wood", "filter tabs is showing");
+                                EventBus.getDefault().post(new EventB("9"));
 
-                            EventBus.getDefault().post(new EventB("4"));
+                            }else {
+                                Log.d("wood", "filter tabs not showing");
+                                EventBus.getDefault().post(new EventB("4"));
+                            }
+                            //EventBus.getDefault().post(new EventB("4"));
                         }
                     }
                 });
                 dialog.show();
 
-
                 break;
             }
-
-
-            //.... etc
         }
 
     }
 
     public boolean dataAlreadyExists(String tsMilli_fromBackup, String number) {
 
-        if (number.equals("1")) {
+        switch (number) {
+            case "1":
 
-            List<Contact> contacts = Contact.listAll(Contact.class);
-            // boolean exists = false;
+                List<Contact> contacts = Contact.listAll(Contact.class);
+                // boolean exists = false;
 
-            Log.d("cricket", "then: " + tsMilli_fromBackup);
+                Log.d("cricket", "then: " + tsMilli_fromBackup);
 
-            for (int i = 0; i < contacts.size(); i++) {
+                for (int i = 0; i < contacts.size(); i++) {
 
-                String tsMilli_fromLocalDb = contacts.get(i).getTsMilli();
-                Log.d("cricket2", "then: " + tsMilli_fromLocalDb);
+                    String tsMilli_fromLocalDb = contacts.get(i).getTsMilli();
+                    Log.d("cricket2", "then: " + tsMilli_fromLocalDb);
 
-                if (tsMilli_fromBackup.equals(tsMilli_fromLocalDb)) {
-                    Log.d("cricket3", "then: " + true);
-                    return true;
+                    if (tsMilli_fromBackup.equals(tsMilli_fromLocalDb)) {
+                        Log.d("cricket3", "then: " + true);
+                        return true;
+                    }
                 }
-            }
-            //Log.d(TAG + "baaghi", "" + exists);
-            return false;
-        } else if (number.equals("2")) {
+                //Log.d(TAG + "baaghi", "" + exists);
+                return false;
+            case "2":
 
-            List<Email> emails = Email.listAll(Email.class);
-            //boolean exists = false;
+                List<Email> emails = Email.listAll(Email.class);
+                //boolean exists = false;
 
-            for (int i = 0; i < emails.size(); i++) {
+                for (int i = 0; i < emails.size(); i++) {
 
-                String tsMilli_fromLocalDb = emails.get(i).getTsMilli();
+                    String tsMilli_fromLocalDb = emails.get(i).getTsMilli();
 
-                if (tsMilli_fromBackup.equals(tsMilli_fromLocalDb)) {
-                    return true;
+                    if (tsMilli_fromBackup.equals(tsMilli_fromLocalDb)) {
+                        return true;
+                    }
                 }
-            }
-            return false;
-        } else if (number.equals("3")) {
+                return false;
+            case "3":
 
-            List<BankAccount> bankAccounts = BankAccount.listAll(BankAccount.class);
-            //boolean exists = false;
+                List<BankAccount> bankAccounts = BankAccount.listAll(BankAccount.class);
+                //boolean exists = false;
 
-            for (int i = 0; i < bankAccounts.size(); i++) {
-                String tsMilli_fromLocalDb = bankAccounts.get(i).getTsMilli();
+                for (int i = 0; i < bankAccounts.size(); i++) {
+                    String tsMilli_fromLocalDb = bankAccounts.get(i).getTsMilli();
 
-                if (tsMilli_fromBackup.equals(tsMilli_fromLocalDb)) {
-                    return true;
+                    if (tsMilli_fromBackup.equals(tsMilli_fromLocalDb)) {
+                        return true;
+                    }
                 }
-            }
-            return false;
-        } else if (number.equals("4")) {
-            List<Note> notes = Note.listAll(Note.class);
-            //boolean exists = false;
+                return false;
+            case "4":
+                List<Note> notes = Note.listAll(Note.class);
+                //boolean exists = false;
 
-            for (int i = 0; i < notes.size(); i++) {
-                String tsMilli_fromLocalDb = notes.get(i).getTsMilli();
-                if (tsMilli_fromBackup.equals(tsMilli_fromLocalDb)) {
-                    return true;
+                for (int i = 0; i < notes.size(); i++) {
+                    String tsMilli_fromLocalDb = notes.get(i).getTsMilli();
+                    if (tsMilli_fromBackup.equals(tsMilli_fromLocalDb)) {
+                        return true;
+                    }
                 }
-            }
-            return false;
+                return false;
         }
         return false;
     }
