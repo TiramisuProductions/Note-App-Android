@@ -35,6 +35,7 @@ public class MyApp extends SugarApp {
 
     public static String firstRunRingingNumber, firstRunContactName, firstRuntsMilli;
     public static Boolean firstRunIsIncoming;
+    public static int lastSavedToCategory = -1;
 
     static public String contactName0 = "", contactNumber0 = "",
             contactName1 = "", emailId1 = "",

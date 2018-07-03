@@ -188,17 +188,17 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         editor = pref.edit();
 
         MyApp.defaultTheme = pref.getBoolean(getString(R.string.defaulttheme), true);
-
         if (pref.getBoolean(getString(R.string.shared_pref_first_time), true)) {
-
             startActivity(new Intent(this, IntroActivity.class));
         }
 
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
+
         inputMethodManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);//Controls keyboard
         floatingActionMenu = (FloatingActionMenu) findViewById(R.id.fab_menu);
         floatingActionMenu.setVisibility(View.VISIBLE);
+
         if (!MyApp.defaultTheme) {
             Toast.makeText(this, "Default Theme", Toast.LENGTH_LONG).show();
             searchToolbar.setBackgroundColor(getResources().getColor(R.color.dark));
@@ -230,6 +230,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         setupTabs_filter();
 
         homeViewPager.setOffscreenPageLimit(5);
+
+        homeViewPager.setCurrentItem(MyApp.lastSavedToCategory);
 
 
         filtertabs.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
@@ -1344,6 +1346,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                             contact.save();
                             inputMethodManager.hideSoftInputFromWindow(contactNumber.getWindowToken(), 0);
                             dialog.dismiss();
+
+                            homeViewPager.setCurrentItem(0,true);
+
                             if (MyApp.isFilterTabsShowing){
 
                                 EventBus.getDefault().post(new EventB("6"));
@@ -1445,6 +1450,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                             email.save();
                             inputMethodManager.hideSoftInputFromWindow(contactEmail.getWindowToken(), 0);
                             dialog.dismiss();
+
+                            homeViewPager.setCurrentItem(1,true);
                             if (MyApp.isFilterTabsShowing){
 
                                 EventBus.getDefault().post(new EventB("7"));
@@ -1562,6 +1569,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                             bankAccount.save();
                             inputMethodManager.hideSoftInputFromWindow(contactIFSC.getWindowToken(), 0);
                             dialog.dismiss();
+
+                            homeViewPager.setCurrentItem(2,true);
                             if (MyApp.isFilterTabsShowing){
                                 Log.d("wood", "filter tabs is showing");
                                 EventBus.getDefault().post(new EventB("8"));
@@ -1647,6 +1656,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                             note.save();
                             inputMethodManager.hideSoftInputFromWindow(noteEditText.getWindowToken(), 0);
                             dialog.dismiss();
+
+                            homeViewPager.setCurrentItem(4,true);
                             if (MyApp.isFilterTabsShowing){
                                 Log.d("wood", "filter tabs is showing");
                                 EventBus.getDefault().post(new EventB("9"));

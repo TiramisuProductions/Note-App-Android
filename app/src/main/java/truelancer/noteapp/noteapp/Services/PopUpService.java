@@ -164,7 +164,7 @@ public class PopUpService extends Service {
                     makeDirectory();
 
 
-                    Button b1 = (Button) view.findViewById(R.id.goToAppButton);
+                    Button goToAppBtn = (Button) view.findViewById(R.id.goToAppButton);
                     final Button recordCall = (Button) view.findViewById(R.id.callRecordButton);
                     Button save = (Button) view.findViewById(R.id.save);
 
@@ -178,7 +178,7 @@ public class PopUpService extends Service {
                         }
                     });
 
-                    b1.setOnClickListener(new View.OnClickListener() {
+                    goToAppBtn.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
 
@@ -311,7 +311,13 @@ public class PopUpService extends Service {
         }
 
         String tsMilli = "" + startDate.getTime();
-        addChatHead(MyApp.firstRunRingingNumber, MyApp.firstRunContactName, MyApp.firstRunIsIncoming, MyApp.firstRuntsMilli);
+        try {
+            addChatHead(MyApp.firstRunRingingNumber, MyApp.firstRunContactName, MyApp.firstRunIsIncoming, MyApp.firstRuntsMilli);
+        } catch (Exception e) {
+            e.printStackTrace();
+            Log.d(TAG, "addChatHead method crashed k11");
+            Toast.makeText(PopUpService.this, "k11", Toast.LENGTH_SHORT).show();
+        }
         chatHeadManager.setArrangement(MinimizedArrangement.class, null);
         moveToForeground();
 
@@ -507,12 +513,12 @@ public class PopUpService extends Service {
                 if (nameByUser.length() > 0) {
                     CallRecording callRecording = new CallRecording(nameByUser, file_path, calledNumber, calledName, incomingCall, timeStampMilli);
                     callRecording.save();
-
-                    if (MyApp.isFilterTabsShowing){
+                    MyApp.lastSavedToCategory = 4;
+                    if (MyApp.isFilterTabsShowing) {
                         Log.d("wood", "filter tabs is showing");
                         EventBus.getDefault().post(new EventB("10"));
 
-                    }else {
+                    } else {
                         Log.d("wood", "filter tabs not showing");
                         EventBus.getDefault().post(new EventB("5"));
                     }
@@ -910,11 +916,12 @@ public class PopUpService extends Service {
                     Contact contact = new Contact(MyApp.editContactNameToSave.getText().toString(), MyApp.editContactNumberToSave.getText().toString(), calledNumber, calledName, incomingCall, timeStampMilli);
                     contact.save();
                     Toast.makeText(mContext, "Successfully Saved", Toast.LENGTH_LONG).show();
-                    if (MyApp.isFilterTabsShowing){
+                    MyApp.lastSavedToCategory = 0;
+                    if (MyApp.isFilterTabsShowing) {
 
                         EventBus.getDefault().post(new EventB("6"));
 
-                    }else {
+                    } else {
 
                         EventBus.getDefault().post(new EventB("1"));
                     }
@@ -931,11 +938,12 @@ public class PopUpService extends Service {
                     Email email = new Email(MyApp.editEmailContactNameToSave.getText().toString(), MyApp.editEmailAdressToSave.getText().toString(), calledNumber, calledName, incomingCall, timeStampMilli);
                     email.save();
                     Toast.makeText(mContext, "Successfully Saved", Toast.LENGTH_LONG).show();
-                    if (MyApp.isFilterTabsShowing){
+                    MyApp.lastSavedToCategory = 1;
+                    if (MyApp.isFilterTabsShowing) {
 
                         EventBus.getDefault().post(new EventB("7"));
 
-                    }else {
+                    } else {
 
                         EventBus.getDefault().post(new EventB("2"));
                     }
@@ -953,11 +961,12 @@ public class PopUpService extends Service {
                     BankAccount bankAccount = new BankAccount(MyApp.editBankContactNameToSave.getText().toString(), MyApp.editBankAccountNoToSave.getText().toString(), MyApp.editBankOthersNoToSave.getText().toString(), calledNumber, calledName, incomingCall, timeStampMilli);
                     bankAccount.save();
                     Toast.makeText(mContext, "Successfully Saved", Toast.LENGTH_LONG).show();
-                    if (MyApp.isFilterTabsShowing){
+                    MyApp.lastSavedToCategory = 2;
+                    if (MyApp.isFilterTabsShowing) {
                         Log.d("wood", "filter tabs is showing");
                         EventBus.getDefault().post(new EventB("8"));
 
-                    }else {
+                    } else {
                         Log.d("wood", "filter tabs not showing");
                         EventBus.getDefault().post(new EventB("3"));
                     }
@@ -973,11 +982,12 @@ public class PopUpService extends Service {
                     Note noteN = new Note(MyApp.editNoteToSave.getText().toString(), calledName, calledNumber, timeStampMilli, incomingCall);
                     noteN.save();
                     Toast.makeText(mContext, "Successfully Saved", Toast.LENGTH_LONG).show();
-                    if (MyApp.isFilterTabsShowing){
+                    MyApp.lastSavedToCategory = 3;
+                    if (MyApp.isFilterTabsShowing) {
                         Log.d("wood", "filter tabs is showing");
                         EventBus.getDefault().post(new EventB("9"));
 
-                    }else {
+                    } else {
                         Log.d("wood", "filter tabs not showing");
                         EventBus.getDefault().post(new EventB("4"));
                     }
