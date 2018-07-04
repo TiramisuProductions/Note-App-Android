@@ -10,11 +10,6 @@
     </Preference>
     <PreferenceCategory android:title="General">
 
-        <SwitchPreference
-            android:defaultValue="false"
-            android:icon="@drawable/places_ic_search"
-            android:key="@string/key_dark_theme"
-            android:title="@string/dark_theme" />
 
         <SwitchPreference
             android:icon="@drawable/places_ic_search"

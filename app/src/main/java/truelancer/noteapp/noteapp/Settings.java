@@ -6,17 +6,21 @@ import android.content.SharedPreferences;
 import android.support.constraint.ConstraintLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.DividerItemDecoration;
+import android.support.v7.widget.LinearLayoutCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.widget.Toast;
+import android.widget.Toolbar;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
 import java.util.ArrayList;
 
-import truelancer.noteapp.noteapp.Adapters.SettingsAdapter;
+import truelancer.noteapp.noteapp.Adapters.SettingsLabelAdapter;
+import truelancer.noteapp.noteapp.Adapters.SettingsSwitchAdapter;
 
 public class Settings extends AppCompatActivity {
 
@@ -25,45 +29,72 @@ public class Settings extends AppCompatActivity {
     SharedPreferences pref;
     SharedPreferences.Editor editor;
     private ConstraintLayout settingsLayout;
-    private RecyclerView recyclerViewSettings;
-    private SettingsAdapter settingsAdapter;
+    private RecyclerView recylerViewSwitch;
+    private SettingsSwitchAdapter settingsSwitchAdapter;
+    private RecyclerView recyclerViewLabel;
+    private SettingsLabelAdapter settingsLabelAdapter;
+    private android.support.v7.widget.Toolbar toolbar;
     Context context;
     private boolean themeChanged;
     ArrayList<String> settingsList = new ArrayList<>();
+    ArrayList<String> lSettingsList = new ArrayList<>();
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        pref = getApplicationContext().getSharedPreferences(getString(R.string.shared_pref),MODE_PRIVATE);
+//
+       // pref = getApplicationContext().getSharedPreferences(getString(R.string.shared_pref),MODE_PRIVATE);
         setContentView(R.layout.activity_settings);
+        toolbar = (android.support.v7.widget.Toolbar) findViewById(R.id.toolbar2);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         settingsListdata();
+        settingsListOption();
         settingsLayout = (ConstraintLayout)findViewById(R.id.settingslayout);
-        if(!EventBus.getDefault().isRegistered(this)){
-            EventBus.getDefault().register(this);
-        }
-        context = getApplicationContext();
-        recyclerViewSettings = (RecyclerView)findViewById(R.id.setting_Recycler_View);
-        settingsAdapter = new SettingsAdapter(context,settingsList);
-        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(context);
-        if(!MyApp.defaultTheme){
-            recyclerViewSettings.setBackgroundColor(getResources().getColor(R.color.dark));
-            settingsLayout.setBackgroundColor(getResources().getColor(R.color.dark));
+        RecyclerView.LayoutManager sLayoutManager = new LinearLayoutManager(this);
+        RecyclerView.LayoutManager lLayoutManager = new LinearLayoutManager(this);
 
-        }
+        recylerViewSwitch = findViewById(R.id.setting_Recycler_View);
+        recyclerViewLabel = findViewById(R.id.label_Recyler_View);
+        recyclerViewLabel.setLayoutManager(sLayoutManager);
+        recylerViewSwitch.setLayoutManager(lLayoutManager);
 
-        recyclerViewSettings.setLayoutManager(layoutManager);
-        recyclerViewSettings.setAdapter(settingsAdapter);
-        settingsAdapter.notifyDataSetChanged();
+        DividerItemDecoration sDividerItemDecoration = new DividerItemDecoration(recylerViewSwitch.getContext(),
+                DividerItemDecoration.VERTICAL);
+        recylerViewSwitch.addItemDecoration(sDividerItemDecoration);
+        DividerItemDecoration lDividerItemDecoration = new DividerItemDecoration(recylerViewSwitch.getContext(),
+                DividerItemDecoration.VERTICAL);
+        recyclerViewLabel.addItemDecoration(lDividerItemDecoration);
+
+
+        settingsSwitchAdapter = new SettingsSwitchAdapter(this,settingsList);
+        settingsLabelAdapter = new SettingsLabelAdapter(this,lSettingsList);
+        recylerViewSwitch.setAdapter(settingsSwitchAdapter);
+        recyclerViewLabel.setAdapter(settingsLabelAdapter);
+        settingsSwitchAdapter.notifyDataSetChanged();
+        recylerViewSwitch.hasFixedSize();
+        recyclerViewLabel.hasFixedSize();
+        recylerViewSwitch.setNestedScrollingEnabled(false);
+        recyclerViewLabel.setNestedScrollingEnabled(false);
 
     }
 
 
     private void settingsListdata() {
-        settingsList.add("Theme");
-        settingsList.add("About");
-        settingsList.add("Open Source licenses");
+
+        settingsList.add("Keep bubble after Call End");
+
     }
+
+    private void settingsListOption(){
+        lSettingsList.add("Share with Friends");
+        lSettingsList.add("Rate us");
+        lSettingsList.add("Send feedback");
+    }
+
+
+
 
     @Subscribe
     public void onEvent(EventB event) {
@@ -78,10 +109,10 @@ public class Settings extends AppCompatActivity {
                    // themeChanged = true;
                     if (!MyApp.defaultTheme) {
 
-                        recyclerViewSettings.setBackgroundColor(getResources().getColor(R.color.dark));
+                        recylerViewSwitch.setBackgroundColor(getResources().getColor(R.color.dark));
                         settingsLayout.setBackgroundColor(getResources().getColor(R.color.dark));
                     } else {
-                        recyclerViewSettings.setBackgroundColor(getResources().getColor(R.color.white));
+                        recylerViewSwitch.setBackgroundColor(getResources().getColor(R.color.white));
                         settingsLayout.setBackgroundColor(getResources().getColor(R.color.white));
                     }
 

@@ -34,6 +34,7 @@ public class ContactFragment extends Fragment {
     public static RecyclerView mRecyclerView;
     private ContactAdapter mAdapter;
     public static RelativeLayout RContact_no_data;
+    public View rootView;
 
     public ContactFragment() {
         // Required empty public constructor
@@ -44,7 +45,7 @@ public class ContactFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View rootView = inflater.inflate(R.layout.fragment_contact, container, false);
+         rootView = inflater.inflate(R.layout.fragment_contact, container, false);
 
         if (!EventBus.getDefault().isRegistered(this)) {
             EventBus.getDefault().register(this);
@@ -96,6 +97,33 @@ public class ContactFragment extends Fragment {
             Collections.reverse(contacts);
             mAdapter = new ContactAdapter(getActivity(), contacts);
             mRecyclerView.setAdapter(mAdapter);
+        }
+
+        if (event.getMessage().equals("changeUIMode")) {
+            Log.d("works here","works here 1");
+            if (!MyApp.defaultTheme) {
+                Log.d("works here","works here 2");
+                mRecyclerView.setBackgroundColor(getResources().getColor(R.color.dark));
+                rootView.setBackgroundColor(getResources().getColor(R.color.dark));
+
+
+            }
+            else{
+                mRecyclerView.setBackgroundColor(getResources().getColor(R.color.white));
+                rootView.setBackgroundColor(getResources().getColor(R.color.white));
+            }
+
+            List<Contact> contacts = Contact.listAll(Contact.class);
+            if (contacts.size() == 0) {
+                Utils.Visibility_no_data(1, true);
+            } else {
+                Utils.Visibility_no_data(1, false);
+            }
+
+            Collections.reverse(contacts);
+            mAdapter = new ContactAdapter(getActivity(), contacts);
+            mRecyclerView.setAdapter(mAdapter);
+
         }
     }
 }

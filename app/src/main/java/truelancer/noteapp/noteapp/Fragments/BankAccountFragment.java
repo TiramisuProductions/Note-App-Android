@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,8 +18,10 @@ import java.util.Collections;
 import java.util.List;
 
 import truelancer.noteapp.noteapp.Adapters.BankAccountAdapter;
+import truelancer.noteapp.noteapp.Adapters.ContactAdapter;
 import truelancer.noteapp.noteapp.AsyncTaskModel;
 import truelancer.noteapp.noteapp.Database.BankAccount;
+import truelancer.noteapp.noteapp.Database.Contact;
 import truelancer.noteapp.noteapp.EventB;
 import truelancer.noteapp.noteapp.MyApp;
 import truelancer.noteapp.noteapp.R;
@@ -29,9 +32,10 @@ import truelancer.noteapp.noteapp.Utils;
  */
 public class BankAccountFragment extends Fragment {
 
-    public static RecyclerView mRecycleView;
+    public static RecyclerView mRecyclerView;
     private BankAccountAdapter mAdapter;
     public static RelativeLayout RBank_no_data;
+    public View rootView;
 
     public BankAccountFragment() {
         // Required empty public constructor
@@ -43,20 +47,20 @@ public class BankAccountFragment extends Fragment {
 
         View rootView = inflater.inflate(R.layout.fragment_bank_account, container, false);
 
-        RBank_no_data = (RelativeLayout)rootView.findViewById(R.id.Rlayout_no_data_bank);
+        RBank_no_data = (RelativeLayout) rootView.findViewById(R.id.Rlayout_no_data_bank);
         if (!EventBus.getDefault().isRegistered(this)) {
             EventBus.getDefault().register(this);
         }
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getActivity());
-        mRecycleView = (RecyclerView) rootView.findViewById(R.id.recycler_bank);
-        mRecycleView.setLayoutManager(mLayoutManager);
+        mRecyclerView = (RecyclerView) rootView.findViewById(R.id.recycler_bank);
+        mRecyclerView.setLayoutManager(mLayoutManager);
 
         AsyncTaskModel asyncTaskModel = new AsyncTaskModel(getActivity(), 3);
         asyncTaskModel.execute();
 
 
         if (!MyApp.defaultTheme) {
-            mRecycleView.setBackgroundColor(getResources().getColor(R.color.dark));
+            mRecyclerView.setBackgroundColor(getResources().getColor(R.color.dark));
             rootView.setBackgroundColor(getResources().getColor(R.color.dark));
         }
 
@@ -85,8 +89,33 @@ public class BankAccountFragment extends Fragment {
             }
             mAdapter = new BankAccountAdapter(getActivity(), banks);
 
-            mRecycleView.setAdapter(mAdapter);
+            mRecyclerView.setAdapter(mAdapter);
         }
-    }
 
+        if (event.getMessage().equals("changeUIMode")) {
+            Log.d("works here", "works here 1");
+            if (!MyApp.defaultTheme) {
+                Log.d("works here", "works here 2");
+                mRecyclerView.setBackgroundColor(getResources().getColor(R.color.dark));
+                rootView.setBackgroundColor(getResources().getColor(R.color.dark));
+
+
+            } else {
+                mRecyclerView.setBackgroundColor(getResources().getColor(R.color.white));
+                rootView.setBackgroundColor(getResources().getColor(R.color.white));
+            }
+
+            List<BankAccount> banks = BankAccount.listAll(BankAccount.class);
+            if (banks.size() == 0) {
+                Utils.Visibility_no_data(1, true);
+            } else {
+                Utils.Visibility_no_data(1, false);
+            }
+
+            Collections.reverse(banks);
+            mAdapter = new BankAccountAdapter(getActivity(), banks);
+            mRecyclerView.setAdapter(mAdapter);
+        }
+
+    }
 }

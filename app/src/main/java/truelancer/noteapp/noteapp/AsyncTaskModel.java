@@ -118,7 +118,7 @@ public class AsyncTaskModel extends AsyncTask<String, String, String> {
                 break;
             case 3:
                 BankAccountAdapter bankAccountAdapter = new BankAccountAdapter(context, bankAccounts);
-                BankAccountFragment.mRecycleView.setAdapter(bankAccountAdapter);
+                BankAccountFragment.mRecyclerView.setAdapter(bankAccountAdapter);
                 break;
             case 4:
                 NoteAdapter noteAdapter = new NoteAdapter(context, notes);

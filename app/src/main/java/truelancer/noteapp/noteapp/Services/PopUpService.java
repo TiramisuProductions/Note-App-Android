@@ -1,5 +1,8 @@
 package truelancer.noteapp.noteapp.Services;
 
+import android.app.Notification;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -13,6 +16,7 @@ import android.os.Binder;
 import android.os.Environment;
 import android.os.IBinder;
 import android.support.constraint.ConstraintLayout;
+import android.support.v4.app.NotificationCompat;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AlertDialog;
@@ -70,8 +74,11 @@ import truelancer.noteapp.noteapp.Database.Contact;
 import truelancer.noteapp.noteapp.Database.Email;
 import truelancer.noteapp.noteapp.Database.Note;
 import truelancer.noteapp.noteapp.EventB;
+import truelancer.noteapp.noteapp.MainActivity;
 import truelancer.noteapp.noteapp.MyApp;
 import truelancer.noteapp.noteapp.R;
+
+import static truelancer.noteapp.noteapp.MyApp.context;
 
 public class PopUpService extends Service {
 
@@ -331,14 +338,27 @@ public class PopUpService extends Service {
     }
 
     private void moveToForeground() {
-      /*  Notification notification = new NotificationCompat.Builder(this)
-                .setSmallIcon(R.drawable.notification_template_icon_bg)
-                .setContentTitle("Hello Note is Active")
-                .setContentText("Click to Open App.")
-                .setContentIntent(PendingIntent.getActivity(this, 0, new Intent(this, MainActivity.class), 0))
-                .build();
 
-        startForeground(1, notification);*/
+        boolean a  = pref.getBoolean("key_app_service_in_bacground_notification",false);
+        Log.d("pranal",""+a);
+
+        if(pref.getBoolean("key_app_service_in_background_notification",false)){
+            Log.d("yoyo","service");
+            Notification notification = new NotificationCompat.Builder(this)
+                    .setSmallIcon(R.drawable.notification_template_icon_bg)
+                    .setContentTitle("Hello Note is Active")
+                    .setContentText("Click to Open App.")
+                    .setContentIntent(PendingIntent.getActivity(this, 0, new Intent(this, MainActivity.class), 0))
+                    .build();
+
+            startForeground(1, notification);
+        }else{
+            Log.d("sid","didi");
+
+            NotificationManager notifManager= (NotificationManager) this.getSystemService(Context.NOTIFICATION_SERVICE);
+            notifManager.cancelAll();
+        }
+
     }
 
     public void addChatHead(String calledNumber, String calledName, boolean incomingCall, String tsMilli) {
@@ -578,6 +598,7 @@ public class PopUpService extends Service {
             LayoutInflater inflater = LayoutInflater.from(mContext);
             ViewGroup layout = (ViewGroup) inflater.inflate(customPagerEnum.getLayoutResId(), collection, false);
             collection.addView(layout);
+           // EventBus.getDefault().register(this);
             count++;
 
             if (count == 1) {
@@ -590,8 +611,10 @@ public class PopUpService extends Service {
                     final EditText EditContactNo = (EditText) layout.findViewById(R.id.contact_no_et);
                     final TextView contactLabel1 = (TextView) layout.findViewById(R.id.contactLabel1);
                     final TextView contactLabel2 = (TextView) layout.findViewById(R.id.contactLabel2);
-                    final RelativeLayout relativeLayout = (RelativeLayout) layout.findViewById(R.id.layout);
+                    final ConstraintLayout relativeLayout = (ConstraintLayout) layout.findViewById(R.id.layout);
                     final ScrollView scrollView = (ScrollView) layout.findViewById(R.id.scroll_layout);
+
+                    Log.d("what",""+MyApp.defaultTheme);
                     if (!MyApp.defaultTheme) {
                         relativeLayout.setBackgroundColor(getResources().getColor(R.color.dark));
                         scrollView.setBackgroundColor(getResources().getColor(R.color.dark));
@@ -887,6 +910,7 @@ public class PopUpService extends Service {
 
         @Subscribe
         public void onEvent(EventB event) {
+            Log.d("it ran","it ran");
             // your implementation
             if (event.getMessage().equals("0")) {
                 if (TextUtils.isEmpty(MyApp.editContactNameToSave.getText().toString())) {
@@ -942,6 +966,8 @@ public class PopUpService extends Service {
                     MyApp.editNoteToSave.setText(null);
                 }
             }
+
+
 
 
         }
