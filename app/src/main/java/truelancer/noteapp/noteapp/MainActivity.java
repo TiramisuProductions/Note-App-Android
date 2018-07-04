@@ -80,6 +80,7 @@ import com.google.android.gms.tasks.Tasks;
 import com.google.gson.Gson;
 
 import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
 import org.w3c.dom.Text;
 
 import java.io.BufferedReader;
@@ -192,9 +193,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         SharedPreferences pref = getApplicationContext().getSharedPreferences(getString(R.string.shared_pref), 0); // 0 - for private mode
         editor = pref.edit();
         Log.d("hola",""+pref.getBoolean("key_bubble_persists",true));
-        MyApp.defaultTheme = pref.getBoolean(getString(R.string.defaulttheme), true);
+        MyApp.nightMode = pref.getBoolean(getString(R.string.key_night_mode), true);
 
         context = this;
+
+
 
         if (pref.getBoolean(getString(R.string.shared_pref_first_time), true)) {
 
@@ -222,9 +225,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         inputMethodManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);//Controls keyboard
         floatingActionMenu = (FloatingActionMenu) findViewById(R.id.fab_menu);
         floatingActionMenu.setVisibility(View.VISIBLE);
-        if (MyApp.defaultTheme) {
-        } else {
-            Toast.makeText(this, "Default Theme", Toast.LENGTH_LONG).show();
+        if (!MyApp.defaultTheme) {
             searchToolbar.setBackgroundColor(getResources().getColor(R.color.dark));
             mainActivity.setBackgroundColor(getResources().getColor(R.color.dark));
             searchScrollView.setBackgroundColor(getResources().getColor(R.color.dark));
@@ -254,6 +255,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         homeViewPager.setOffscreenPageLimit(5);
 
     }
+
+
+
+
 
     private void setupViewPager(ViewPager viewPager) {
         ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
@@ -491,25 +496,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 }
                 return true;
 
-            case R.id.menu_nightmode:
-                if(MyApp.defaultTheme){
-                    editor.putBoolean("defaulttheme",false);
-                    editor.commit();
-                    MyApp.defaultTheme = false;
-                }else{
 
-                    MyApp.defaultTheme  = true;
-                    editor.putBoolean("defaulttheme",true);
-                    editor.commit();
-                }
-
-                EventBus.getDefault().post(new EventB("changeUIMode"));
-
-
-
-
-
-                return true;
 
 
 

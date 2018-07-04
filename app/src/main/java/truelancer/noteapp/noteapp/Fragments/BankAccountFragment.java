@@ -59,7 +59,7 @@ public class BankAccountFragment extends Fragment {
         asyncTaskModel.execute();
 
 
-        if (!MyApp.defaultTheme) {
+        if (MyApp.nightMode) {
             mRecyclerView.setBackgroundColor(getResources().getColor(R.color.dark));
             rootView.setBackgroundColor(getResources().getColor(R.color.dark));
         }
@@ -94,7 +94,7 @@ public class BankAccountFragment extends Fragment {
 
         if (event.getMessage().equals("changeUIMode")) {
             Log.d("works here", "works here 1");
-            if (!MyApp.defaultTheme) {
+            if (MyApp.nightMode) {
                 Log.d("works here", "works here 2");
                 mRecyclerView.setBackgroundColor(getResources().getColor(R.color.dark));
                 rootView.setBackgroundColor(getResources().getColor(R.color.dark));

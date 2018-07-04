@@ -11,6 +11,7 @@ import android.support.v7.widget.LinearLayoutCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.MenuItem;
 import android.widget.Toast;
 import android.widget.Toolbar;
 
@@ -19,6 +20,7 @@ import org.greenrobot.eventbus.Subscribe;
 
 import java.util.ArrayList;
 
+import truelancer.noteapp.noteapp.Adapters.SettingsAboutAdapter;
 import truelancer.noteapp.noteapp.Adapters.SettingsLabelAdapter;
 import truelancer.noteapp.noteapp.Adapters.SettingsSwitchAdapter;
 
@@ -30,7 +32,9 @@ public class Settings extends AppCompatActivity {
     SharedPreferences.Editor editor;
     private ConstraintLayout settingsLayout;
     private RecyclerView recylerViewSwitch;
+    private RecyclerView recyclerViewAbout;
     private SettingsSwitchAdapter settingsSwitchAdapter;
+    private SettingsAboutAdapter settingsAboutAdapter;
     private RecyclerView recyclerViewLabel;
     private SettingsLabelAdapter settingsLabelAdapter;
     private android.support.v7.widget.Toolbar toolbar;
@@ -38,6 +42,7 @@ public class Settings extends AppCompatActivity {
     private boolean themeChanged;
     ArrayList<String> settingsList = new ArrayList<>();
     ArrayList<String> lSettingsList = new ArrayList<>();
+    ArrayList<String> aSettingsList = new ArrayList<>();
 
 
     @Override
@@ -45,21 +50,29 @@ public class Settings extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 //
        // pref = getApplicationContext().getSharedPreferences(getString(R.string.shared_pref),MODE_PRIVATE);
+        if (!EventBus.getDefault().isRegistered(this)) {
+            EventBus.getDefault().register(this);
+        }
+
+
         setContentView(R.layout.activity_settings);
         toolbar = (android.support.v7.widget.Toolbar) findViewById(R.id.toolbar2);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
+        getSupportActionBar().setTitle("");
         settingsListdata();
         settingsListOption();
         settingsLayout = (ConstraintLayout)findViewById(R.id.settingslayout);
         RecyclerView.LayoutManager sLayoutManager = new LinearLayoutManager(this);
         RecyclerView.LayoutManager lLayoutManager = new LinearLayoutManager(this);
-
+        RecyclerView.LayoutManager aLayoutManager = new LinearLayoutManager(this);
         recylerViewSwitch = findViewById(R.id.setting_Recycler_View);
+        recyclerViewAbout = findViewById(R.id.about_recyler_view);
         recyclerViewLabel = findViewById(R.id.label_Recyler_View);
         recyclerViewLabel.setLayoutManager(sLayoutManager);
         recylerViewSwitch.setLayoutManager(lLayoutManager);
-
+recyclerViewAbout.setLayoutManager(aLayoutManager);
         DividerItemDecoration sDividerItemDecoration = new DividerItemDecoration(recylerViewSwitch.getContext(),
                 DividerItemDecoration.VERTICAL);
         recylerViewSwitch.addItemDecoration(sDividerItemDecoration);
@@ -70,20 +83,41 @@ public class Settings extends AppCompatActivity {
 
         settingsSwitchAdapter = new SettingsSwitchAdapter(this,settingsList);
         settingsLabelAdapter = new SettingsLabelAdapter(this,lSettingsList);
+        settingsAboutAdapter = new SettingsAboutAdapter(this,aSettingsList);
         recylerViewSwitch.setAdapter(settingsSwitchAdapter);
         recyclerViewLabel.setAdapter(settingsLabelAdapter);
+        recyclerViewAbout.setAdapter(settingsAboutAdapter);
         settingsSwitchAdapter.notifyDataSetChanged();
         recylerViewSwitch.hasFixedSize();
         recyclerViewLabel.hasFixedSize();
         recylerViewSwitch.setNestedScrollingEnabled(false);
         recyclerViewLabel.setNestedScrollingEnabled(false);
 
+
+        if (MyApp.nightMode) {
+
+            recylerViewSwitch.setBackgroundColor(getResources().getColor(R.color.dark));
+            settingsLayout.setBackgroundColor(getResources().getColor(R.color.dark));
+        }
+
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            // Respond to the action bar's Up/Home button
+            case android.R.id.home:
+                finish();
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
 
     private void settingsListdata() {
 
-        settingsList.add("Keep bubble after Call End");
+        settingsList.add("Night Mode");
+        settingsList.add("Keep bubble after Call");
 
     }
 
@@ -91,7 +125,10 @@ public class Settings extends AppCompatActivity {
         lSettingsList.add("Share with Friends");
         lSettingsList.add("Rate us");
         lSettingsList.add("Send feedback");
+        aSettingsList.add("About");
+        aSettingsList.add("Privacy Policy");
     }
+
 
 
 
@@ -99,7 +136,7 @@ public class Settings extends AppCompatActivity {
     @Subscribe
     public void onEvent(EventB event) {
         // your implementation
-        if (event.getMessage().equals(getString(R.string.themechanged))) {
+        if (event.getMessage().equals("changeUIMode")) {
 
             Log.d("gotit", "gotit");
 
@@ -107,14 +144,17 @@ public class Settings extends AppCompatActivity {
                 @Override
                 public void run() {
                    // themeChanged = true;
-                    if (!MyApp.defaultTheme) {
+                    if (MyApp.nightMode) {
 
                         recylerViewSwitch.setBackgroundColor(getResources().getColor(R.color.dark));
                         settingsLayout.setBackgroundColor(getResources().getColor(R.color.dark));
+
                     } else {
                         recylerViewSwitch.setBackgroundColor(getResources().getColor(R.color.white));
                         settingsLayout.setBackgroundColor(getResources().getColor(R.color.white));
                     }
+                    settingsLabelAdapter.notifyDataSetChanged();
+                    settingsAboutAdapter.notifyDataSetChanged();
 
 
                 }
@@ -125,14 +165,7 @@ public class Settings extends AppCompatActivity {
 
     }
 
-    @Override
-    public void onBackPressed() {
-        super.onBackPressed();
-        final Intent i = context.getPackageManager()
-                .getLaunchIntentForPackage( context.getPackageName() );
-        i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        startActivity(new Intent(this,MainActivity.class));
-    }
+
 
     @Override
     protected void onResume() {

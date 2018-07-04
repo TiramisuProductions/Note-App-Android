@@ -58,40 +58,93 @@ public class SettingsSwitchAdapter extends RecyclerView.Adapter<SettingsSwitchAd
     @Override
     public void onBindViewHolder(final SettingsSwitchAdapter.MyViewHolder holder, final int position) {
         holder.settingsText.setText(settingsList.get(position));
-        if (!MyApp.defaultTheme) {
-            Log.d("hello", "icecream");
+
+        if(MyApp.nightMode){
             holder.settingsText.setTextColor(context.getResources().getColor(R.color.white));
-
-
-
+            holder.settingsSwitch.setTextColor(context.getResources().getColor(R.color.white));
+        }else {
+            holder.settingsText.setTextColor(context.getResources().getColor(R.color.black));
+            holder.settingsSwitch.setTextColor(context.getResources().getColor(R.color.black));
         }
 
 
 
-        if(pref.getBoolean(context.getString(R.string.key_keep_bubble),true)){
-            holder.settingsSwitch.setText("On");
-            holder.settingsSwitch.setChecked(true);
 
-        }else{
-            holder.settingsSwitch.setText("Off");
-            holder.settingsSwitch.setChecked(false);
-        }
-
-        holder.settingsSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-                if(b){
+        switch (position){
+            case 0:
+                if(MyApp.nightMode){
                     holder.settingsSwitch.setText("On");
-                    editor.putBoolean(context.getString(R.string.key_keep_bubble),true);
+                    holder.settingsSwitch.setChecked(true);
+
+                    editor.putBoolean(context.getString(R.string.key_night_mode),false);
                     editor.commit();
                 }else{
                     holder.settingsSwitch.setText("Off");
-                    editor.putBoolean(context.getString(R.string.key_keep_bubble),false);
-                    editor.commit();
+                    holder.settingsSwitch.setChecked(false);
 
+                    editor.putBoolean(context.getString(R.string.key_night_mode),false);
+                    editor.commit();
                 }
-            }
-        });
+
+
+
+                holder.settingsSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                    @Override
+                    public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                        if(b){
+                            holder.settingsSwitch.setText("On");
+                            editor.putBoolean(context.getString(R.string.key_night_mode),true);
+                            editor.commit();
+                            MyApp.nightMode = true;
+                            EventBus.getDefault().post(new EventB("changeUIMode"));
+                            notifyDataSetChanged();
+                        }else{
+                            holder.settingsSwitch.setText("Off");
+                            editor.putBoolean(context.getString(R.string.key_night_mode),false);
+                            editor.commit();
+                            MyApp.nightMode = false;
+                            EventBus.getDefault().post(new EventB("changeUIMode"));
+                            notifyDataSetChanged();
+
+                        }
+                    }
+                });
+                break;
+
+            case 1:
+
+                if(pref.getBoolean(context.getString(R.string.key_keep_bubble),true)){
+                    holder.settingsSwitch.setText("On");
+                    holder.settingsSwitch.setChecked(true);
+
+                }else{
+                    holder.settingsSwitch.setText("Off");
+                    holder.settingsSwitch.setChecked(false);
+                }
+
+                holder.settingsSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                    @Override
+                    public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                        if(b){
+                            holder.settingsSwitch.setText("On");
+                            editor.putBoolean(context.getString(R.string.key_keep_bubble),true);
+                            editor.commit();
+                        }else{
+                            holder.settingsSwitch.setText("Off");
+                            editor.putBoolean(context.getString(R.string.key_keep_bubble),false);
+                            editor.commit();
+
+                        }
+                    }
+                });
+
+                break;
+
+        }
+
+
+
+
 
 
 
