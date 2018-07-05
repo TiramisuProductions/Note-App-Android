@@ -3,7 +3,11 @@ package truelancer.noteapp.noteapp;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
+import android.animation.ObjectAnimator;
+import android.app.Activity;
 import android.app.Dialog;
+import android.app.FragmentManager;
+import android.app.FragmentTransaction;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -22,10 +26,13 @@ import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.TabLayout;
 import android.support.design.widget.TextInputEditText;
 import android.support.design.widget.TextInputLayout;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.AppCompatTextView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
@@ -38,6 +45,7 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewAnimationUtils;
 import android.view.WindowManager;
@@ -46,15 +54,15 @@ import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.ScrollView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.facebook.rebound.ui.Util;
 import com.github.clans.fab.FloatingActionMenu;
-import com.github.paolorotolo.appintro.AppIntroFragment;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
@@ -80,8 +88,6 @@ import com.google.android.gms.tasks.Tasks;
 import com.google.gson.Gson;
 
 import org.greenrobot.eventbus.EventBus;
-import org.greenrobot.eventbus.Subscribe;
-import org.w3c.dom.Text;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
@@ -113,119 +119,89 @@ import truelancer.noteapp.noteapp.Fragments.EmailFragment;
 import truelancer.noteapp.noteapp.Fragments.NoteFragment;
 import truelancer.noteapp.noteapp.Fragments.RecordingFragment;
 
+import static android.Manifest.permission.CALL_PHONE;
+import static android.Manifest.permission.CAPTURE_AUDIO_OUTPUT;
+import static android.Manifest.permission.READ_CONTACTS;
+import static android.Manifest.permission.READ_EXTERNAL_STORAGE;
+import static android.Manifest.permission.READ_PHONE_STATE;
+import static android.Manifest.permission.RECORD_AUDIO;
+import static android.Manifest.permission.WRITE_CONTACTS;
+import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
+
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
-    String TAG1 = "dream";
     static final int RESULT_PICK_CONTACT_C = 4;
     static final int RESULT_PICK_CONTACT_E = 5;
     private static final int REQUEST_CODE_SIGN_IN = 0;
+    private static final int REQUEST_CODE_CAPTURE_IMAGE = 1;
+    private static final int RequestPermissionCode = 3;
     public static String dataFromAdapter;
     public static FloatingActionMenu floatingActionMenu;
 
-    @BindView(R.id.fab_contact)
-    com.github.clans.fab.FloatingActionButton contactFab;
-    @BindView(R.id.fab_email)
-    com.github.clans.fab.FloatingActionButton emailFab;
-    @BindView(R.id.fab_bank_account)
-    com.github.clans.fab.FloatingActionButton bankAccountFab;
-    @BindView(R.id.fab_last_notes)
-    com.github.clans.fab.FloatingActionButton lastNoteFab;
+    @BindView(R.id.fab_contact) com.github.clans.fab.FloatingActionButton contactFab;
+    @BindView(R.id.fab_email) com.github.clans.fab.FloatingActionButton emailFab;
+    @BindView(R.id.fab_bank_account) com.github.clans.fab.FloatingActionButton bankAccountFab;
+    @BindView(R.id.fab_last_notes) com.github.clans.fab.FloatingActionButton lastNoteFab;
     //@BindView(R.id.fab_menu) FloatingActionMenu floatingActionMenu;
-    @BindView(R.id.search_scrollview)
-    ScrollView searchScrollView;
-    @BindView(R.id.viewpager)
-    ViewPager homeViewPager;
-    public  static  TabLayout homeTabLayout;
-    @BindView(R.id.toolbar)
-    Toolbar toolbar;
-    @BindView(R.id.searchtoolbar)
-    Toolbar searchToolbar;
-
-     public  static  RecyclerView contactSearchRecycler;
-
-    public  static RecyclerView emailSearchRecycler;
-
-    public  static RecyclerView bankSearchRecycler;
-
-    public  static RecyclerView noteSearchRecycler;
-
-    public  static TextView contactText;
-
-    public  static TextView emailText;
-
-    public  static TextView bankText;
-
-    public  static TextView noteText;
-
-    public  static TextView notFoundText;
-
-    public  static ImageView notFoundImg;
-    @BindView(R.id.mainactivity)
-    ConstraintLayout mainActivity;
-    public static List<Contact> contactFilterList = new ArrayList<Contact>();
-    public  static  List<Email> emailFilterList = new ArrayList<Email>();
-    public static List<BankAccount> bankFilterList = new ArrayList<BankAccount>();
-    public static List<Note> noteFilterList = new ArrayList<Note>();
+    @BindView(R.id.search_scrollview) ScrollView searchScrollView;
+    @BindView(R.id.viewpager) ViewPager homeViewPager;
+    @BindView(R.id.tabs) TabLayout homeTabLayout;
+    @BindView(R.id.toolbar) Toolbar toolbar;
+    @BindView(R.id.searchtoolbar) Toolbar searchToolbar;
+    @BindView(R.id.contact_search_recycler) RecyclerView contactSearchRecycler;
+    @BindView(R.id.email_search_recycler) RecyclerView emailSearchRecycler;
+    @BindView(R.id.bank_search_recycler) RecyclerView bankSearchRecycler;
+    @BindView(R.id.note_search_recycler) RecyclerView noteSearchRecycler;
+    @BindView(R.id.contacttxt) TextView contactText;
+    @BindView(R.id.emailtxt) TextView emailText;
+    @BindView(R.id.banktxt) TextView bankText;
+    @BindView(R.id.notetxt) TextView noteText;
+    @BindView(R.id.not_found_txt) TextView notFoundText;
+    @BindView(R.id.not_found_img) ImageView notFoundImg;
+    @BindView(R.id.mainactivity) ConstraintLayout mainActivity;
+    //@BindView(R.id.email_fragment) ConstraintLayout emailFragment;
+    List<Contact> contactFilterList = new ArrayList<Contact>();
+    List<Email> emailFilterList = new ArrayList<Email>();
+    List<BankAccount> bankFilterList = new ArrayList<BankAccount>();
+    List<Note> noteFilterList = new ArrayList<Note>();
     Menu search_menu;
     MenuItem item_search;
     Boolean isImport = false;
-    public static  DriveId driveId = null;
     GoogleSignInClient mGoogleSignInClient;
-    public  static  String jsonString = "";
+    String jsonString = "";
     String TAG = "MainActivity";
-    public static ContactAdapter contactSearchAdapter;
-    public static EmailAdapter emailSearchAdapter;
-    public static BankAccountAdapter bankSearchAdapter;
-    public static NoteAdapter noteSearchAdapter;
+    SharedPreferences pref;
+    private ContactAdapter contactSearchAdapter;
+    private EmailAdapter emailSearchAdapter;
+    private BankAccountAdapter bankSearchAdapter;
+    private NoteAdapter noteSearchAdapter;
     private DriveClient mDriveClient;
     private DriveResourceClient mDriveResourceClient;
 
     AlertDialog b;
     AlertDialog.Builder progressDialogBuilder;
     InputMethodManager inputMethodManager;
+    FragmentManager fragmentManager=getFragmentManager();
 
-    SharedPreferences.Editor editor;
-    public static Context context;
+
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        SharedPreferences pref = getApplicationContext().getSharedPreferences(getString(R.string.shared_pref), 0); // 0 - for private mode
-        editor = pref.edit();
-        Log.d("hola",""+pref.getBoolean("key_bubble_persists",true));
-        MyApp.nightMode = pref.getBoolean(getString(R.string.key_night_mode), true);
-
-        context = this;
-
-
-
-        if (pref.getBoolean(getString(R.string.shared_pref_first_time), true)) {
-
-            startActivity(new Intent(this, IntroActivity.class));
-        }
-
+        //  ShowProgressDialog("Setting things Up");
+        Log.d("Loading","Loading");
         setContentView(R.layout.activity_main);
-
-        contactSearchRecycler = (RecyclerView)findViewById(R.id.contact_search_recycler);
-        emailSearchRecycler = (RecyclerView)findViewById(R.id.email_search_recycler);
-        bankSearchRecycler  =(RecyclerView)findViewById(R.id.bank_search_recycler);
-        noteSearchRecycler = (RecyclerView)findViewById(R.id.note_search_recycler);
-        contactText = (TextView)findViewById(R.id.contacttxt);
-        emailText = (TextView)findViewById(R.id.emailtxt);
-        bankText = (TextView)findViewById(R.id.banktxt);
-        noteText = (TextView)findViewById(R.id.notetxt);
-        notFoundText =(TextView)findViewById(R.id.not_found_txt);
-        notFoundImg = (ImageView) findViewById(R.id.not_found_img);
-        homeTabLayout = (TabLayout)findViewById(R.id.tabs);
-
-
-
-
         ButterKnife.bind(this);
-        inputMethodManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);//Controls keyboard
-        floatingActionMenu = (FloatingActionMenu) findViewById(R.id.fab_menu);
+        inputMethodManager = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);//Controls keyboard
+        pref = getApplicationContext().getSharedPreferences(getString(R.string.shared_pref), MODE_PRIVATE);
+        floatingActionMenu=(FloatingActionMenu)findViewById(R.id.fab_menu);
         floatingActionMenu.setVisibility(View.VISIBLE);
-        if (!MyApp.defaultTheme) {
+
+        if (MyApp.defaultTheme) {
+
+
+        } else {
+            Toast.makeText(this, "Default Theme", Toast.LENGTH_LONG).show();
             searchToolbar.setBackgroundColor(getResources().getColor(R.color.dark));
             mainActivity.setBackgroundColor(getResources().getColor(R.color.dark));
             searchScrollView.setBackgroundColor(getResources().getColor(R.color.dark));
@@ -233,6 +209,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             emailSearchRecycler.setBackgroundColor(getResources().getColor(R.color.dark));
             noteSearchRecycler.setBackgroundColor(getResources().getColor(R.color.dark));
             bankSearchRecycler.setBackgroundColor(getResources().getColor(R.color.dark));
+
         }
 
         setSearchToolbar();
@@ -240,9 +217,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         emailFab.setOnClickListener(this);
         bankAccountFab.setOnClickListener(this);
         lastNoteFab.setOnClickListener(this);
-
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(false); //To disable back button on toolbar
+
+        homeViewPager.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                floatingActionMenu.close(true);
+            }
+        });
 
         homeTabLayout.setupWithViewPager(homeViewPager);
 
@@ -254,11 +237,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         homeViewPager.setOffscreenPageLimit(5);
 
+        initiateTabs();
+        Log.d("Loading","Loading Done");
+        // HideProgressDialog();
     }
 
+    public void initiateTabs() {
 
-
-
+    }
 
     private void setupViewPager(ViewPager viewPager) {
         ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
@@ -323,15 +309,62 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         RecyclerView.LayoutManager mLayoutManager1 = new LinearLayoutManager(getApplicationContext());
         contactSearchRecycler.setLayoutManager(mLayoutManager1);
         RecyclerView.LayoutManager mLayoutManager2 = new LinearLayoutManager(getApplicationContext());
+
         emailSearchRecycler.setLayoutManager(mLayoutManager2);
+
         RecyclerView.LayoutManager mLayoutManager3 = new LinearLayoutManager(getApplicationContext());
+
         bankSearchRecycler.setLayoutManager(mLayoutManager3);
+
         RecyclerView.LayoutManager mLayoutManager4 = new LinearLayoutManager(getApplicationContext());
+
         noteSearchRecycler.setLayoutManager(mLayoutManager4);
     }
 
 
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+    public void circleReveal(int viewID, int posFromRight, boolean containsOverflow, final boolean isShow) {
+        final View myView = findViewById(viewID);
 
+        int width = myView.getWidth();
+
+        if (posFromRight > 0)
+            width -= (posFromRight * getResources().getDimensionPixelSize(R.dimen.abc_action_button_min_width_material)) - (getResources().getDimensionPixelSize(R.dimen.abc_action_button_min_width_material) / 2);
+        if (containsOverflow)
+            width -= getResources().getDimensionPixelSize(R.dimen.abc_action_button_min_width_overflow_material);
+
+        int cx = width;
+        int cy = myView.getHeight() / 2;
+
+        Animator anim;
+        if (isShow)
+            anim = ViewAnimationUtils.createCircularReveal(myView, cx, cy, 0, (float) width);
+        else
+            anim = ViewAnimationUtils.createCircularReveal(myView, cx, cy, (float) width, 0);
+
+        anim.setDuration((long) 220);
+
+        // make the view invisible when the animation is done
+        anim.addListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                if (!isShow) {
+                    super.onAnimationEnd(animation);
+                    myView.setVisibility(View.INVISIBLE);
+                    homeTabLayout.setVisibility(View.VISIBLE);
+                }
+            }
+        });
+
+        // make the view visible and start the animation
+        if (isShow)
+            myView.setVisibility(View.VISIBLE);
+
+        // start the animation
+        anim.start();
+
+
+    }
 
     //Searching
     public void setSearchToolbar() {
@@ -344,11 +377,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 @Override
                 public void onClick(View v) {
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
-                        Utils.circleReveal(R.id.searchtoolbar, 1, true, false,MainActivity.this);
+                        circleReveal(R.id.searchtoolbar, 1, true, false);
                     else {
                         searchToolbar.setVisibility(View.GONE);
                         homeTabLayout.setVisibility(View.VISIBLE);
                     }
+
+
                 }
             });
 
@@ -359,7 +394,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 public boolean onMenuItemActionCollapse(MenuItem item) {
                     // Do something when collapsed
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                        Utils.circleReveal(R.id.searchtoolbar, 1, true, false,MainActivity.this);
+                        circleReveal(R.id.searchtoolbar, 1, true, false);
                         homeTabLayout.setVisibility(View.GONE);
                         searchScrollView.setVisibility(View.GONE);
 
@@ -383,15 +418,24 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             });
 
             initSearchView();
+
+
         } else
             Log.d("toolbar", "setSearchtollbar: NULL");
     }
 
+
     public void initSearchView() {
+
+
         initSearchLayout();
 
         Log.d(TAG, "SearchView");
         final SearchView searchView = (SearchView) search_menu.findItem(R.id.action_filter_search).getActionView();
+
+        if (!MyApp.defaultTheme) {
+
+        }
 
         // Enable/Disable Submit button in the keyboard
 
@@ -401,6 +445,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         ImageView closeButton = (ImageView) searchView.findViewById(R.id.search_close_btn);
         closeButton.setImageResource(R.drawable.ic_close);
+
 
         // set hint and the text colors
 
@@ -424,23 +469,217 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
-                Utils.executeSearch(query,MainActivity.this);
+                callSearch(query);
                 searchView.clearFocus();
                 return true;
             }
 
             @Override
             public boolean onQueryTextChange(String newText) {
-                Utils.executeSearch(newText,MainActivity.this);
+                callSearch(newText);
                 return true;
             }
 
+            public void callSearch(String query) {
+                //Do searching
+                Log.i("query", "" + query);
+                if (query.equals("")) {
+                    //Toast.makeText(getApplicationContext(), "Nothing to serach", Toast.LENGTH_SHORT).show();
+                    contactText.setVisibility(View.GONE);
+                    emailText.setVisibility(View.GONE);
+                    bankText.setVisibility(View.GONE);
+                    noteText.setVisibility(View.GONE);
+
+                    contactFilterList.clear();
+                    emailFilterList.clear();
+                    bankFilterList.clear();
+                    noteFilterList.clear();
+                } else {
+                    contactFilterList.clear();
+                    emailFilterList.clear();
+                    bankFilterList.clear();
+                    noteFilterList.clear();
+                    execute(query);
+                }
+
+
+            }
 
         });
+
     }
 
 
+    public void execute(String searchWord) {
 
+        searchWord = searchWord.toLowerCase();
+
+        List<Contact> contacts = Contact.listAll(Contact.class);
+        Collections.reverse(contacts);
+
+        for (int i = 0; i < contacts.size(); i++) {
+            String contactNameAll = contacts.get(i).getName().toLowerCase();
+            String phoneAll = contacts.get(i).getPhoneno().toLowerCase();
+            String calledNoAll = "";
+            String calledNameAll = "";
+            boolean savedFromApp = contacts.get(i).isSavedFromApp();
+
+
+            if (!savedFromApp) {
+                calledNoAll = contacts.get(i).getCalledNumber().toLowerCase();
+                calledNameAll = contacts.get(i).getCalledName().toLowerCase();
+            }
+
+            if (contactNameAll.contains(searchWord)) {
+                contactFilterList.add(contacts.get(i));
+            } else if (phoneAll.contains(searchWord)) {
+                contactFilterList.add(contacts.get(i));
+            } else if (calledNameAll.contains(searchWord) && !savedFromApp) {
+                contactFilterList.add(contacts.get(i));
+            } else if (calledNoAll.contains(searchWord) && !savedFromApp) {
+                contactFilterList.add(contacts.get(i));
+            } else {
+
+            }
+
+        }
+
+        contactSearchAdapter = new ContactAdapter(this, contactFilterList);
+        contactSearchRecycler.setAdapter(contactSearchAdapter);
+        List<Email> emails = Email.listAll(Email.class);
+        Collections.reverse(emails);
+
+        for (int i = 0; i < emails.size(); i++) {
+            String contactNameAll = emails.get(i).getName().toLowerCase();
+            String emailAll = emails.get(i).getEmailId().toLowerCase();
+            String calledNoAll = "";
+            String calledNameAll = "";
+            boolean savedFromApp = emails.get(i).isSavedFromApp();
+
+
+            if (!savedFromApp) {
+                calledNoAll = emails.get(i).getCalledNumber().toLowerCase();
+                calledNameAll = emails.get(i).getCalledName().toLowerCase();
+            }
+
+            if (contactNameAll.contains(searchWord)) {
+                emailFilterList.add(emails.get(i));
+            } else if (emailAll.contains(searchWord)) {
+                emailFilterList.add(emails.get(i));
+            } else if (calledNameAll.contains(searchWord) && !savedFromApp) {
+                emailFilterList.add(emails.get(i));
+            } else if (calledNoAll.contains(searchWord) && !savedFromApp) {
+                emailFilterList.add(emails.get(i));
+            } else {
+            }
+
+        }
+
+        emailSearchAdapter = new EmailAdapter(this, emailFilterList);
+        emailSearchRecycler.setAdapter(emailSearchAdapter);
+        List<BankAccount> bankAccounts = BankAccount.listAll(BankAccount.class);
+        Collections.reverse(bankAccounts);
+
+        for (int i = 0; i < bankAccounts.size(); i++) {
+            String contactNameAll = bankAccounts.get(i).getName().toLowerCase();
+            String accNoAll = bankAccounts.get(i).getAccountNo().toLowerCase();
+            String ifscAll = bankAccounts.get(i).getIfscCode().toLowerCase();
+            String calledNoAll = "";
+            String calledNameAll = "";
+            boolean savedFromApp = bankAccounts.get(i).isSavedFromApp();
+
+
+            if (!savedFromApp) {
+                calledNoAll = bankAccounts.get(i).getCalledNumber().toLowerCase();
+                calledNameAll = bankAccounts.get(i).getCalledName().toLowerCase();
+            }
+
+            if (contactNameAll.contains(searchWord)) {
+                bankFilterList.add(bankAccounts.get(i));
+            } else if (accNoAll.contains(searchWord)) {
+                bankFilterList.add(bankAccounts.get(i));
+            } else if (ifscAll.contains(searchWord)) {
+                bankFilterList.add(bankAccounts.get(i));
+            } else if (calledNameAll.contains(searchWord) && !savedFromApp) {
+                bankFilterList.add(bankAccounts.get(i));
+            } else if (calledNoAll.contains(searchWord) && !savedFromApp) {
+                bankFilterList.add(bankAccounts.get(i));
+            } else {
+            }
+
+        }
+
+        bankSearchAdapter = new BankAccountAdapter(this, bankFilterList);
+        bankSearchRecycler.setAdapter(bankSearchAdapter);
+        List<Note> notes = Note.listAll(Note.class);
+        Collections.reverse(notes);
+
+        for (int i = 0; i < notes.size(); i++) {
+            String noteAll = notes.get(i).getNote().toLowerCase();
+            boolean savedFromApp = notes.get(i).isSavedFromApp();
+            String callednoAll="";
+            String callednameAll="";
+            if (!savedFromApp) {
+                callednoAll = notes.get(i).getCalledNumber().toLowerCase();
+                callednameAll = notes.get(i).getCalledName().toLowerCase();
+            }
+
+
+            if (noteAll.contains(searchWord)) {
+                noteFilterList.add(notes.get(i));
+            } else if (callednameAll.contains(searchWord)) {
+                noteFilterList.add(notes.get(i));
+            } else if (callednoAll.contains(searchWord)) {
+                noteFilterList.add(notes.get(i));
+            } else {
+            }
+
+        }
+        noteSearchAdapter = new NoteAdapter(this, noteFilterList);
+        noteSearchRecycler.setAdapter(noteSearchAdapter);
+
+        if (contactFilterList.isEmpty()) {
+            contactText.setVisibility(View.GONE);
+        } else {
+            contactText.setVisibility(View.VISIBLE);
+            notFoundText.setVisibility(View.INVISIBLE);
+        }
+        if (emailFilterList.isEmpty()) {
+            emailText.setVisibility(View.GONE);
+        } else {
+            emailText.setVisibility(View.VISIBLE);
+            notFoundText.setVisibility(View.INVISIBLE);
+        }
+        if (bankFilterList.isEmpty()) {
+            bankText.setVisibility(View.GONE);
+        } else {
+            bankText.setVisibility(View.VISIBLE);
+            notFoundText.setVisibility(View.INVISIBLE);
+        }
+        if (noteFilterList.isEmpty()) {
+            noteText.setVisibility(View.GONE);
+        } else {
+            noteText.setVisibility(View.VISIBLE);
+            notFoundText.setVisibility(View.INVISIBLE);
+
+        }
+
+
+        if (contactFilterList.isEmpty()) {
+            if (emailFilterList.isEmpty()) {
+                if (bankFilterList.isEmpty()) {
+                    if (noteFilterList.isEmpty()) {
+                        notFoundText.setVisibility(View.VISIBLE);
+                        notFoundImg.setVisibility(View.VISIBLE);
+                    } else {
+
+
+                    }
+                }
+            }
+
+        }
+    }
 
 
     ////////////////////////////Menu ////////////////////////////////////////////
@@ -453,27 +692,29 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         return true;
     }
 
-
-
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
 
         switch (item.getItemId()) {
             case R.id.menu_export:
-                if (Utils.isOnline(getApplicationContext())) {
-                    Toast.makeText(this, "Internet Available", Toast.LENGTH_SHORT).show();
-                    ShowProgressDialog("Exporting");
-                    signIn();
-                } else {
-                    Toast.makeText(this, "Internet Unavailable", Toast.LENGTH_SHORT).show();
-                }
+                ShowProgressDialog("Exporting");
 
+                List<Contact> contactList = Contact.listAll(Contact.class);
+                List<Email> emailList = Email.listAll(Email.class);
+                List<BankAccount> bankAccountList = BankAccount.listAll(BankAccount.class);
+                List<Note> noteList = Note.listAll(Note.class);
+                List<truelancer.noteapp.noteapp.Database.Task> taskList = truelancer.noteapp.noteapp.Database.Task.listAll(truelancer.noteapp.noteapp.Database.Task.class);
+
+                Modelgson modelgson = new Modelgson(contactList, emailList, bankAccountList, noteList, taskList);
+                jsonString = new Gson().toJson(modelgson);
+
+                signIn();
                 return true;
 
             case R.id.menu_search:
 
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
-                    Utils.circleReveal(R.id.searchtoolbar, 1, true, true,MainActivity.this);
+                    circleReveal(R.id.searchtoolbar, 1, true, true);
                 else {
                     searchToolbar.setVisibility(View.VISIBLE);
                 }
@@ -486,26 +727,44 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 return true;
 
             case R.id.menu_import:
-                if (Utils.isOnline(getApplicationContext())) {
-                    Toast.makeText(this, "Internet Available", Toast.LENGTH_SHORT).show();
-                    ShowProgressDialog("Importing");
-                    isImport = true;
-                    signIn();
-                } else {
-                    Toast.makeText(this, "Internet Unavailable", Toast.LENGTH_SHORT).show();
-                }
+                ShowProgressDialog("Importing");
+                isImport = true;
+                signIn();
                 return true;
 
+            case R.id.menu_email_to_admin:
+                final Dialog dialog = new Dialog(MainActivity.this);
+                String options[] = {getString(R.string.admin_option_1), getString(R.string.admin_option_2)};
+                dialog.setContentView(R.layout.dialog_admin);
+                final Spinner adminSpinner = (Spinner) dialog.findViewById(R.id.admin_chooser);
+                Button buttonSelect = (Button) dialog.findViewById(R.id.btnSelect);
+                ArrayAdapter<String> adminSpinnerArrayAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, options);
+                adminSpinnerArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item); // The drop down view
+                adminSpinner.setAdapter(adminSpinnerArrayAdapter);
+
+                buttonSelect.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        if (adminSpinner.getSelectedItemPosition() == 0) {
+                            String email[] = {getString(R.string.admin_email)};
+                            shareToGmail(email, getString(R.string.admin_option_1), getString(R.string.admin_subject_1));
+                        } else {
+                            String email[] = {getString(R.string.admin_email)};
+                            shareToGmail(email, getString(R.string.admin_option_2), getString(R.string.admin_subject_2));
+                        }
+                    }
+                });
 
 
+                dialog.show();
+
+
+                return true;
 
 
             case R.id.settings:
                 startActivity(new Intent(this, Settings.class));
 
-                //startActivity(new Intent(MainActivity.this,SettingsActivity.class));
-
-                overridePendingTransition(R.anim.enter_from_right, R.anim.exit_to_left);
 
             default:
                 return super.onOptionsItemSelected(item);
@@ -513,7 +772,22 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     ////////////////////////////Drive////////////////////////////////////////////
-
+    public void shareToGmail(String email[], String subject, String content) {
+        Intent emailIntent = new Intent(Intent.ACTION_SEND);
+        emailIntent.putExtra(Intent.EXTRA_EMAIL, email);
+        emailIntent.putExtra(Intent.EXTRA_SUBJECT, subject);
+        emailIntent.setType("text/plain");
+        emailIntent.putExtra(android.content.Intent.EXTRA_TEXT, content);
+        final PackageManager pm = MainActivity.this.getPackageManager();
+        final List<ResolveInfo> matches = pm.queryIntentActivities(emailIntent, 0);
+        ResolveInfo best = null;
+        for (final ResolveInfo info : matches)
+            if (info.activityInfo.packageName.endsWith(".gm") || info.activityInfo.name.toLowerCase().contains("gmail"))
+                best = info;
+        if (best != null)
+            emailIntent.setClassName(best.activityInfo.packageName, best.activityInfo.name);
+        startActivity(emailIntent);
+    }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -530,13 +804,20 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     mDriveResourceClient =
                             Drive.getDriveResourceClient(this, GoogleSignIn.getLastSignedInAccount(this));
 
-                    if (!isImport) {//export
-
-                    } else {//import
-                        Utils.getDriveId(isImport,mDriveResourceClient,MainActivity.this);
-                        isImport = false;
-
+                    if (!isImport) {
+                        createFileInAppFolder();
+                    } else {
+                        getDriveId();
                     }
+
+                }
+                break;
+            case REQUEST_CODE_CAPTURE_IMAGE:
+                Log.i(TAG, "capture image request code");
+
+                if (resultCode == Activity.RESULT_OK) {
+                    Log.i(TAG, "Image captured successfully.");
+
                 }
                 break;
 
@@ -607,28 +888,254 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     private void signIn() {
         Log.i(TAG, "Start sign in");
-        mGoogleSignInClient = Utils.buildGoogleSignInClient(this);
+        mGoogleSignInClient = buildGoogleSignInClient();
         startActivityForResult(mGoogleSignInClient.getSignInIntent(), REQUEST_CODE_SIGN_IN);
     }
 
+    private GoogleSignInClient buildGoogleSignInClient() {
+        GoogleSignInOptions signInOptions =
+                new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                        .requestScopes(Drive.SCOPE_FILE, Drive.SCOPE_APPFOLDER)
+                        .build();
+        return GoogleSignIn.getClient(this, signInOptions);
+
+    }
+
+    private void createFileInAppFolder() {
+
+        deleteFile();
+
+        final Task<DriveFolder> appFolderTask = mDriveResourceClient.getAppFolder();
+
+        final Task<DriveContents> createContentsTask = mDriveResourceClient.createContents();
+
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.KITKAT) {
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.KITKAT) {
+                Tasks.whenAll(appFolderTask, createContentsTask)
+                        .continueWithTask(new Continuation<Void, Task<DriveFile>>() {
+                            @Override
+                            public Task<DriveFile> then(@NonNull Task<Void> task) throws Exception {
+                                DriveFolder parent = appFolderTask.getResult();
+                                DriveContents contents = createContentsTask.getResult();
+
+                                OutputStream outputStream = contents.getOutputStream();
+
+                                try (Writer writer = new OutputStreamWriter(outputStream)) {
+                                    writer.write(jsonString);
+                                }
+
+                                MetadataChangeSet changeSet = new MetadataChangeSet.Builder()
+                                        .setTitle(Config.BACKUP_FILE_NAME)
+                                        .setMimeType("json/application")
+                                        .setStarred(true)
+                                        .build();
+
+                                return mDriveResourceClient.createFile(parent, changeSet, contents);
+                            }
+                        })
+
+                        .addOnSuccessListener(this,
+                                new OnSuccessListener<DriveFile>() {
+                                    @Override
+                                    public void onSuccess(DriveFile driveFile) {
+                                        HideProgressDialog();
+                                        Log.d(TAG, "Working");
+                                    }
+                                })
+                        .addOnFailureListener(this, new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+                                Log.e(TAG, "Unable to create file", e);
+
+                                //finish();
+                            }
+                        });
+            }
+        }
+    }
 
 
+    private void  deleteFile(){
+        Query query = new Query.Builder()
+                .addFilter(Filters.eq(SearchableField.TITLE, Config.BACKUP_FILE_NAME))
+                .build();
+
+        Task<MetadataBuffer> queryTask = mDriveResourceClient.query(query);
+        queryTask
+                .addOnSuccessListener(this,
+                        new OnSuccessListener<MetadataBuffer>() {
+                            @Override
+                            public void onSuccess(MetadataBuffer metadataBuffer) {
+                                for( Metadata m : metadataBuffer )
+                                {
+                                    DriveResource driveResource = m.getDriveId().asDriveResource();
+
+                                    //   Log.i( TAG, "Deleting file: " + sFilename + "  DriveId:(" + m.getDriveId() + ")" );
+                                    mDriveResourceClient.delete( driveResource );
+                                }
+
+                            }
+                        })
+                .addOnFailureListener(this, new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        // Handle failure...
+                    }
+                });
+    }
+
+    private void getDriveId() {
+        Query query = new Query.Builder()
+                .addFilter(Filters.eq(SearchableField.TITLE, Config.BACKUP_FILE_NAME))
+                .build();
+
+        Task<MetadataBuffer> queryTask = mDriveResourceClient.query(query);
+        queryTask
+                .addOnSuccessListener(this,
+                        new OnSuccessListener<MetadataBuffer>() {
+                            @Override
+                            public void onSuccess(MetadataBuffer metadataBuffer) {
+                                Log.d("countlol", "" + metadataBuffer.getCount());
+
+                                DriveId driveId = metadataBuffer.get(0).getDriveId();
+                                retrieveContents(driveId.asDriveFile());
+
+                            }
+                        })
+                .addOnFailureListener(this, new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        // Handle failure...
+                    }
+                });
+    }
+
+    private void retrieveContents(DriveFile file) {
+
+        Task<DriveContents> openFileTask =
+                mDriveResourceClient.openFile(file, DriveFile.MODE_READ_ONLY);
+
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.KITKAT) {
+            openFileTask
+                    .continueWithTask(new Continuation<DriveContents, Task<Void>>() {
+                        @Override
+                        public Task<Void> then(@NonNull Task<DriveContents> task) throws Exception {
+                            DriveContents contents = task.getResult();
 
 
+                            try (BufferedReader reader = new BufferedReader(
+                                    new InputStreamReader(contents.getInputStream()))) {
+                                StringBuilder builder = new StringBuilder();
+                                String line;
+                                while ((line = reader.readLine()) != null) {
+                                    builder.append(line).append("\n");
+                                }
+
+                                Log.d(TAG, builder.toString());
+
+                                Modelgson m = new Gson().fromJson(builder.toString(), Modelgson.class);
+
+                                Log.d(TAG, "" + m.getClist().size());
 
 
+                                for (int i = 0; i < m.getClist().size(); i++) {
+                                    Contact contact = new Contact(m.getClist().get(i).getName(),
+                                            m.getClist().get(i).getPhoneno(),
+                                            m.getClist().get(i).getCalledNumber(),
+                                            m.getClist().get(i).getCalledName(),
+                                            m.getClist().get(i).isIncoming(),
+                                            m.getClist().get(i).getTsMilli());
+                                    if (!dataAlreadyExists(m.getClist().get(i).getTsMilli(), "1")) {
+                                        contact.save();
+                                    }
+                                    //contact.save();
+                                }
 
+                                for (int i = 0; i < m.getElist().size(); i++) {
+                                    Email email = new Email(m.getElist().get(i).getName(),
+                                            m.getElist().get(i).getEmailId(),
+                                            m.getElist().get(i).getCalledNumber(),
+                                            m.getElist().get(i).getCalledName(),
+                                            m.getElist().get(i).isIncoming(),
+                                            m.getElist().get(i).getTsMilli());
+                                    if (!dataAlreadyExists(m.getElist().get(i).getTsMilli(), "2")) {
+                                        email.save();
+                                    }
+                                    //email.save();
+                                }
 
+                                for (int i = 0; i < m.getBlist().size(); i++) {
+                                    BankAccount bankAccount = new BankAccount(m.getBlist().get(i).getName(),
+                                            m.getBlist().get(i).getAccountNo(),
+                                            m.getBlist().get(i).getIfscCode(),
+                                            m.getBlist().get(i).getCalledNumber(),
+                                            m.getBlist().get(i).getCalledName(),
+                                            m.getBlist().get(i).isIncoming(),
+                                            m.getBlist().get(i).getTsMilli());
+                                    if (!dataAlreadyExists(m.getBlist().get(i).getTsMilli(), "3")) {
+                                        bankAccount.save();
+                                    }
+                                    //bankAccount.save();
+                                }
 
+                                for (int i = 0; i < m.getNlist().size(); i++) {
 
+                                    Note note = new Note(
+                                            m.getNlist().get(i).getNote(),
+                                            m.getNlist().get(i).getCalledName(),
+                                            m.getNlist().get(i).getCalledNumber(),
+                                            m.getNlist().get(i).getTsMilli(),
+                                            m.getNlist().get(i).isIncoming()
 
+                                    );
+                                    if (!dataAlreadyExists(m.getNlist().get(i).getTsMilli(), "4")) {
+                                        note.save();
+                                    }
+                                    //note.save();
 
+                                }
+
+                                for (int i = 0; i < m.gettList().size(); i++) {
+                                    truelancer.noteapp.noteapp.Database.Task task1 = new truelancer.noteapp.noteapp.Database.Task(
+                                            m.gettList().get(i).getTaskText(),
+                                            m.gettList().get(i).getNoteId(),
+                                            m.gettList().get(i).isDone,
+                                            m.gettList().get(i).getNoteTimeStamp()
+                                    );
+                                    task1.save();
+                                }
+                            }
+                            Task<Void> discardTask = mDriveResourceClient.discardContents(contents);
+                            return discardTask;
+                        }
+                    })
+
+                    .addOnSuccessListener(new OnSuccessListener<Void>() {
+                        @Override
+                        public void onSuccess(Void aVoid) {
+                            HideProgressDialog();
+                            EventBus.getDefault().post(new EventB("1"));
+                            EventBus.getDefault().post(new EventB("2"));
+                            EventBus.getDefault().post(new EventB("3"));
+                            EventBus.getDefault().post(new EventB("4"));
+                        }
+                    })
+                    .addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+
+                            Log.e(TAG, "Unable to read contents", e);
+                            finish();
+                        }
+                    });
+        }
+    }
 
     ////////////////////////////OnClick////////////////////////////////////////////
     @Override
     public void onClick(View v) {
 
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("HH:mm:ss dd-MM-yyyy");
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("h:mm dd-MM-yyyy");
         String dateString = simpleDateFormat.format(new Date());//get current timestamp direct to string
 
 
@@ -650,7 +1157,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 dialog.setContentView(R.layout.add_contact_dialog);
                 dialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);//Puts dialog on top of keyboard
                 dialog.setCanceledOnTouchOutside(false);
-                TextView title = (TextView) dialog.findViewById(R.id.title);
+                TextView title = (TextView)dialog.findViewById(R.id.title);
                 final TextInputLayout field1 = (TextInputLayout) dialog.findViewById(R.id.field_layout_1);//Add Dialog Contact Name
                 final TextInputLayout field2 = (TextInputLayout) dialog.findViewById(R.id.field_layout_2);//Add Dialog Contact Number
                 final ImageView tick1 = (ImageView) dialog.findViewById(R.id.tick1);//Add Dialog Contact Name
@@ -665,10 +1172,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     public void afterTextChanged(Editable s) {
                         //if (s.toString() != "") {MyApp.toSave = true;}
                     }
-
                     public void beforeTextChanged(CharSequence s, int start, int count, int after) {
                     }
-
                     public void onTextChanged(CharSequence s, int start, int before, int count) {
                         if (!TextUtils.isEmpty(String.valueOf(s))) {
                             tick1.setVisibility(View.VISIBLE);
@@ -683,11 +1188,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     public void afterTextChanged(Editable s) {
                         //if (s.toString() != "") {MyApp.toSave = true;}
                     }
-
                     public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
                     }
-
                     public void onTextChanged(CharSequence s, int start, int before, int count) {
                         if (Utils.isValidMobile(String.valueOf(s))) {
                             tick2.setVisibility(View.VISIBLE);
@@ -721,7 +1224,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         } else {
                             Contact contact = new Contact(contactName.getText().toString(), contactNumber.getText().toString(), tsMilli, true);
                             contact.save();
-                            inputMethodManager.hideSoftInputFromWindow(contactNumber.getWindowToken(), 0);
+                            inputMethodManager.hideSoftInputFromWindow(contactNumber.getWindowToken(),0);
                             dialog.dismiss();
                             EventBus.getDefault().post(new EventB("1"));
                         }
@@ -740,7 +1243,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 dialog.setContentView(R.layout.add_email_dailog);
                 dialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);//Puts dialog on top of keyboard
                 dialog.setCanceledOnTouchOutside(false);
-                TextView title = (TextView) dialog.findViewById(R.id.title);
+                TextView title = (TextView)dialog.findViewById(R.id.title);
                 final TextInputLayout field1 = (TextInputLayout) dialog.findViewById(R.id.field_layout_1);//Add Dialog Contact Name
                 final TextInputLayout field2 = (TextInputLayout) dialog.findViewById(R.id.field_layout_2);//Add Dialog Contact email
                 final ImageView tick1 = (ImageView) dialog.findViewById(R.id.tick1);//Add Dialog Contact Name
@@ -755,11 +1258,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     public void afterTextChanged(Editable s) {
                         //if (s.toString() != "") {MyApp.toSave = true;}
                     }
-
                     public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
                     }
-
                     public void onTextChanged(CharSequence s, int start, int before, int count) {
                         if (!TextUtils.isEmpty(String.valueOf(s))) {
                             tick1.setVisibility(View.VISIBLE);
@@ -775,11 +1276,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     public void afterTextChanged(Editable s) {
                         //if (s.toString() != "") {MyApp.toSave = true;}
                     }
-
                     public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
                     }
-
                     public void onTextChanged(CharSequence s, int start, int before, int count) {
                         if (Utils.isValidEmail(String.valueOf(s))) {
                             tick2.setVisibility(View.VISIBLE);
@@ -807,17 +1306,19 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
                         if (TextUtils.isEmpty(contactName.getText().toString())) {
                             field1.setError(getString(R.string.hint_contact_name));
-                            inputMethodManager.hideSoftInputFromWindow(contactName.getWindowToken(), InputMethodManager.RESULT_UNCHANGED_SHOWN);
+                            inputMethodManager.hideSoftInputFromWindow(contactName.getWindowToken(),InputMethodManager.RESULT_UNCHANGED_SHOWN);
                         } else if (!Utils.isValidEmail(contactEmail.getText().toString())) {
                             field2.setError(getString(R.string.error_email_edit_text));
-                            inputMethodManager.hideSoftInputFromWindow(contactEmail.getWindowToken(), InputMethodManager.RESULT_UNCHANGED_SHOWN);
+                            inputMethodManager.hideSoftInputFromWindow(contactEmail.getWindowToken(),InputMethodManager.RESULT_UNCHANGED_SHOWN);
                         } else {
                             Email email = new Email(contactName.getText().toString(), contactEmail.getText().toString(), tsMilli, true);
                             email.save();
-                            inputMethodManager.hideSoftInputFromWindow(contactEmail.getWindowToken(), 0);
+                            inputMethodManager.hideSoftInputFromWindow(contactEmail.getWindowToken(),0);
                             dialog.dismiss();
 
                             EventBus.getDefault().post(new EventB("2"));
+
+
                         }
                     }
                 });
@@ -835,7 +1336,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 dialog.setContentView(R.layout.add_bank_account_dialog);
                 dialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);//Puts dialog on top of keyboard
                 dialog.setCanceledOnTouchOutside(false);
-                TextView title = (TextView) dialog.findViewById(R.id.title);
+                TextView title = (TextView)dialog.findViewById(R.id.title);
                 final TextInputLayout field1 = (TextInputLayout) dialog.findViewById(R.id.field_layout_1);//Add Dialog Contact Name
                 final TextInputLayout field2 = (TextInputLayout) dialog.findViewById(R.id.field_layout_2);//Add Dialog Account No
                 final TextInputLayout field3 = (TextInputLayout) dialog.findViewById(R.id.field_layout_3);//Add Dialog IFSC
@@ -852,11 +1353,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     public void afterTextChanged(Editable s) {
                         //if (s.toString() != "") {MyApp.toSave = true;}
                     }
-
                     public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
                     }
-
                     public void onTextChanged(CharSequence s, int start, int before, int count) {
                         if (!TextUtils.isEmpty(String.valueOf(s))) {
                             tick1.setVisibility(View.VISIBLE);
@@ -872,11 +1371,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     public void afterTextChanged(Editable s) {
                         //if (s.toString() != "") {MyApp.toSave = true;}
                     }
-
                     public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
                     }
-
                     public void onTextChanged(CharSequence s, int start, int before, int count) {
                         if (!TextUtils.isEmpty(String.valueOf(s))) {
                             tick2.setVisibility(View.VISIBLE);
@@ -891,10 +1388,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     public void afterTextChanged(Editable s) {
                         //if (s.toString() != "") {MyApp.toSave = true;}
                     }
-
                     public void beforeTextChanged(CharSequence s, int start, int count, int after) {
                     }
-
                     public void onTextChanged(CharSequence s, int start, int before, int count) {
                         if (!TextUtils.isEmpty(String.valueOf(s))) {
                             tick3.setVisibility(View.VISIBLE);
@@ -916,14 +1411,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
                         if (TextUtils.isEmpty(contactName.getText().toString())) {
                             field1.setError(getString(R.string.hint_contact_name));
-                            inputMethodManager.hideSoftInputFromWindow(contactName.getWindowToken(), InputMethodManager.RESULT_UNCHANGED_SHOWN);
+                            inputMethodManager.hideSoftInputFromWindow(contactName.getWindowToken(),InputMethodManager.RESULT_UNCHANGED_SHOWN);
                         } else if (TextUtils.isEmpty(contactAccountNo.getText().toString())) {
                             field2.setError(getString(R.string.hint_ac_no));
-                            inputMethodManager.hideSoftInputFromWindow(contactName.getWindowToken(), InputMethodManager.RESULT_UNCHANGED_SHOWN);
+                            inputMethodManager.hideSoftInputFromWindow(contactName.getWindowToken(),InputMethodManager.RESULT_UNCHANGED_SHOWN);
                         } else {
                             BankAccount bankAccount = new BankAccount(contactName.getText().toString(), contactAccountNo.getText().toString(), contactIFSC.getText().toString(), tsMilli, true);
                             bankAccount.save();
-                            inputMethodManager.hideSoftInputFromWindow(contactIFSC.getWindowToken(), 0);
+                            inputMethodManager.hideSoftInputFromWindow(contactIFSC.getWindowToken(),0);
                             dialog.dismiss();
                             EventBus.getDefault().post(new EventB("3"));
                         }
@@ -949,7 +1444,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 dialog.setContentView(R.layout.add_contact_dialog);
                 dialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);//Puts dialog on top of keyboard
                 dialog.setCanceledOnTouchOutside(false);
-                TextView title = (TextView) dialog.findViewById(R.id.title);
+                TextView title = (TextView)dialog.findViewById(R.id.title);
                 final TextInputLayout field1 = (TextInputLayout) dialog.findViewById(R.id.field_layout_1);//Add Dialog Note
                 TextInputLayout field2 = (TextInputLayout) dialog.findViewById(R.id.field_layout_2);
                 final ImageView tick1 = (ImageView) dialog.findViewById(R.id.tick1);//Add Dialog Note
@@ -966,11 +1461,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     public void afterTextChanged(Editable s) {
                         //if (s.toString() != "") {MyApp.toSave = true;}
                     }
-
                     public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
                     }
-
                     public void onTextChanged(CharSequence s, int start, int before, int count) {
                         if (!TextUtils.isEmpty(String.valueOf(s))) {
                             tick1.setVisibility(View.VISIBLE);
@@ -996,11 +1489,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     public void onClick(View v) {
                         if (TextUtils.isEmpty(noteEditText.getText().toString())) {
                             field1.setError(getString(R.string.hint_note));
-                            inputMethodManager.hideSoftInputFromWindow(noteEditText.getWindowToken(), InputMethodManager.RESULT_UNCHANGED_SHOWN);
+                            inputMethodManager.hideSoftInputFromWindow(noteEditText.getWindowToken(),InputMethodManager.RESULT_UNCHANGED_SHOWN);
                         } else {
                             Note note = new Note(noteEditText.getText().toString(), tsMilli, true);
                             note.save();
-                            inputMethodManager.hideSoftInputFromWindow(noteEditText.getWindowToken(), 0);
+                            inputMethodManager.hideSoftInputFromWindow(noteEditText.getWindowToken(),0);
                             dialog.dismiss();
 
                             EventBus.getDefault().post(new EventB("4"));
@@ -1019,14 +1512,75 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     }
 
+    public boolean dataAlreadyExists(String tsMilli_fromBackup, String number) {
 
+        if (number.equals("1")) {
+
+            List<Contact> contacts = Contact.listAll(Contact.class);
+            boolean exists = false;
+
+            Log.d("cricket", "then: " + tsMilli_fromBackup);
+
+            for (int i = 0; i < contacts.size(); i++) {
+
+                String tsMilli_fromLocalDb = contacts.get(i).getTsMilli();
+                Log.d("cricket2", "then: " + tsMilli_fromLocalDb);
+
+                if (tsMilli_fromBackup.equals(tsMilli_fromLocalDb)) {
+                    Log.d("cricket3", "then: " + true);
+                    return true;
+                }
+            }
+            Log.d(TAG + "baaghi", "" + exists);
+            return false;
+        } else if (number.equals("2")) {
+
+            List<Email> emails = Email.listAll(Email.class);
+            boolean exists = false;
+
+            for (int i = 0; i < emails.size(); i++) {
+
+                String tsMilli_fromLocalDb = emails.get(i).getTsMilli();
+
+                if (tsMilli_fromBackup.equals(tsMilli_fromLocalDb)) {
+                    return true;
+                }
+            }
+            return false;
+        } else if (number.equals("3")) {
+
+            List<BankAccount> bankAccounts = BankAccount.listAll(BankAccount.class);
+            boolean exists = false;
+
+            for (int i = 0; i < bankAccounts.size(); i++) {
+                String tsMilli_fromLocalDb = bankAccounts.get(i).getTsMilli();
+
+                if (tsMilli_fromBackup.equals(tsMilli_fromLocalDb)) {
+                    return true;
+                }
+            }
+            return false;
+        } else if (number.equals("4")) {
+            List<Note> notes = Note.listAll(Note.class);
+            boolean exists = false;
+
+            for (int i = 0; i < notes.size(); i++) {
+                String tsMilli_fromLocalDb = notes.get(i).getTsMilli();
+                if (tsMilli_fromBackup.equals(tsMilli_fromLocalDb)) {
+                    return true;
+                }
+            }
+            return false;
+        }
+        return false;
+    }
 
     public void ShowProgressDialog(String progressText1) {
         progressDialogBuilder = new AlertDialog.Builder(MainActivity.this);
         LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View dialogView = inflater.inflate(R.layout.progress_dialog_layout, null);
-        final TextView progressText = (TextView) dialogView.findViewById(R.id.progessText);
-        progressText.setText(progressText1 + " ...");
+        final TextView progressText = (TextView)dialogView.findViewById(R.id.progessText);
+        progressText.setText(progressText1+" ...");
         progressDialogBuilder.setView(dialogView);
         progressDialogBuilder.setCancelable(false);
         b = progressDialogBuilder.create();
@@ -1040,7 +1594,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     public void onBackPressed() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
-            Utils.circleReveal(R.id.toolbar, 1, true, true,MainActivity.this);
+            circleReveal(R.id.toolbar, 1, true, true);
         else {
             toolbar.setVisibility(View.VISIBLE);
         }

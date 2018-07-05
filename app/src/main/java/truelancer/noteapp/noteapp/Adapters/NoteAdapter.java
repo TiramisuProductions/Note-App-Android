@@ -70,7 +70,7 @@ public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.MyView> {
     @Override
     public void onBindViewHolder(final MyView holder, final int position) {
 
-        if (!MyApp.defaultTheme) {
+        if (MyApp.nightMode) {
             holder.noteCardView.setCardBackgroundColor(itemContext.getResources().getColor(R.color.darker_card));
             holder.noteText.setTextColor(itemContext.getResources().getColor(R.color.white));
             holder.calledName.setTextColor(itemContext.getResources().getColor(R.color.white));
@@ -125,7 +125,7 @@ public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.MyView> {
                 intent.putExtra("calledName", notes.get(position).getCalledName());
                 intent.putExtra("calledNumber", notes.get(position).getCalledNumber());
                 intent.putExtra("noteId", "" + notes.get(position).getId());
-                intent.putExtra("notetimestamp",notes.get(position).getTsMilli() );
+                intent.putExtra("noteTimeStamp",notes.get(position).getTsMilli() );
 
                 String income = "" + notes.get(position).isIncoming();
                 intent.putExtra("incoming", income);

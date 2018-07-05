@@ -158,7 +158,7 @@ public class PopUpService extends Service {
                     pager.setAdapter(new CustomPagerAdapter(getApplicationContext()));
                     final SmartTabLayout viewPagerTab = (SmartTabLayout) view.findViewById(R.id.viewPagerTab);
 
-                    if (!MyApp.defaultTheme) {
+                    if (MyApp.nightMode) {
                         viewPagerTab.setDefaultTabTextColor(getResources().getColor(R.color.white));
                         layout.setBackgroundColor(getResources().getColor(R.color.dark));
                     }
@@ -538,11 +538,7 @@ public class PopUpService extends Service {
         List<CallRecording> callRecordings = CallRecording.listAll(CallRecording.class);
         Collections.reverse(callRecordings);
 
-        for (int i = 0; i < callRecordings.size(); i++) {
-            CallRecording callRecording1 = callRecordings.get(i);
-            Log.d("logitech1", "" + callRecording1.getRecordName());
-            Log.d("logitech2", "" + callRecording1.getRecordPath());
-        }
+
     }
 
     private void makeDirectory() {
@@ -614,8 +610,8 @@ public class PopUpService extends Service {
                     final ConstraintLayout relativeLayout = (ConstraintLayout) layout.findViewById(R.id.layout);
                     final ScrollView scrollView = (ScrollView) layout.findViewById(R.id.scroll_layout);
 
-                    Log.d("what",""+MyApp.defaultTheme);
-                    if (!MyApp.defaultTheme) {
+
+                    if (MyApp.nightMode) {
                         relativeLayout.setBackgroundColor(getResources().getColor(R.color.dark));
                         scrollView.setBackgroundColor(getResources().getColor(R.color.dark));
                         EditContactName.setTextColor(getResources().getColor(R.color.white));
@@ -689,7 +685,7 @@ public class PopUpService extends Service {
                     MyApp.editEmailAdressToSave = EmailID;
 
 
-                    if (!MyApp.defaultTheme) {
+                    if (MyApp.nightMode) {
                         ContactName2.setTextColor(getResources().getColor(R.color.white));
                         EmailID.setTextColor(getResources().getColor(R.color.white));
                         emailLabel1.setTextColor(getResources().getColor(R.color.white));
@@ -757,7 +753,7 @@ public class PopUpService extends Service {
                     MyApp.editBankOthersNoToSave = Others;
 
 
-                    if (!MyApp.defaultTheme) {
+                    if (MyApp.nightMode) {
                         accountLabel1.setTextColor(getResources().getColor(R.color.white));
                         accountLabel2.setTextColor(getResources().getColor(R.color.white));
                         accountLabel3.setTextColor(getResources().getColor(R.color.white));
@@ -838,7 +834,7 @@ public class PopUpService extends Service {
                     MyApp.editNoteToSave = Note1;
 
 
-                    if (!MyApp.defaultTheme) {
+                    if (MyApp.nightMode) {
                         Note1.setTextColor(getResources().getColor(R.color.white));
                         noteLabel1.setTextColor(getResources().getColor(R.color.white));
                     }

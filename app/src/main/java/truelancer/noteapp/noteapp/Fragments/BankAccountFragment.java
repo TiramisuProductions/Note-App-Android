@@ -45,7 +45,7 @@ public class BankAccountFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        View rootView = inflater.inflate(R.layout.fragment_bank_account, container, false);
+         rootView = inflater.inflate(R.layout.fragment_bank_account, container, false);
 
         RBank_no_data = (RelativeLayout) rootView.findViewById(R.id.Rlayout_no_data_bank);
         if (!EventBus.getDefault().isRegistered(this)) {
