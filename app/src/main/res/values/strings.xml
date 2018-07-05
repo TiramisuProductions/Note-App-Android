@@ -182,6 +182,7 @@
     <string name="key_vibrate">key_vibrate</string>
     <string name="key_send_feedback">key_send_feedback</string>
     <string name="key_keep_bubble">key_keep_bubble</string>
+    <string name="key_night_mode">key_night_mode</string>
     <!-- to be deleted  ends-->
 
 </resources>

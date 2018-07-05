@@ -15,11 +15,7 @@
         android:orderInCategory="100"
         android:title="Restore from Google Drive" />
 
-    <item android:id="@+id/menu_nightmode"
-        android:icon="@mipmap/ic_nightmode_off"
-        android:title="Enable Night Mode"
-        app:showAsAction="ifRoom"
-        ></item>
+
 
     <item
         android:id="@+id/menu_search"
