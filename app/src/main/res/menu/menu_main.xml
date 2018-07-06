@@ -25,6 +25,13 @@
         app:showAsAction="ifRoom"
         />
 
+    <item
+        android:id="@+id/filter"
+        android:title="Filter"
+        android:orderInCategory="200"
+        android:icon="@drawable/ic_vol_type_speaker_group_light"
+        app:showAsAction="always"
+        />
 
 
     <item

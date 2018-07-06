@@ -32,11 +32,13 @@ public class MyApp extends SugarApp {
     public static  Boolean themeFirstRun =false;
     public static EditText editContactNameToSave, editContactNumberToSave,editEmailContactNameToSave,editEmailAdressToSave,editBankContactNameToSave,editBankAccountNoToSave,editBankOthersNoToSave,editNoteToSave;
 
-
-
+    public static boolean isFilterTabsShowing = false;
+    public static boolean isIncomingFilterHighlighted = false,isOutgoingFilterHighlighted =false,isSavedFromAppFilterHighlighted =false;
+    public static Boolean firstRunIsIncoming;
+    public static int lastSavedToCategory = -1;
 
     public static String firstRunRingingNumber,firstRunContactName,firstRuntsMilli;
-    public static Boolean firstRunIsIncoming;
+
 
     static public String contactName0 = "", contactNumber0 = "",
             contactName1 = "", emailId1 = "",

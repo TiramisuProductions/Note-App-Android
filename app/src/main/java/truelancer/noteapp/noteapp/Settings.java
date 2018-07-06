@@ -1,19 +1,16 @@
 package truelancer.noteapp.noteapp;
 
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.Bundle;
 import android.support.constraint.ConstraintLayout;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.support.v7.widget.DividerItemDecoration;
-import android.support.v7.widget.LinearLayoutCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.MenuItem;
 import android.widget.Toast;
-import android.widget.Toolbar;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -49,7 +46,7 @@ public class Settings extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 //
-       // pref = getApplicationContext().getSharedPreferences(getString(R.string.shared_pref),MODE_PRIVATE);
+        // pref = getApplicationContext().getSharedPreferences(getString(R.string.shared_pref),MODE_PRIVATE);
         if (!EventBus.getDefault().isRegistered(this)) {
             EventBus.getDefault().register(this);
         }
@@ -63,7 +60,8 @@ public class Settings extends AppCompatActivity {
         getSupportActionBar().setTitle("");
         settingsListdata();
         settingsListOption();
-        settingsLayout = (ConstraintLayout)findViewById(R.id.settingslayout);
+
+        settingsLayout = (ConstraintLayout) findViewById(R.id.settingslayout);
         RecyclerView.LayoutManager sLayoutManager = new LinearLayoutManager(this);
         RecyclerView.LayoutManager lLayoutManager = new LinearLayoutManager(this);
         RecyclerView.LayoutManager aLayoutManager = new LinearLayoutManager(this);
@@ -72,7 +70,7 @@ public class Settings extends AppCompatActivity {
         recyclerViewLabel = findViewById(R.id.label_Recyler_View);
         recyclerViewLabel.setLayoutManager(sLayoutManager);
         recylerViewSwitch.setLayoutManager(lLayoutManager);
-recyclerViewAbout.setLayoutManager(aLayoutManager);
+        recyclerViewAbout.setLayoutManager(aLayoutManager);
         DividerItemDecoration sDividerItemDecoration = new DividerItemDecoration(recylerViewSwitch.getContext(),
                 DividerItemDecoration.VERTICAL);
         recylerViewSwitch.addItemDecoration(sDividerItemDecoration);
@@ -81,9 +79,9 @@ recyclerViewAbout.setLayoutManager(aLayoutManager);
         recyclerViewLabel.addItemDecoration(lDividerItemDecoration);
 
 
-        settingsSwitchAdapter = new SettingsSwitchAdapter(this,settingsList);
-        settingsLabelAdapter = new SettingsLabelAdapter(this,lSettingsList);
-        settingsAboutAdapter = new SettingsAboutAdapter(this,aSettingsList);
+        settingsSwitchAdapter = new SettingsSwitchAdapter(this, settingsList);
+        settingsLabelAdapter = new SettingsLabelAdapter(this, lSettingsList);
+        settingsAboutAdapter = new SettingsAboutAdapter(this, aSettingsList);
         recylerViewSwitch.setAdapter(settingsSwitchAdapter);
         recyclerViewLabel.setAdapter(settingsLabelAdapter);
         recyclerViewAbout.setAdapter(settingsAboutAdapter);
@@ -121,16 +119,13 @@ recyclerViewAbout.setLayoutManager(aLayoutManager);
 
     }
 
-    private void settingsListOption(){
+    private void settingsListOption() {
         lSettingsList.add("Share with Friends");
         lSettingsList.add("Rate us");
         lSettingsList.add("Send feedback");
         aSettingsList.add("About");
         aSettingsList.add("Privacy Policy");
     }
-
-
-
 
 
     @Subscribe
@@ -143,7 +138,7 @@ recyclerViewAbout.setLayoutManager(aLayoutManager);
             runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                   // themeChanged = true;
+                    // themeChanged = true;
                     if (MyApp.nightMode) {
 
                         recylerViewSwitch.setBackgroundColor(getResources().getColor(R.color.dark));
@@ -164,7 +159,6 @@ recyclerViewAbout.setLayoutManager(aLayoutManager);
 
 
     }
-
 
 
     @Override
