@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimaryDark">#2196F3</color>
+    <color name="colorPrimary">#42A5F5</color>
+    <!--<color name="colorAccent">#42A5F5</color>-->
+    <color name="colorAccent">#0091ea</color>
+    <color name="black">#000</color>
+    <color name="dark">#212121</color>
+    <color name="darker_card">#424242</color>
+    <color name="textColorPrimary">#FFFFFF</color>
+    <color name="windowBackground">#FFFFFF</color>
+    <color name="navigationBarColor">#000000</color>
+    <color name="white">#ffffff</color>
+    <color name="cancel_color">#ff3300</color>
+    <color name="cancel_color_dark">#dd2c00</color>
+    <color name="grey">#efffffff</color>
+    <color name="grey_text">#607d8b</color>
+    <color name="text_color">#FF5722</color>
+    <color name="text_shadow">#212121</color>
+
+
+</resources>
