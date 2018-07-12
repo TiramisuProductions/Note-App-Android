@@ -47,10 +47,11 @@ public class BankAccountFragment extends Fragment {
 
          rootView = inflater.inflate(R.layout.fragment_bank_account, container, false);
 
-        RBank_no_data = (RelativeLayout) rootView.findViewById(R.id.Rlayout_no_data_bank);
+
         if (!EventBus.getDefault().isRegistered(this)) {
             EventBus.getDefault().register(this);
         }
+        RBank_no_data = (RelativeLayout) rootView.findViewById(R.id.Rlayout_no_data_bank);
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getActivity());
         mRecyclerView = (RecyclerView) rootView.findViewById(R.id.recycler_bank);
         mRecyclerView.setLayoutManager(mLayoutManager);
@@ -107,9 +108,9 @@ public class BankAccountFragment extends Fragment {
 
             List<BankAccount> banks = BankAccount.listAll(BankAccount.class);
             if (banks.size() == 0) {
-                Utils.Visibility_no_data(1, true);
+                Utils.Visibility_no_data(3, true);
             } else {
-                Utils.Visibility_no_data(1, false);
+                Utils.Visibility_no_data(3, false);
             }
 
             Collections.reverse(banks);

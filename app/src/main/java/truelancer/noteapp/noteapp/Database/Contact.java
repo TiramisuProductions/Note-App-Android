@@ -10,7 +10,7 @@ public class Contact extends SugarRecord {
     String calledName;
     boolean incoming;
     String tsMilli;
-    boolean savedFromApp;
+    boolean isSavedFromApp;
 
     public Contact(String name, String phoneno, String calledNumber, String calledName, boolean incoming, String tsMilli) {
         this.name = name;
@@ -22,14 +22,14 @@ public class Contact extends SugarRecord {
     }
 
     public boolean isSavedFromApp() {
-        return savedFromApp;
+        return isSavedFromApp;
     }
 
-    public Contact(String name, String phoneno, String tsMilli, boolean savedFromApp) {
+    public Contact(String name, String phoneno, String tsMilli, boolean isSavedFromApp) {
         this.name = name;
         this.phoneno = phoneno;
         this.tsMilli = tsMilli;
-        this.savedFromApp = savedFromApp;
+        this.isSavedFromApp = isSavedFromApp;
     }
 
     public Contact() {

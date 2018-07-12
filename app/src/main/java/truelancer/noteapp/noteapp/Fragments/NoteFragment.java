@@ -110,9 +110,9 @@ public class NoteFragment extends Fragment {
 
             List<Note> notes = Note.listAll(Note.class);
             if (notes.size() == 0) {
-                Utils.Visibility_no_data(1, true);
+                Utils.Visibility_no_data(4, true);
             } else {
-                Utils.Visibility_no_data(1, false);
+                Utils.Visibility_no_data(4, false);
             }
 
             Collections.reverse(notes);

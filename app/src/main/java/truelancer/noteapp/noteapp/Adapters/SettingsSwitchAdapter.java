@@ -76,7 +76,7 @@ public class SettingsSwitchAdapter extends RecyclerView.Adapter<SettingsSwitchAd
                     holder.settingsSwitch.setText("On");
                     holder.settingsSwitch.setChecked(true);
 
-                    editor.putBoolean(context.getString(R.string.key_night_mode),false);
+                    editor.putBoolean(context.getString(R.string.key_night_mode),true);
                     editor.commit();
                 }else{
                     holder.settingsSwitch.setText("Off");
@@ -127,10 +127,12 @@ public class SettingsSwitchAdapter extends RecyclerView.Adapter<SettingsSwitchAd
                     public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
                         if(b){
                             holder.settingsSwitch.setText("On");
+                            MyApp.keepBubble = true;
                             editor.putBoolean(context.getString(R.string.key_keep_bubble),true);
                             editor.commit();
                         }else{
                             holder.settingsSwitch.setText("Off");
+                            MyApp.keepBubble = false;
                             editor.putBoolean(context.getString(R.string.key_keep_bubble),false);
                             editor.commit();
 

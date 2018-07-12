@@ -79,15 +79,20 @@ public class PhoneStateReceiver extends BroadcastReceiver {
         }
 
         if ((state.equals(TelephonyManager.EXTRA_STATE_OFFHOOK))) {
-            //Toast.makeText(context, "Received State Hookup", Toast.LENGTH_SHORT).show();
+            Toast.makeText(context, "Received State Hookup", Toast.LENGTH_SHORT).show();
             MyApp.off_hook = true;
+
             /*Toast.makeText(context, "off_hook", Toast.LENGTH_SHORT).show();
             Log.d("wood", "off_hook ");*/
         }
 
         if (state.equals(TelephonyManager.EXTRA_STATE_IDLE)) {
-           /* Toast.makeText(context, "Idle State", Toast.LENGTH_SHORT).show();
-            Log.d("wood", "off hook: " + MyApp.off_hook);*/
+            Toast.makeText(context, "Idle State", Toast.LENGTH_SHORT).show();
+            Log.d("wood", "off hook: " + MyApp.off_hook);
+
+            if(!MyApp.keepBubble){
+                app.popUpService.removeAllChatHeads();
+            }
 
             if (MyApp.off_hook) {
                 // Toast.makeText(context, "call ended", Toast.LENGTH_SHORT).show();

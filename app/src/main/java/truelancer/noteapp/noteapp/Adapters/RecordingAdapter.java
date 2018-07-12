@@ -37,6 +37,7 @@ import java.util.Calendar;
 import java.util.List;
 
 import truelancer.noteapp.noteapp.Database.CallRecording;
+import truelancer.noteapp.noteapp.MainActivity;
 import truelancer.noteapp.noteapp.MyApp;
 import truelancer.noteapp.noteapp.R;
 import truelancer.noteapp.noteapp.Utils;
@@ -124,7 +125,7 @@ public class RecordingAdapter extends RecyclerView.Adapter<RecordingAdapter.MyVi
     private void executeit(final MyView holder, final int position) {
 
 
-        if(!MyApp.defaultTheme){
+        if(MyApp.nightMode){
             holder.recordCardView.setCardBackgroundColor(itemContext.getResources().getColor(R.color.darker_card));
             holder.call_txt.setTextColor(itemContext.getResources().getColor(R.color.white));
             holder.calledName.setTextColor(itemContext.getResources().getColor(R.color.white));
@@ -368,7 +369,7 @@ public class RecordingAdapter extends RecyclerView.Adapter<RecordingAdapter.MyVi
         holder.overflow.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                MainActivity.floatingActionMenu.close(true);
                 PopupMenu popup_overflow = new PopupMenu(activity, holder.overflow);
                 popup_overflow.getMenuInflater().inflate(R.menu.menu_overflow, popup_overflow.getMenu());
 

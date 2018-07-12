@@ -34,7 +34,6 @@ import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -77,8 +76,6 @@ import truelancer.noteapp.noteapp.EventB;
 import truelancer.noteapp.noteapp.MainActivity;
 import truelancer.noteapp.noteapp.MyApp;
 import truelancer.noteapp.noteapp.R;
-
-import static truelancer.noteapp.noteapp.MyApp.context;
 
 public class PopUpService extends Service {
 
@@ -614,8 +611,8 @@ public class PopUpService extends Service {
                     if (MyApp.nightMode) {
                         relativeLayout.setBackgroundColor(getResources().getColor(R.color.dark));
                         scrollView.setBackgroundColor(getResources().getColor(R.color.dark));
-                        EditContactName.setTextColor(getResources().getColor(R.color.white));
-                        EditContactNo.setTextColor(getResources().getColor(R.color.white));
+                        EditContactName.setTextColor(getResources().getColor(R.color.black));
+                        EditContactNo.setTextColor(getResources().getColor(R.color.black));
                         contactLabel1.setTextColor(getResources().getColor(R.color.white));
                         contactLabel2.setTextColor(getResources().getColor(R.color.white));
                     }
@@ -686,8 +683,8 @@ public class PopUpService extends Service {
 
 
                     if (MyApp.nightMode) {
-                        ContactName2.setTextColor(getResources().getColor(R.color.white));
-                        EmailID.setTextColor(getResources().getColor(R.color.white));
+                        ContactName2.setTextColor(getResources().getColor(R.color.black));
+                        EmailID.setTextColor(getResources().getColor(R.color.black));
                         emailLabel1.setTextColor(getResources().getColor(R.color.white));
                         emailLabel2.setTextColor(getResources().getColor(R.color.white));
                     }
@@ -757,9 +754,9 @@ public class PopUpService extends Service {
                         accountLabel1.setTextColor(getResources().getColor(R.color.white));
                         accountLabel2.setTextColor(getResources().getColor(R.color.white));
                         accountLabel3.setTextColor(getResources().getColor(R.color.white));
-                        ContactName3.setTextColor(getResources().getColor(R.color.white));
-                        AccountNo.setTextColor(getResources().getColor(R.color.white));
-                        Others.setTextColor(getResources().getColor(R.color.white));
+                        ContactName3.setTextColor(getResources().getColor(R.color.black));
+                        AccountNo.setTextColor(getResources().getColor(R.color.black));
+                        Others.setTextColor(getResources().getColor(R.color.black));
                     }
 
 
@@ -835,7 +832,7 @@ public class PopUpService extends Service {
 
 
                     if (MyApp.nightMode) {
-                        Note1.setTextColor(getResources().getColor(R.color.white));
+                        Note1.setTextColor(getResources().getColor(R.color.black));
                         noteLabel1.setTextColor(getResources().getColor(R.color.white));
                     }
 

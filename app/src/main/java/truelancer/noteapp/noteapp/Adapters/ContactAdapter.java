@@ -28,8 +28,6 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.facebook.rebound.ui.Util;
-
 import org.greenrobot.eventbus.EventBus;
 
 import java.text.SimpleDateFormat;
@@ -38,7 +36,6 @@ import java.util.List;
 
 import truelancer.noteapp.noteapp.Database.Contact;
 import truelancer.noteapp.noteapp.EventB;
-import truelancer.noteapp.noteapp.Fragments.ContactFragment;
 import truelancer.noteapp.noteapp.MainActivity;
 import truelancer.noteapp.noteapp.MyApp;
 import truelancer.noteapp.noteapp.R;
@@ -70,7 +67,7 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.MyView> 
     @Override
     public void onBindViewHolder(final MyView holder, final int position) {
 
-        if (!MyApp.defaultTheme) {
+        if (MyApp.nightMode) {
             holder.contactCardView.setCardBackgroundColor(itemContext.getResources().getColor(R.color.darker_card));
             holder.call_txt.setTextColor(itemContext.getResources().getColor(R.color.white));
             holder.calledName.setTextColor(itemContext.getResources().getColor(R.color.white));

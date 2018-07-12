@@ -25,13 +25,16 @@
         app:showAsAction="ifRoom"
         />
 
-
-
     <item
-        android:id="@+id/menu_email_to_admin"
-        android:title="Contact Admin"
-        android:orderInCategory="300"
-        android:icon="@drawable/ic_email"></item>
+        android:id="@+id/filter"
+        android:title="Filter"
+        android:orderInCategory="200"
+        android:icon="@drawable/ic_filter_list_black_24dp"
+        app:showAsAction="always"
+        />
+
+
+
 
     <item
         android:id="@+id/settings"

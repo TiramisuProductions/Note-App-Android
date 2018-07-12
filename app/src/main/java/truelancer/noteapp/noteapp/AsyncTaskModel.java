@@ -2,7 +2,6 @@ package truelancer.noteapp.noteapp;
 
 import android.app.Activity;
 import android.os.AsyncTask;
-import android.util.Log;
 import android.view.View;
 
 import java.util.Collections;
@@ -101,11 +100,13 @@ public class AsyncTaskModel extends AsyncTask<String, String, String> {
     @Override
     protected void onPreExecute() {
         super.onPreExecute();
+
     }
 
     @Override
     protected void onPostExecute(String s) {
         super.onPostExecute(s);
+        MainActivity.hideProgressDialog();
 
         switch (no) {
             case 1:

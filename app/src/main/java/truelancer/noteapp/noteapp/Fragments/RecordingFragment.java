@@ -108,9 +108,9 @@ public class RecordingFragment extends Fragment {
 
             List<CallRecording> records = CallRecording.listAll(CallRecording.class);
             if (records.size() == 0) {
-                Utils.Visibility_no_data(1, true);
+                Utils.Visibility_no_data(5, true);
             } else {
-                Utils.Visibility_no_data(1, false);
+                Utils.Visibility_no_data(5, false);
             }
 
             Collections.reverse(records);

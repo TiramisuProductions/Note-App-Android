@@ -173,8 +173,10 @@ public class Utils {
         switch (no) {
             case 1:
                 if (isVisible) {
+                    Log.d("sid","dash1");
                     ContactFragment.RContact_no_data.setVisibility(View.VISIBLE);
                 } else {
+                    Log.d("sid","dash2");
                     ContactFragment.RContact_no_data.setVisibility(View.GONE);
                 }
                 break;

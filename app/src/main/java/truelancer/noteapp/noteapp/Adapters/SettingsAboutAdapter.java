@@ -1,15 +1,20 @@
 package truelancer.noteapp.noteapp.Adapters;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.support.constraint.ConstraintLayout;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.webkit.WebView;
+import android.webkit.WebViewClient;
 import android.widget.Switch;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 
@@ -23,8 +28,6 @@ public class SettingsAboutAdapter extends RecyclerView.Adapter<SettingsAboutAdap
     Context context;
     ArrayList<String> settingsList;
     CharSequence[] themes = {"Default", "Dark"};
-    CharSequence[] bubblePositions = {"Top ", "Centre", "Bottom "};
-    //CharSequence[] callRecords = {"Voice Call", "Voice Communication"};
     SharedPreferences pref;
     SharedPreferences.Editor editor;
 
@@ -44,10 +47,6 @@ public class SettingsAboutAdapter extends RecyclerView.Adapter<SettingsAboutAdap
     }
 
 
-
-
-
-
     @Override
     public void onBindViewHolder(final SettingsAboutAdapter.MyViewHolder holder, final int position) {
         holder.settingsText.setText(settingsList.get(position));
@@ -59,13 +58,47 @@ public class SettingsAboutAdapter extends RecyclerView.Adapter<SettingsAboutAdap
             holder.settingsText.setTextColor(context.getResources().getColor(R.color.black));
         }
 
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                switch (position) {
+                    case 0:
 
+                        Toast.makeText(context, "0", Toast.LENGTH_SHORT).show();
+                        break;
+                    case 1:
+                        privacy_policy();
+                        Toast.makeText(context, "1", Toast.LENGTH_SHORT).show();
+                        break;
 
+                }
+            }
+        });
+    }
 
+    private void privacy_policy() {
+        AlertDialog.Builder alert = new AlertDialog.Builder(context);
+        alert.setTitle("Title here");
 
+        WebView wv = new WebView(context);
+        wv.loadUrl(context.getString(R.string.privacy_policy_link));
+        wv.setWebViewClient(new WebViewClient() {
+            @Override
+            public boolean shouldOverrideUrlLoading(WebView view, String url) {
+                view.loadUrl(url);
 
+                return true;
+            }
+        });
 
-
+        alert.setView(wv);
+        alert.setNegativeButton("Close", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int id) {
+                dialog.dismiss();
+            }
+        });
+        alert.show();
     }
 
     @Override
@@ -89,7 +122,5 @@ public class SettingsAboutAdapter extends RecyclerView.Adapter<SettingsAboutAdap
 
 
         }
-
-
     }
 }

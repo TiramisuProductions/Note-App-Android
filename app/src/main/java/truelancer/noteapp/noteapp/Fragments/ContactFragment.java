@@ -63,6 +63,7 @@ public class ContactFragment extends Fragment {
             mRecyclerView.setBackgroundColor(getResources().getColor(R.color.dark));
             rootView.setBackgroundColor(getResources().getColor(R.color.dark));
         }
+
         /*List<Contact> contacts = Contact.listAll(Contact.class);
         Collections.reverse(contacts);
 
@@ -114,9 +115,12 @@ public class ContactFragment extends Fragment {
             }
 
             List<Contact> contacts = Contact.listAll(Contact.class);
+
             if (contacts.size() == 0) {
+
                 Utils.Visibility_no_data(1, true);
             } else {
+
                 Utils.Visibility_no_data(1, false);
             }
 

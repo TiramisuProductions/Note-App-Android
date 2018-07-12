@@ -120,9 +120,10 @@ public class EmailFragment extends Fragment {
 
             List<Email> emails = BankAccount.listAll(Email.class);
             if (emails.size() == 0) {
-                Utils.Visibility_no_data(1, true);
+
+                Utils.Visibility_no_data(2, true);
             } else {
-                Utils.Visibility_no_data(1, false);
+                Utils.Visibility_no_data(2, false);
             }
 
             Collections.reverse(emails);
