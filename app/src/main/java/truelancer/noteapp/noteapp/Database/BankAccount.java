@@ -16,17 +16,48 @@ public class BankAccount extends SugarRecord {
     boolean incoming;
     String tsMilli;
     boolean isSavedFromApp;
+    boolean isBackedUp;
+
+
 
     public BankAccount() {
     }
 
-    public BankAccount(String name, String accountNo, String ifscCode, String tsMilli, boolean isSavedFromApp) {
+
+    public void setSavedFromApp(boolean savedFromApp) {
+        isSavedFromApp = savedFromApp;
+    }
+
+    public boolean isBackedUp() {
+        return isBackedUp;
+    }
+
+    public void setBackedUp(boolean backedUp) {
+        isBackedUp = backedUp;
+    }
+
+
+
+    public BankAccount(String name, String accountNo, String ifscCode, String tsMilli, boolean isSavedFromApp, boolean isBackedUp) {
         this.name = name;
         this.accountNo = accountNo;
         this.ifscCode = ifscCode;
         this.tsMilli = tsMilli;
         this.isSavedFromApp = isSavedFromApp;
+        this.isBackedUp = isBackedUp;
     }
+
+    public BankAccount(String name, String accountNo, String ifscCode, String calledNumber, String calledName, boolean incoming, String tsMilli,boolean isBackedUp) {
+        this.name = name;
+        this.accountNo = accountNo;
+        this.ifscCode = ifscCode;
+        this.calledNumber = calledNumber;
+        this.calledName = calledName;
+        this.incoming = incoming;
+        this.tsMilli = tsMilli;
+        this.isBackedUp = isBackedUp;
+    }
+
 
     public BankAccount(String name, String accountNo, String ifscCode, String calledNumber, String calledName, boolean incoming, String tsMilli) {
         this.name = name;
@@ -36,6 +67,7 @@ public class BankAccount extends SugarRecord {
         this.calledName = calledName;
         this.incoming = incoming;
         this.tsMilli = tsMilli;
+        this.isBackedUp = isBackedUp;
     }
 
     public boolean isSavedFromApp() {

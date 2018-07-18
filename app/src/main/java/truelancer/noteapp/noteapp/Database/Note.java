@@ -11,9 +11,26 @@ public class Note extends SugarRecord {
     String tsMilli;
     boolean incoming;
     boolean isSavedFromApp;
+    boolean isBackedUp;
 
+    public boolean isBackedUp() {
+        return isBackedUp;
+    }
+
+    public void setBackedUp(boolean backedUp) {
+        isBackedUp = backedUp;
+    }
 
     public Note(){}
+
+    public Note(String note,String calledName,String calledNumber,String tsMilli,boolean incoming,boolean isBackedUp){
+        this.note=note;
+        this.calledName=calledName;
+        this.calledNumber=calledNumber;
+        this.tsMilli=tsMilli;
+        this.incoming=incoming;
+        this.isBackedUp = isBackedUp;
+    }
 
     public Note(String note,String calledName,String calledNumber,String tsMilli,boolean incoming){
         this.note=note;
@@ -21,12 +38,14 @@ public class Note extends SugarRecord {
         this.calledNumber=calledNumber;
         this.tsMilli=tsMilli;
         this.incoming=incoming;
+        this.isBackedUp = isBackedUp;
     }
 
-    public Note(String note, String tsMilli, boolean isSavedFromApp) {
+    public Note(String note, String tsMilli, boolean isSavedFromApp,boolean isBackedUp) {
         this.note = note;
         this.tsMilli = tsMilli;
         this.isSavedFromApp = isSavedFromApp;
+        this.isBackedUp = isBackedUp;
     }
 
 

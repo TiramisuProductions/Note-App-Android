@@ -82,6 +82,13 @@ public class BankAccountAdapter extends RecyclerView.Adapter<BankAccountAdapter.
         }
 
 
+        if(bankAccounts.get(position).isBackedUp()){
+            holder.isBackedUp.setImageResource(R.drawable.ic_cloud_done_black_24dp);
+        }else {
+            holder.isBackedUp.setImageResource(R.drawable.ic_cloud_off_black_24dp);
+        }
+
+
         if(bankAccounts.get(position).isSavedFromApp()){
             inout="Saved From App";
             holder.state_of_call.setImageResource(R.drawable.ic_saved_from_app);
@@ -406,7 +413,7 @@ public class BankAccountAdapter extends RecyclerView.Adapter<BankAccountAdapter.
     public class MyView extends RecyclerView.ViewHolder {
         private TextView contactName, accountName, others, calledName, calledNumber, call_txt, date_time,savedDetails,contactId1,contactId2,contactId3;
         private CardView bankCardView;
-        private ImageView state_of_call, overflow;
+        private ImageView state_of_call, overflow,isBackedUp;
 
         public MyView(View itemView) {
             super(itemView);
@@ -424,6 +431,7 @@ public class BankAccountAdapter extends RecyclerView.Adapter<BankAccountAdapter.
             contactId1 = (TextView)itemView.findViewById(R.id.contact_idB);
             contactId2 = (TextView)itemView.findViewById(R.id.contact_id2B);
             contactId3 = (TextView)itemView.findViewById(R.id.contact_id3B);
+            isBackedUp = (ImageView)itemView.findViewById(R.id.isBackedUp);
 
             itemContext = itemView.getContext();
         }

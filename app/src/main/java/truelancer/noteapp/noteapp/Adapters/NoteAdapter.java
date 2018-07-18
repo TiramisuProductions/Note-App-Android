@@ -83,6 +83,13 @@ public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.MyView> {
 
         }
 
+
+        if(notes.get(position).isBackedUp()){
+            holder.isBackedUp.setImageResource(R.drawable.ic_cloud_done_black_24dp);
+        }else {
+            holder.isBackedUp.setImageResource(R.drawable.ic_cloud_off_black_24dp);
+        }
+
         if (notes.get(position).isSavedFromApp()) {
             holder.state_of_call.setImageResource(R.drawable.ic_saved_from_app);
             inout = "Saved From App";
@@ -419,7 +426,7 @@ public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.MyView> {
     public class MyView extends RecyclerView.ViewHolder {
         private TextView noteText, calledName, calledNumber, call_text, date_time, savedDetails, contactId1, contactId2, noOfTasks;
         private CardView noteCardView;
-        private ImageView state_of_call, overflow;
+        private ImageView state_of_call, overflow,isBackedUp;
         private Button sync;
 
         public MyView(View itemView) {
@@ -438,6 +445,7 @@ public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.MyView> {
             savedDetails = (TextView) itemView.findViewById(R.id.saved_details);
             contactId2 = (TextView) itemView.findViewById(R.id.contact_id2Note);
             noOfTasks = (TextView) itemView.findViewById(R.id.nooftasks);
+            isBackedUp = (ImageView)itemView.findViewById(R.id.isBackedUp);
 
             itemContext = itemView.getContext();
         }

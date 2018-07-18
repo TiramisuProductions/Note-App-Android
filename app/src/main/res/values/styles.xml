@@ -3,7 +3,7 @@
     <!-- Base application theme. -->
     <style name="AppTheme" parent="Theme.AppCompat.NoActionBar">
         <item name="android:typeface">monospace</item>
-        <item name="android:actionOverflowButtonStyle">@style/ActionButton.Overflow.Icon</item>
+
         <item name="android:fontFamily">@font/pt_bold</item>
 
 
@@ -35,6 +35,7 @@
         <item name="android:background">@color/darker_card</item>
         <item name="android:textColor">#FFFFFF</item>
         <item name="android:fontFamily">@font/pt_bold</item>
+        <item name="android:textColorSecondary">@color/white</item>
 
 
     </style>
@@ -78,7 +79,5 @@
         <item name="android:activityCloseExitAnimation">@anim/go_down</item>&ndash;&gt;
     </style>-->
 
-    <style name="ActionButton.Overflow.Icon" parent="android:style/Widget.Holo.Light.ActionButton.Overflow">
-        <item name="android:src">@drawable/ic_overflow</item>
-    </style>
+
 </resources>

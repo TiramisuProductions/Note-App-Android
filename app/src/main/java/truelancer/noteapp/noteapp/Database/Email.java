@@ -15,8 +15,34 @@ public class Email extends SugarRecord {
     boolean incoming;
     String tsMilli;
     boolean isSavedFromApp;
+    boolean isBackedUp;
+
+    public void setSavedFromApp(boolean savedFromApp) {
+        isSavedFromApp = savedFromApp;
+    }
+
+    public boolean isBackedUp() {
+        return isBackedUp;
+    }
+
+    public void setBackedUp(boolean backedUp) {
+        isBackedUp = backedUp;
+    }
 
     public Email() {}
+
+    public Email(String name, String emailId, String calledNumber, String calledName, boolean incoming, String tsMilli,boolean isBackedUp) {
+        this.name = name;
+        this.emailId = emailId;
+        this.calledNumber = calledNumber;
+        this.calledName = calledName;
+        this.incoming = incoming;
+        this.tsMilli = tsMilli;
+        this.isBackedUp =  isBackedUp;
+    }
+
+
+
 
     public Email(String name, String emailId, String calledNumber, String calledName, boolean incoming, String tsMilli) {
         this.name = name;
@@ -25,13 +51,18 @@ public class Email extends SugarRecord {
         this.calledName = calledName;
         this.incoming = incoming;
         this.tsMilli = tsMilli;
+        this.isBackedUp =  isBackedUp;
     }
 
-    public Email(String name, String emailId, String tsMilli, boolean isSavedFromApp) {
+
+
+
+    public Email(String name, String emailId, String tsMilli, boolean isSavedFromApp,boolean isBackedUp) {
         this.name = name;
         this.emailId = emailId;
         this.tsMilli = tsMilli;
         this.isSavedFromApp = isSavedFromApp;
+        this.isBackedUp =  isBackedUp;
     }
 
     public boolean isSavedFromApp() {

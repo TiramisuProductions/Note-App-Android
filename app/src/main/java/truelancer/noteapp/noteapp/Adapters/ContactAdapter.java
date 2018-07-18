@@ -81,6 +81,16 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.MyView> 
             holder.overflow.setColorFilter(itemContext.getResources().getColor(R.color.white));
         }
 
+
+
+        if(contacts.get(position).isBackedUp()){
+            holder.isBackedUp.setImageResource(R.drawable.ic_cloud_done_black_24dp);
+        }else {
+            holder.isBackedUp.setImageResource(R.drawable.ic_cloud_off_black_24dp);
+        }
+
+
+
         //Checking incoming, outgoing calls or Saved from app
         if (contacts.get(position).isSavedFromApp()) {
             holder.state_of_call.setImageResource(R.drawable.ic_saved_from_app);
@@ -431,7 +441,7 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.MyView> 
     public class MyView extends RecyclerView.ViewHolder {
         public TextView contactName, contactNum, calledName, calledNumber, call_txt, date_time, savedDetails, contactId1, contactId2;
         public CardView contactCardView;
-        public ImageView overflow, state_of_call;
+        public ImageView overflow, state_of_call,isBackedUp;
 
         public MyView(View itemView) {
             super(itemView);
@@ -447,6 +457,7 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.MyView> 
             savedDetails = (TextView) itemView.findViewById(R.id.saved_details);
             contactId1 = (TextView) itemView.findViewById(R.id.contact_id);
             contactId2 = (TextView) itemView.findViewById(R.id.contact_id2);
+            isBackedUp = (ImageView)itemView.findViewById(R.id.isBackedUp);
             itemContext = itemView.getContext();
         }
     }

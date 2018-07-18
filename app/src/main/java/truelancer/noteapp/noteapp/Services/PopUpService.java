@@ -931,7 +931,7 @@ public class PopUpService extends Service {
                 } else if (!isValidEmail(MyApp.editEmailAdressToSave.getText().toString())) {
                     MyApp.editEmailAdressToSave.setError(mContext.getString(R.string.hint_email));
                 } else {
-                    Email email = new Email(MyApp.editEmailContactNameToSave.getText().toString(), MyApp.editEmailAdressToSave.getText().toString(), calledNumber, calledName, incomingCall, timeStampMilli);
+                    Email email = new Email(MyApp.editEmailContactNameToSave.getText().toString(), MyApp.editEmailAdressToSave.getText().toString(), calledNumber, calledName, incomingCall, timeStampMilli,false);
                     email.save();
                     Toast.makeText(mContext, "Successfully Saved", Toast.LENGTH_LONG).show();
                     EventBus.getDefault().post(new EventB("2"));
@@ -945,7 +945,7 @@ public class PopUpService extends Service {
                 } else if (TextUtils.isEmpty(MyApp.editBankAccountNoToSave.getText().toString())) {
                     MyApp.editBankAccountNoToSave.setError(mContext.getString(R.string.hint_ac_no));
                 } else {
-                    BankAccount bankAccount = new BankAccount(MyApp.editBankContactNameToSave.getText().toString(), MyApp.editBankAccountNoToSave.getText().toString(), MyApp.editBankOthersNoToSave.getText().toString(), calledNumber, calledName, incomingCall, timeStampMilli);
+                    BankAccount bankAccount = new BankAccount(MyApp.editBankContactNameToSave.getText().toString(), MyApp.editBankAccountNoToSave.getText().toString(), MyApp.editBankOthersNoToSave.getText().toString(), calledNumber, calledName, incomingCall, timeStampMilli,false);
                     bankAccount.save();
                     Toast.makeText(mContext, "Successfully Saved", Toast.LENGTH_LONG).show();
                     EventBus.getDefault().post(new EventB("3"));
@@ -957,7 +957,7 @@ public class PopUpService extends Service {
                 if (TextUtils.isEmpty(MyApp.editNoteToSave.getText().toString())) {
                     MyApp.editNoteToSave.setError(mContext.getString(R.string.hint_note));
                 } else {
-                    Note noteN = new Note(MyApp.editNoteToSave.getText().toString(), calledName, calledNumber, timeStampMilli, incomingCall);
+                    Note noteN = new Note(MyApp.editNoteToSave.getText().toString(), calledName, calledNumber, timeStampMilli, incomingCall,false);
                     noteN.save();
                     Toast.makeText(mContext, "Successfully Saved", Toast.LENGTH_LONG).show();
                     EventBus.getDefault().post(new EventB("4"));

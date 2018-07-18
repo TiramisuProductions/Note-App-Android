@@ -95,7 +95,7 @@ public class MyApp extends SugarApp {
             if (emailId1.equals("")) {
                 emailId1 = defaultValue;
             }
-            Email email = new Email(contactName1, emailId1, calledNumber, calledName, incomingCall, tsMilli);
+            Email email = new Email(contactName1, emailId1, calledNumber, calledName, incomingCall, tsMilli,false);
             email.save();
             Log.d(TAG, "checkForDraft: else 1:" + contactName1 + " " + emailId1);
             contactName1 = "";
@@ -115,7 +115,7 @@ public class MyApp extends SugarApp {
                 ifsc2 = defaultValue;
             }
 
-            BankAccount bankAccount = new BankAccount(contactName2, accountNumber2, ifsc2, calledNumber, calledName, incomingCall, tsMilli);
+            BankAccount bankAccount = new BankAccount(contactName2, accountNumber2, ifsc2, calledNumber, calledName, incomingCall, tsMilli,false);
             bankAccount.save();
 
             Log.d(TAG, "checkForDraft: else 2:" + contactName2 + " " + accountNumber2 + "" + ifsc2);
@@ -132,7 +132,7 @@ public class MyApp extends SugarApp {
             if(contactName3.equals("")){contactName3 = defaultValue;}
             if(note3.equals("")){note3 = defaultValue;}
 
-            Note noteN = new Note( note3, calledNumber, calledName,  tsMilli,incomingCall);
+            Note noteN = new Note( note3, calledNumber, calledName,  tsMilli,incomingCall,false);
             noteN.save();
             Log.d(TAG, "checkForDraft: if 3:" + contactName3 + " " + note3);
             contactName3 = "";

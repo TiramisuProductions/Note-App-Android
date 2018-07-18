@@ -81,6 +81,13 @@ public class EmailAdapter extends RecyclerView.Adapter<EmailAdapter.MyView> {
         }
 
 
+        if(emails.get(position).isBackedUp()){
+            holder.isBackedUp.setImageResource(R.drawable.ic_cloud_done_black_24dp);
+        }else {
+            holder.isBackedUp.setImageResource(R.drawable.ic_cloud_off_black_24dp);
+        }
+
+
 
       //Checking incoming,outgoing call or saved from app
        if(emails.get(position).isSavedFromApp()){
@@ -399,7 +406,7 @@ public class EmailAdapter extends RecyclerView.Adapter<EmailAdapter.MyView> {
     public class MyView extends RecyclerView.ViewHolder {
         private TextView contactName, emailId, call_txt, calledName, calledNumber, date_time,savedDetails,contactId1,contactId2;
         private CardView emailCardView;
-        private ImageView state_of_call, overflow;
+        private ImageView state_of_call, overflow,isBackedUp;
 
 
 
@@ -417,6 +424,7 @@ public class EmailAdapter extends RecyclerView.Adapter<EmailAdapter.MyView> {
             savedDetails = (TextView)itemView.findViewById(R.id.saved_details);
             contactId1 = (TextView)itemView.findViewById(R.id.contact_idEmail);
             contactId2 = (TextView)itemView.findViewById(R.id.contact_id2Email);
+            isBackedUp = (ImageView)itemView.findViewById(R.id.isBackedUp);
             itemContext = itemView.getContext();
         }
     }

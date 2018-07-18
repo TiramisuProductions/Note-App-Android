@@ -877,7 +877,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                             inputMethodManager.hideSoftInputFromWindow(contactNumber.getWindowToken(), InputMethodManager.RESULT_UNCHANGED_SHOWN);//removes keyboard
 
                         } else {
-                            Contact contact = new Contact(contactName.getText().toString(), contactNumber.getText().toString(), tsMilli, true);
+                            Contact contact = new Contact(contactName.getText().toString(), contactNumber.getText().toString(), tsMilli, true,false);
                             contact.save();
                             inputMethodManager.hideSoftInputFromWindow(contactNumber.getWindowToken(), 0);
                             dialog.dismiss();
@@ -981,7 +981,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                             field2.setError(getString(R.string.error_email_edit_text));
                             inputMethodManager.hideSoftInputFromWindow(contactEmail.getWindowToken(), InputMethodManager.RESULT_UNCHANGED_SHOWN);
                         } else {
-                            Email email = new Email(contactName.getText().toString(), contactEmail.getText().toString(), tsMilli, true);
+                            Email email = new Email(contactName.getText().toString(), contactEmail.getText().toString(), tsMilli, true,false);
                             email.save();
                             inputMethodManager.hideSoftInputFromWindow(contactEmail.getWindowToken(), 0);
                             dialog.dismiss();
@@ -1100,7 +1100,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                             field2.setError(getString(R.string.hint_ac_no));
                             inputMethodManager.hideSoftInputFromWindow(contactName.getWindowToken(), InputMethodManager.RESULT_UNCHANGED_SHOWN);
                         } else {
-                            BankAccount bankAccount = new BankAccount(contactName.getText().toString(), contactAccountNo.getText().toString(), contactIFSC.getText().toString(), tsMilli, true);
+                            BankAccount bankAccount = new BankAccount(contactName.getText().toString(), contactAccountNo.getText().toString(), contactIFSC.getText().toString(), tsMilli, true,false);
                             bankAccount.save();
                             inputMethodManager.hideSoftInputFromWindow(contactIFSC.getWindowToken(), 0);
                             dialog.dismiss();
@@ -1187,7 +1187,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                             field1.setError(getString(R.string.hint_note));
                             inputMethodManager.hideSoftInputFromWindow(noteEditText.getWindowToken(), InputMethodManager.RESULT_UNCHANGED_SHOWN);
                         } else {
-                            Note note = new Note(noteEditText.getText().toString(), tsMilli, true);
+                            Note note = new Note(noteEditText.getText().toString(), tsMilli, true,false);
                             note.save();
                             inputMethodManager.hideSoftInputFromWindow(noteEditText.getWindowToken(), 0);
                             dialog.dismiss();
@@ -1567,7 +1567,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                                                 m.getClist().get(i).getCalledNumber(),
                                                 m.getClist().get(i).getCalledName(),
                                                 m.getClist().get(i).isIncoming(),
-                                                m.getClist().get(i).getTsMilli());
+                                                m.getClist().get(i).getTsMilli(),
+                                                true);
                                         if (!dataAlreadyExists(m.getClist().get(i).getTsMilli(), "1")) {
                                             contact.save();
                                         }
@@ -1583,7 +1584,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                                                 m.getElist().get(i).getCalledNumber(),
                                                 m.getElist().get(i).getCalledName(),
                                                 m.getElist().get(i).isIncoming(),
-                                                m.getElist().get(i).getTsMilli());
+                                                m.getElist().get(i).getTsMilli(),
+                                                true);
                                         if (!dataAlreadyExists(m.getElist().get(i).getTsMilli(), "2")) {
                                             email.save();
                                         }
@@ -1600,7 +1602,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                                                 m.getBlist().get(i).getCalledNumber(),
                                                 m.getBlist().get(i).getCalledName(),
                                                 m.getBlist().get(i).isIncoming(),
-                                                m.getBlist().get(i).getTsMilli());
+                                                m.getBlist().get(i).getTsMilli(),
+                                                true);
                                         if (!dataAlreadyExists(m.getBlist().get(i).getTsMilli(), "3")) {
                                             bankAccount.save();
                                         }
@@ -1618,7 +1621,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                                                 m.getNlist().get(i).getCalledName(),
                                                 m.getNlist().get(i).getCalledNumber(),
                                                 m.getNlist().get(i).getTsMilli(),
-                                                m.getNlist().get(i).isIncoming()
+                                                m.getNlist().get(i).isIncoming(),
+                                                true
 
                                         );
                                         if (!dataAlreadyExists(m.getNlist().get(i).getTsMilli(), "4")) {
@@ -1732,6 +1736,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
                     if (tsMilli_fromBackup.equals(tsMilli_fromLocalDb)) {
                         Log.d("cricket3", "then: " + true);
+
+                        Contact contact = Contact.findById(Contact.class, contacts.get(i).getId());
+                        contact.setBackedUp(true);
+                        contact.save();
+
                         return true;
                     }
                 }
@@ -1747,6 +1756,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     String tsMilli_fromLocalDb = emails.get(i).getTsMilli();
 
                     if (tsMilli_fromBackup.equals(tsMilli_fromLocalDb)) {
+
+                        Email email = Email.findById(Email.class, emails.get(i).getId());
+                        email.setBackedUp(true);
+                        email.save();
+
                         return true;
                     }
                 }
@@ -1760,6 +1774,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     String tsMilli_fromLocalDb = bankAccounts.get(i).getTsMilli();
 
                     if (tsMilli_fromBackup.equals(tsMilli_fromLocalDb)) {
+
+                        BankAccount bankAccount = BankAccount.findById(BankAccount.class, bankAccounts.get(i).getId());
+                        bankAccount.setBackedUp(true);
+                        bankAccount.save();
+
                         return true;
                     }
                 }
@@ -1771,6 +1790,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 for (int i = 0; i < notes.size(); i++) {
                     String tsMilli_fromLocalDb = notes.get(i).getTsMilli();
                     if (tsMilli_fromBackup.equals(tsMilli_fromLocalDb)) {
+
+                        Note note = BankAccount.findById(Note.class, notes.get(i).getId());
+                        note.setBackedUp(true);
+                        note.save();
+
                         return true;
                     }
                 }

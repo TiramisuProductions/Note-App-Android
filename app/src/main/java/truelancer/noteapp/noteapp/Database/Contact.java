@@ -11,6 +11,29 @@ public class Contact extends SugarRecord {
     boolean incoming;
     String tsMilli;
     boolean isSavedFromApp;
+    boolean isBackedUp;
+
+    public void setSavedFromApp(boolean savedFromApp) {
+        isSavedFromApp = savedFromApp;
+    }
+
+    public boolean isBackedUp() {
+        return isBackedUp;
+    }
+
+    public void setBackedUp(boolean backedUp) {
+        isBackedUp = backedUp;
+    }
+
+    public Contact(String name, String phoneno, String calledNumber, String calledName, boolean incoming, String tsMilli,boolean isBackedUp) {
+        this.name = name;
+        this.phoneno = phoneno;
+        this.calledNumber = calledNumber;
+        this.calledName = calledName;
+        this.incoming = incoming;
+        this.tsMilli = tsMilli;
+        this.isBackedUp = isBackedUp;
+    }
 
     public Contact(String name, String phoneno, String calledNumber, String calledName, boolean incoming, String tsMilli) {
         this.name = name;
@@ -19,17 +42,19 @@ public class Contact extends SugarRecord {
         this.calledName = calledName;
         this.incoming = incoming;
         this.tsMilli = tsMilli;
+        this.isBackedUp = isBackedUp;
     }
 
     public boolean isSavedFromApp() {
         return isSavedFromApp;
     }
 
-    public Contact(String name, String phoneno, String tsMilli, boolean isSavedFromApp) {
+    public Contact(String name, String phoneno, String tsMilli, boolean isSavedFromApp,boolean isBackedUp) {
         this.name = name;
         this.phoneno = phoneno;
         this.tsMilli = tsMilli;
         this.isSavedFromApp = isSavedFromApp;
+        this.isBackedUp = isBackedUp;
     }
 
     public Contact() {
