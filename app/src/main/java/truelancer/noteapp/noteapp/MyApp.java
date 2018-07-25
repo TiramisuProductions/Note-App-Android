@@ -27,7 +27,8 @@ public class MyApp extends SugarApp {
     String defaultValue = "default";
     public boolean firstRun = true;
     public static boolean defaultTheme = true;
-    public static boolean nightMode = true;
+    public static boolean nightMode = false;
+    public static boolean autoCallRecord;
     public static Context context;
     public static  Boolean themeFirstRun =false;
     public static Boolean keepBubble = false;

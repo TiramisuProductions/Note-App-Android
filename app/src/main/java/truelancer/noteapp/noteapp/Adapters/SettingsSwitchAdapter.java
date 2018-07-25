@@ -142,6 +142,41 @@ public class SettingsSwitchAdapter extends RecyclerView.Adapter<SettingsSwitchAd
 
                 break;
 
+
+            case 2:
+
+                if(pref.getBoolean(context.getString(R.string.key_auto_call_record),false)){
+                    holder.settingsSwitch.setText("On");
+                    holder.settingsSwitch.setChecked(true);
+
+                }else{
+                    holder.settingsSwitch.setText("Off");
+                    holder.settingsSwitch.setChecked(false);
+                }
+
+                holder.settingsSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                    @Override
+                    public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                        if(b){
+                            holder.settingsSwitch.setText("On");
+                            MyApp.autoCallRecord = true;
+                            editor.putBoolean(context.getString(R.string.key_auto_call_record),true);
+                            editor.commit();
+                        }else{
+                            holder.settingsSwitch.setText("Off");
+                            MyApp.autoCallRecord = false;
+                            editor.putBoolean(context.getString(R.string.key_auto_call_record),false);
+                            editor.commit();
+
+                        }
+                    }
+                });
+
+
+
+
+
+
         }
 
 

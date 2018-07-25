@@ -385,10 +385,20 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             String calledNameAll = "";
             boolean savedFromApp = contacts.get(i).isSavedFromApp();
 
+            Log.d("abc",""+savedFromApp);
+
 
             if (!savedFromApp) {
-                calledNoAll = contacts.get(i).getCalledNumber().toLowerCase();
-                calledNameAll = contacts.get(i).getCalledName().toLowerCase();
+
+                if(contacts.get(i).getCalledNumber()!=null){
+                    calledNoAll = contacts.get(i).getCalledNumber().toLowerCase();
+                }
+
+                if(contacts.get(i).getCalledName()!=null){
+                    calledNameAll = contacts.get(i).getCalledName().toLowerCase();
+                }
+
+
             }
 
             if (contactNameAll.contains(searchWord)) {
@@ -416,8 +426,18 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
 
             if (!savedFromApp) {
-                calledNoAll = emails.get(i).getCalledNumber().toLowerCase();
-                calledNameAll = emails.get(i).getCalledName().toLowerCase();
+
+
+                if(emails.get(i).getCalledNumber()!=null){
+                    calledNoAll = emails.get(i).getCalledNumber().toLowerCase();
+                }
+
+                if(emails.get(i).getCalledName()!=null){
+                    calledNameAll = emails.get(i).getCalledName().toLowerCase();
+                }
+
+
+
             }
 
             if (contactNameAll.contains(searchWord)) {
@@ -447,8 +467,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             boolean savedFromApp = bankAccounts.get(i).isSavedFromApp();
 
             if (!savedFromApp) {
-                calledNoAll = bankAccounts.get(i).getCalledNumber().toLowerCase();
-                calledNameAll = bankAccounts.get(i).getCalledName().toLowerCase();
+                if(bankAccounts.get(i).getCalledNumber()!=null){
+                    calledNoAll = bankAccounts.get(i).getCalledNumber().toLowerCase();
+                }
+
+                if(bankAccounts.get(i).getCalledName()!=null){
+                    calledNameAll = bankAccounts.get(i).getCalledName().toLowerCase();
+                }
             }
 
             if (contactNameAll.contains(searchWord)) {
@@ -477,8 +502,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             String callednoAll = "";
             String callednameAll = "";
             if (!savedFromApp) {
-                callednoAll = notes.get(i).getCalledNumber().toLowerCase();
-                callednameAll = notes.get(i).getCalledName().toLowerCase();
+                if(notes.get(i).getCalledNumber()!=null){
+                    callednoAll = notes.get(i).getCalledNumber().toLowerCase();
+                }
+
+                if(contacts.get(i).getCalledName()!=null){
+                    callednameAll = notes.get(i).getCalledName().toLowerCase();
+                }
             }
 
             if (noteAll.contains(searchWord)) {
@@ -502,8 +532,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             String callednoAll = "";
             String callednameAll = "";
 
-            callednameAll=recordings.get(i).getCalledName().toLowerCase();
-            callednoAll=recordings.get(i).getCalledNumber().toLowerCase();
+            if(recordings.get(i).getCalledNumber()!=null){
+                callednoAll = recordings.get(i).getCalledNumber().toLowerCase();
+            }
+
+            if(recordings.get(i).getCalledName()!=null){
+                callednameAll = recordings.get(i).getCalledName().toLowerCase();
+            }
 
             if(recordAll.contains(searchWord)){
                 recordingFilterList.add(recordings.get(i));
@@ -722,8 +757,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         MyApp.isIncomingFilterHighlighted = false;
                         MyApp.isOutgoingFilterHighlighted = false;
                         MyApp.isSavedFromAppFilterHighlighted = false;
-                        setupViewPager(homeViewPager);
-                        setupTabIcons();
+
+                        AsyncTaskFilterModel asyncTaskFilterModel0 = new AsyncTaskFilterModel(MainActivity.this, 0);
+                        asyncTaskFilterModel0.execute();
+
                         Log.d("wood", "All");
                         break;
 

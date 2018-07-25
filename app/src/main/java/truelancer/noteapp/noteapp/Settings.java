@@ -119,6 +119,7 @@ public class Settings extends AppCompatActivity {
 
         settingsList.add("Night Mode");
         settingsList.add("Keep bubble after Call");
+        settingsList.add("Auto Record Calls");
 
     }
 

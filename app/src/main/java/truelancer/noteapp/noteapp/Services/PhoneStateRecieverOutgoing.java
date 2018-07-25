@@ -6,10 +6,12 @@ import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.provider.BaseColumns;
 import android.provider.ContactsContract;
 import android.telephony.TelephonyManager;
 import android.util.Log;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.text.ParseException;
@@ -25,6 +27,7 @@ import truelancer.noteapp.noteapp.MyApp;
 public class PhoneStateRecieverOutgoing extends BroadcastReceiver {
 
     public static MyApp app;
+    private Context context;
 
     @Override
     public void onReceive(Context context, Intent intent) {
@@ -42,14 +45,14 @@ public class PhoneStateRecieverOutgoing extends BroadcastReceiver {
 
         //Toast.makeText(context, " Receiver start outgoing ", Toast.LENGTH_SHORT).show();
         app = (MyApp) context.getApplicationContext();
+        this.context = context;
 
         final String outgoingNumber = intent.getStringExtra(Intent.EXTRA_PHONE_NUMBER);
         if (app.firstRun) {
-            MyApp.firstRunRingingNumber = outgoingNumber;
-            MyApp.firstRunContactName = getContactDisplayNameByNumber(outgoingNumber, context);
-            MyApp.firstRunIsIncoming = false;
-            MyApp.firstRuntsMilli = tsMilli;
-            app.bindService();
+
+            new LongOperation().execute(outgoingNumber,tsMilli);
+
+            //app.bindService();
 
         } else {
             app.checkForDraft(outgoingNumber, getContactDisplayNameByNumber(outgoingNumber, context), false, tsMilli);
@@ -62,6 +65,36 @@ public class PhoneStateRecieverOutgoing extends BroadcastReceiver {
 
         Toast.makeText(context, msg, Toast.LENGTH_LONG).show();
     }
+
+
+
+    private class LongOperation extends AsyncTask<String, Void, String> {
+
+        @Override
+        protected String doInBackground(String... params) {
+            MyApp.firstRunRingingNumber = params[0];
+            MyApp.firstRunContactName = getContactDisplayNameByNumber(params[0], context);
+            MyApp.firstRunIsIncoming = false;
+            MyApp.firstRuntsMilli = params[1];
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+          app.bindService();
+
+            // might want to change "executed" for the returned string passed
+            // into onPostExecute() but that is upto you
+        }
+
+        @Override
+        protected void onPreExecute() {}
+
+        @Override
+        protected void onProgressUpdate(Void... values) {}
+    }
+
+
 
     public String getContactDisplayNameByNumber(String number, Context context) {
         Uri uri = Uri.withAppendedPath(ContactsContract.PhoneLookup.CONTENT_FILTER_URI, Uri.encode(number));

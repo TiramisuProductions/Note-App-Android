@@ -49,6 +49,118 @@ public class AsyncTaskFilterModel extends AsyncTask<String, String, String> {
     protected String doInBackground(String... strings) {
 
         switch (no) {
+
+            case 0:
+
+                contacts = Contact.listAll(Contact.class);
+                emails =  Email.listAll(Email.class);
+                bankAccounts =BankAccount.listAll(BankAccount.class);
+                notes = Note.listAll(Note.class);
+                callRecordings = CallRecording.listAll(CallRecording.class);
+
+                Collections.reverse(contacts);
+                Collections.reverse(emails);
+                Collections.reverse(bankAccounts);
+                Collections.reverse(notes);
+                Collections.reverse(callRecordings);
+
+                if (contacts.size() == 0) {
+                    runOnUiThread(new Runnable() {
+
+                        @Override
+                        public void run() {
+                            ContactFragment.RContact_no_data.setVisibility(View.VISIBLE);
+                        }
+                    });
+                } else {
+                    runOnUiThread(new Runnable() {
+
+                        @Override
+                        public void run() {
+                            ContactFragment.RContact_no_data.setVisibility(View.GONE);
+                        }
+                    });
+                }
+                if (emails.size() == 0) {
+                    runOnUiThread(new Runnable() {
+
+                        @Override
+                        public void run() {
+                            EmailFragment.REmail_no_data.setVisibility(View.VISIBLE);
+                        }
+                    });
+                } else {
+                    runOnUiThread(new Runnable() {
+
+                        @Override
+                        public void run() {
+                            EmailFragment.REmail_no_data.setVisibility(View.GONE);
+                        }
+                    });
+                }
+                if (bankAccounts.size() == 0) {
+                    runOnUiThread(new Runnable() {
+
+                        @Override
+                        public void run() {
+                            BankAccountFragment.RBank_no_data.setVisibility(View.VISIBLE);
+                        }
+                    });
+                } else {
+                    runOnUiThread(new Runnable() {
+
+                        @Override
+                        public void run() {
+                            BankAccountFragment.RBank_no_data.setVisibility(View.GONE);
+                        }
+                    });
+                }
+                if (notes.size() == 0) {
+                    runOnUiThread(new Runnable() {
+
+                        @Override
+                        public void run() {
+                            NoteFragment.RNote_no_data.setVisibility(View.VISIBLE);
+                        }
+                    });
+                } else {
+                    runOnUiThread(new Runnable() {
+
+                        @Override
+                        public void run() {
+                            NoteFragment.RNote_no_data.setVisibility(View.GONE);
+                        }
+                    });
+                }
+                if (callRecordings.size() == 0) {
+                    runOnUiThread(new Runnable() {
+
+                        @Override
+                        public void run() {
+                            RecordingFragment.RRecord_no_data.setVisibility(View.VISIBLE);
+                        }
+                    });
+                } else {
+                    runOnUiThread(new Runnable() {
+
+                        @Override
+                        public void run() {
+                            RecordingFragment.RRecord_no_data.setVisibility(View.GONE);
+                        }
+                    });
+                }
+
+
+                break;
+
+
+
+
+
+
+
+
+
             case 1://Incoming
                 contacts = Contact.findWithQuery(Contact.class, "Select * from Contact where incoming = ? and is_saved_from_app = ?", "1", "0");
                 emails = Email.findWithQuery(Email.class, "Select * from Email where incoming = ? and is_saved_from_app = ?", "1", "0");

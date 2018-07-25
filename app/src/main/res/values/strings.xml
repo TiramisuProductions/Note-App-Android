@@ -138,6 +138,7 @@
 
     <string name="key_night_mode">key_night_mode</string>
     <string name="key_keep_bubble">key_keep_bubble</string>
+    <string name="key_auto_call_record">auto_call_record</string>
     <string name="key_first_time">key_first_time</string>
     <string name="title_activity_main2">MainActivity2</string>
     <string name="general">General</string>

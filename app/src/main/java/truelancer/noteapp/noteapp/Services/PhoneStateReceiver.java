@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.provider.BaseColumns;
 import android.provider.ContactsContract;
 import android.telephony.TelephonyManager;
@@ -27,6 +28,7 @@ import truelancer.noteapp.noteapp.MyApp;
 public class PhoneStateReceiver extends BroadcastReceiver {
 
     public static MyApp app;
+    private Context context;
 
     @Override
     public void onReceive(Context context, Intent intent) {
@@ -46,6 +48,7 @@ public class PhoneStateReceiver extends BroadcastReceiver {
 
         //Log.d("Receiver", "Start");
         //Toast.makeText(context, " Receiver start ", Toast.LENGTH_SHORT).show();
+        this.context = context;
         app = (MyApp) context.getApplicationContext();
         //app.popUpService.removeAllChatHeads();
         //Log.d("yoyo", "" + app.toHideBubble);
@@ -60,11 +63,8 @@ public class PhoneStateReceiver extends BroadcastReceiver {
             }*/
 
             if (app.firstRun) {
-                MyApp.firstRunRingingNumber = ringingNumber;
-                MyApp.firstRunContactName = getContactDisplayNameByNumber(ringingNumber, context);
-                MyApp.firstRunIsIncoming = false;
-                MyApp.firstRuntsMilli = tsMilli;
-                app.bindService();
+
+                new LongOperation().execute(ringingNumber,tsMilli);
 
             } else {
                 if (app != null) {
@@ -90,7 +90,7 @@ public class PhoneStateReceiver extends BroadcastReceiver {
             Toast.makeText(context, "Idle State", Toast.LENGTH_SHORT).show();
             Log.d("wood", "off hook: " + MyApp.off_hook);
 
-            if(!MyApp.keepBubble){
+            if(!MyApp.keepBubble && app.popUpService!=null){
                 app.popUpService.removeAllChatHeads();
             }
 
@@ -103,6 +103,33 @@ public class PhoneStateReceiver extends BroadcastReceiver {
                 MyApp.off_hook = false;
             }
         }
+    }
+
+
+    private class LongOperation extends AsyncTask<String, Void, String> {
+
+        @Override
+        protected String doInBackground(String... params) {
+            MyApp.firstRunRingingNumber = params[0];
+            MyApp.firstRunContactName = getContactDisplayNameByNumber(params[0], context);
+            MyApp.firstRunIsIncoming = false;
+            MyApp.firstRuntsMilli = params[1];
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            app.bindService();
+
+            // might want to change "executed" for the returned string passed
+            // into onPostExecute() but that is upto you
+        }
+
+        @Override
+        protected void onPreExecute() {}
+
+        @Override
+        protected void onProgressUpdate(Void... values) {}
     }
 
 

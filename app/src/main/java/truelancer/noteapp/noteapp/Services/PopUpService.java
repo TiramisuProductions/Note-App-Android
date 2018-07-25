@@ -30,6 +30,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
@@ -65,6 +66,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.regex.Pattern;
 
 import truelancer.noteapp.noteapp.CustomChatHeadConfig;
@@ -77,6 +80,8 @@ import truelancer.noteapp.noteapp.EventB;
 import truelancer.noteapp.noteapp.MainActivity;
 import truelancer.noteapp.noteapp.MyApp;
 import truelancer.noteapp.noteapp.R;
+
+import static com.google.android.gms.internal.zzahn.runOnUiThread;
 
 public class PopUpService extends Service {
 
@@ -100,6 +105,11 @@ public class PopUpService extends Service {
     private String calledName = "";
     private boolean incomingCall, isDone;
     private String timeStampMilli = "";
+    int seconds =0;
+    private TextView recordTimer;
+    Timer myTimer;
+
+
     Runnable updater;
     TextView timer;
 
@@ -172,8 +182,16 @@ public class PopUpService extends Service {
 
 
                     Button b1 = (Button) view.findViewById(R.id.goToAppButton);
+                    final ImageView recordFlash = (ImageView)view.findViewById(R.id.recordFlash);
+                    recordTimer = (TextView)view.findViewById(R.id.timer);
                     final Button recordCall = (Button) view.findViewById(R.id.callRecordButton);
                     Button save = (Button) view.findViewById(R.id.save);
+
+                    if(MyApp.nightMode){
+                        recordTimer.setTextColor(getResources().getColor(R.color.white));
+                    }else{
+                        recordTimer.setTextColor(getResources().getColor(R.color.black));
+                    }
 
 
                     save.setOnClickListener(new View.OnClickListener() {
@@ -209,10 +227,44 @@ public class PopUpService extends Service {
 
                                 if (isStartRecording) {
                                     recordCall.setText(getString(R.string.call_record_start));
-
+                                    recordFlash.setVisibility(View.INVISIBLE);
+                                    recordTimer.setVisibility(View.INVISIBLE);
                                     stopRecording();
+                                    seconds=0;
+                                    recordFlash.clearAnimation();
+                                    myTimer.cancel();
+
                                 } else {
                                     recordCall.setText(getString(R.string.call_record_stop));
+                                    recordFlash.setVisibility(View.VISIBLE);
+                                    recordTimer.setVisibility(View.VISIBLE);
+
+                                    Animation anim = new AlphaAnimation(0.0f, 1.0f);
+                                    anim.setDuration(200); //You can manage the time of the blink with this parameter
+                                    anim.setStartOffset(20);
+                                    anim.setRepeatMode(Animation.REVERSE);
+                                    anim.setRepeatCount(Animation.INFINITE);
+                                    recordFlash.startAnimation(anim);
+
+
+
+
+                                    MyTimerTask myTask = new MyTimerTask();
+                                     myTimer = new Timer();
+
+
+//        public void schedule (TimerTask task, long delay, long period)
+//        Schedule a task for repeated fixed-delay execution after a specific delay.
+//
+//        Parameters
+//        task  the task to schedule.
+//        delay  amount of time in milliseconds before first execution.
+//        period  amount of time in milliseconds between subsequent executions.
+
+                                    myTimer.schedule(myTask, 0, 1000);
+
+
+
                                     startRecording();
                                 }
                                 isStartRecording = !isStartRecording;
@@ -226,6 +278,42 @@ public class PopUpService extends Service {
                 }
                 parent.addView(cachedView);
                 return cachedView;
+            }
+
+            class MyTimerTask extends TimerTask {
+                public void run() {
+                    // ERROR
+
+                    // how update TextView in link below
+                    // http://android.okhelp.cz/timer-task-timertask-run-cancel-android-example/
+                    seconds++;
+
+
+                    int hours = seconds / 3600;
+                   int  minutes = (seconds % 3600) / 60;
+                   int  second = seconds % 60;
+
+                  final String   timeString = String.format("%02d:%02d:%02d", hours, minutes, second);
+
+
+
+                    runOnUiThread(new Runnable() {
+
+                        @Override
+                        public void run() {
+
+
+
+
+                            recordTimer.setText(""+timeString);
+                            // Stuff that updates the UI
+
+                        }
+                    });
+
+
+                    System.out.println("yolo");
+                }
             }
 
             @Override
@@ -319,22 +407,32 @@ public class PopUpService extends Service {
         }
 
        String tsMilli = "" + startDate.getTime();
-        addChatHead(MyApp.firstRunRingingNumber, MyApp.firstRunContactName, MyApp.firstRunIsIncoming, MyApp.firstRuntsMilli);
-        chatHeadManager.setArrangement(MinimizedArrangement.class, null);
-        moveToForeground();
+
+        if(MyApp.firstRunRingingNumber!=null&&MyApp.firstRunContactName!=null&&MyApp.firstRunIsIncoming!=null&&MyApp.firstRuntsMilli!=null){
+            addChatHead(MyApp.firstRunRingingNumber, MyApp.firstRunContactName, MyApp.firstRunIsIncoming, MyApp.firstRuntsMilli);
+            chatHeadManager.setArrangement(MinimizedArrangement.class, null);
+            moveToForeground();
+        }
+
+
+
 
     }
 
     private Drawable getChatHeadDrawable(String key) {
-        Random rnd = new Random();
+        /*Random rnd = new Random();
         // int randomColor = Color.argb(255, rnd.nextInt(256), rnd.nextInt(256), rnd.nextInt(256));
         int color = Color.argb(255, 33, 150, 243);
-        CircularDrawable circularDrawable = new CircularDrawable();
-        circularDrawable.setBitmapOrTextOrIcon(new TextDrawer().setText("HN").setBackgroundColor(color));
+
         int badgeCount = (int) (Math.random() * 10f);
         //circularDrawable.setNotificationDrawer(new CircularNotificationDrawer().setNotificationText(String.valueOf(badgeCount)).setNotificationAngle(135).setNotificationColor(Color.WHITE, Color.RED));
-        circularDrawable.setBorder(Color.WHITE, 3);
-        return circularDrawable;
+        circularDrawable.setBorder(Color.WHITE, 3);*/
+
+        //CircularDrawable circularDrawable = new CircularDrawable();
+        Drawable drawable = getResources().getDrawable(R.mipmap.ic_logo_hover);
+       // circularDrawable.setBitmapOrTextOrIcon(a);
+
+        return drawable;
 
     }
 
@@ -435,6 +533,8 @@ public class PopUpService extends Service {
     }
 
     public void startRecording() {
+
+
         MyApp.recording_in_progress = true;
         mRecorder = new MediaRecorder();
         mRecorder.setAudioSource(MediaRecorder.AudioSource.VOICE_CALL);
@@ -489,53 +589,12 @@ public class PopUpService extends Service {
         suggestedRecordName = "Record_" + calledName;
         usersRecordName.setText(suggestedRecordName);
         usersRecordName.setTextColor(getResources().getColor(R.color.black));
-        final AlertDialog alertDialog = new AlertDialog.Builder(this, R.style.CustomDialogTheme)
-                .setTitle("Recording Name")
-                .setCancelable(false)
-                .setPositiveButton("Save", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-               /* if (usersRecordName.getText().toString().length() <= 0) {
-                    usersRecordName.setError("Enter recording name");
-                } else {
-                   *//* CallRecording callRecording = new CallRecording(suggestedRecordName, file_path, calledNumber, calledName, incomingCall, timeStampMilli);
-                    callRecording.save();*//*
-                }*/
-                    }
-                })
-                .setNeutralButton("Delete", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        File file = new File(file_path).getAbsoluteFile();
-                        boolean deleted = file.delete();
-                        Log.d("shower", "" + file_path + " deleted: " + deleted);
-                        dialog.dismiss();
-                    }
-                })
-                .create();
-        alertDialog.setCanceledOnTouchOutside(false);
-        alertDialog.getWindow().setType(WindowManager.LayoutParams.TYPE_SYSTEM_ALERT);
-        alertDialog.setView(usersRecordName, 30, 30, 30, 30);
-        usersRecordName.setPadding(10, 0, 0, 15);
-        usersRecordName.setSelectAllOnFocus(true);
-        alertDialog.show();
-        alertDialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(getResources().getColor(R.color.colorPrimaryDark));
-        alertDialog.getButton(AlertDialog.BUTTON_NEUTRAL).setTextColor(getResources().getColor(R.color.cancel_color_dark));
+        String nameByUser = usersRecordName.getText().toString().trim();
+        CallRecording callRecording = new CallRecording(nameByUser, file_path, calledNumber, calledName, incomingCall, timeStampMilli);
+        callRecording.save();
+        EventBus.getDefault().post(new EventB("5"));
 
-        alertDialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String nameByUser = usersRecordName.getText().toString().trim();
-                if (nameByUser.length() > 0) {
-                    CallRecording callRecording = new CallRecording(nameByUser, file_path, calledNumber, calledName, incomingCall, timeStampMilli);
-                    callRecording.save();
-                    EventBus.getDefault().post(new EventB("5"));
-                    alertDialog.dismiss();
-                } else {
-                    Toast.makeText(PopUpService.this, "Enter Recording Name", Toast.LENGTH_SHORT).show();
-                }
-            }
-        });
+        Toast.makeText(getApplicationContext(),"Recording Saved",Toast.LENGTH_LONG).show();
 
         List<CallRecording> callRecordings = CallRecording.listAll(CallRecording.class);
         Collections.reverse(callRecordings);
