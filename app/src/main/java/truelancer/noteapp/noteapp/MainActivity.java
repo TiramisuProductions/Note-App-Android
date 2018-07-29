@@ -1598,6 +1598,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                                         contactList.add(m.clist.get(i));
                                         Log.d("abc", "contact list after add : " + contactList);
 
+
                                     } else {
                                         Contact contact = new Contact(m.getClist().get(i).getName(),
                                                 m.getClist().get(i).getPhoneno(),

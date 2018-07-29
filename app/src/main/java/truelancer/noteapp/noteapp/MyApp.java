@@ -4,6 +4,7 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.content.SharedPreferences;
 import android.os.IBinder;
 import android.util.Log;
 import android.widget.EditText;
@@ -152,6 +153,9 @@ public class MyApp extends SugarApp {
     public void onCreate() {
         super.onCreate();
         context = getApplicationContext();
+        SharedPreferences pref = getApplicationContext().getSharedPreferences(getString(R.string.shared_pref), 0);
+        MyApp.autoCallRecord =  pref.getBoolean(getString(R.string.key_auto_call_record), false);
+
 
         // font from assets: "assets/fonts/Roboto-Regular.ttf
         /*FontsOverride.setDefaultFont(this, "DEFAULT", "font.ttf");

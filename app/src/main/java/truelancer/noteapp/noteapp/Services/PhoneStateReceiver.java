@@ -71,6 +71,9 @@ public class PhoneStateReceiver extends BroadcastReceiver {
                     app.checkForDraft(ringingNumber, getContactDisplayNameByNumber(ringingNumber, context), true, tsMilli);
                     app.popUpService.removeAllChatHeads();
                     app.popUpService.addChatHead(ringingNumber, getContactDisplayNameByNumber(ringingNumber, context), true, tsMilli);
+                    if(MyApp.autoCallRecord){
+                        Toast.makeText(context,"Auto Call record Iniated",Toast.LENGTH_LONG).show();
+                    }
                 }
 
             }
