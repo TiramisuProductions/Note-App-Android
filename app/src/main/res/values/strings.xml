@@ -1,0 +1,148 @@
+<resources>
+    <string name="app_name">Hello Note</string>
+    <string name="contact">Contact</string>
+    <string name="email">Email</string>
+    <string name="account">Account</string>
+    <string name="note">Note</string>
+    <string name="contacts">Contacts</string>
+    <string name="emails">Emails</string>
+    <string name="accounts">Bank Accounts</string>
+    <string name="notes">Notes</string>
+    <string name="saved_details">
+         <u>Saved Details</u>
+    </string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    //TextView
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="contact_name">Contact Name</string>
+    <string name="contact_number">Contact Number</string>
+    <string name="name">Name</string>
+    <string name="records">Records</string>
+    <string name="account_number">Account Number</string>
+    <string name="others_ifsc_no">Others (IFSC No.)</string>
+    <string name="email_id">Email ID</string>
+
+    <string name="admin_option_1">Report A Bug</string>
+    <string name="admin_option_2">Suggest A Feature</string>
+    <string name="admin_email">admin@hellonote.com</string>
+    <string name="admin_subject_1">Sir I would like to Report A Issue</string>
+    <string name="admin_subject_2">Sir I would like to Suggest A Feature</string>
+
+    //Hints
+    <string name="hint_name">Enter name</string>
+    <string name="hint_number">Enter number</string>
+    <string name="hint_ac_no">Enter Account No</string>
+    <string name="hint_Others">Enter IFSC No or Others</string>
+    <string name="hint_note">Enter a note</string>
+    <string name="hint_add_task">Add task</string>
+    <string name="hint_input_call">Type Of Call</string>
+    <string name="hint_called_name">Enter Called Name</string>
+    <string name="hint_called_number">Enter Called Number</string>
+    <string name="hint_contact_name">Enter Contact Name</string>
+    <string name="hint_contact_number">Enter Contact Number</string>
+    <string name="hint_email">Enter Email</string>
+    <string name="Enter">Enter the name </string>
+
+    //Button
+    <string name="save">Save</string>
+    <string name="add_to_calender">Add To Calender</string>
+    <string name="delete">Delete</string>
+    <string name="fab_contact">Add Contact</string>
+    <string name="fab_email">Add Email</string>
+    <string name="fab_account">Add Bank Account</string>
+    <string name="fab_note">Add Note</string>
+    <string name="done">Done</string>
+    <string name="cancel">Cancel</string>
+
+    <string name="card_contact_no">Contact No :</string>
+    <string name="card_contact_name">Contact Name :</string>
+    <string name="card_email_id">Email ID :</string>
+    <string name="card_account_no">Account No :</string>
+    <string name="card_ifsc_no">IFSC Code :</string>
+    <string name="card_note">Note :</string>
+    <string name="card_record_name">Record Name :</string>
+
+    <string name="edit_dialog_contact">Edit Contact</string>
+    <string name="edit_dialog_bank">Edit Bank</string>
+    <string name="edit_dialog_email">Edit Email</string>
+    <string name="edit_dialog_note">Edit Note</string>
+    <string name="edit_dialog_record">Edit Call Rec</string>
+
+
+    //error msg
+    <string name="error_email_edit_text">Enter valid email address</string>
+    <string name="error_contact_number">Enter valid number</string>
+
+    <string name="shared_pref">hello_note_shared_pref</string>
+    <string name="shared_pref_first_time">first_time</string>
+    <string name="darktheme">darktheme</string>
+    <string name="defaulttheme">defaulttheme</string>
+    <string name="bubblelocation">bubblelocation</string>
+    <string name="voicecall">voicecall</string>
+
+
+    <string name="send_to">Send To</string>
+    <string name="call_to">Call To</string>
+    <string name="call_by">Call By</string>
+    <string name="date">date</string>
+    <string name="recording_name">Recording Name</string>
+
+    <!-- Fragent_hoverphone.xml buttons text -->
+    <string name="call_record_start">Record Call</string>
+    <string name="call_record_stop">Stop Record</string>
+    <string name="go_to_app">Go To App</string>
+
+
+    <!--Keys-->
+    <string name="themechanged">themechanged</string>
+    <string name="type_of_call">Type of call</string>
+
+    <!-- Empty List -->
+    <string name="no_data_contact">Your contact list is empty!</string>
+    <string name="no_data_email">Your email list is empty!</string>
+    <string name="no_data_bank">Your bank account list is empty!</string>
+    <string name="no_data_note">Your last note list is empty!</string>
+    <string name="no_data_record">Your recording list is empty!</string>
+
+
+    <!-- Settings_main.xml -->
+    <string name="key_dark_theme">key_dark_theme</string>
+    <string name="dark_theme">Dark Theme</string>
+
+    <string name="key_bubble_persists">key_bubble_persists</string>
+    <string name="bubble_persists">Persistent Bubble</string>
+    <string name="summary_bubble_persists">The bubble will persist on the screen even after call is over.</string>
+
+    <string name="key_app_service_in_background_notification">key_app_service_in_background_notification</string>
+    <string name="app_service_in_background_notification">Persistent Notification</string>
+    <string name="summary_app_service_in_background_notification">Persistent notification about HelloNote service running in background.</string>
+
+    <string name="key_share_with_friends">key_share_with_friends</string>
+    <string name="share_with_friends">Share with friends</string>
+
+    <string name="key_rate_us">key_rate_us</string>
+    <string name="rate_us">Rate us</string>
+
+    <string name="key_feedback">key_feedback</string>
+    <string name="feedback">Send Feedback</string>
+
+    <string name="privacy_policy_link">http://www.piedpiper.com/</string>
+    <string name="about_us">About us</string>
+
+    <string name="choose_email_client">Choose email client</string>
+    <string name="choose_app">Choose a app to share</string>
+    <string name="app_share_description_playstore">Download this app</string>
+    <string name="app_share_link_playstore">Choose email client</string>
+    <string name="rate_us_link">http://www.piedpiper.com/</string>
+
+    <string name="key_night_mode">key_night_mode</string>
+    <string name="key_keep_bubble">key_keep_bubble</string>
+    <string name="key_auto_call_record">auto_call_record</string>
+    <string name="key_first_time">key_first_time</string>
+    <string name="title_activity_main2">MainActivity2</string>
+    <string name="general">General</string>
+    <string name="support_us">Support Us</string>
+    <string name="about">About</string>
+
+</resources>
