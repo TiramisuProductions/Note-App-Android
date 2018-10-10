@@ -1,0 +1,83 @@
+<resources>
+
+    <!-- Base application theme. -->
+    <style name="AppTheme" parent="Theme.AppCompat.NoActionBar">
+        <item name="android:typeface">monospace</item>
+
+        <item name="android:fontFamily">@font/pt_bold</item>
+
+
+    </style>
+
+    <style name="MyMaterialTheme.Base" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="windowNoTitle">true</item>
+        <item name="windowActionBar">false</item>
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+        <item name="colorControlNormal">@color/colorAccent</item>
+        <item name="colorControlActivated">@color/colorAccent</item>
+        <item name="colorControlHighlight">@color/colorAccent</item>
+
+        <item name="android:textColorSecondary">@color/white</item>
+        <item name="android:fontFamily">@font/pt_bold</item>
+
+        <!-- <item name="android:windowAnimationStyle">@style/CustomActivityAnimation</item>-->
+
+    </style>
+
+    <style name="MyMaterialThemeDark" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="windowNoTitle">true</item>
+        <item name="windowActionBar">false</item>
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+        <item name="android:background">@color/darker_card</item>
+        <item name="android:textColor">#FFFFFF</item>
+        <item name="android:fontFamily">@font/pt_bold</item>
+        <item name="android:textColorSecondary">@color/white</item>
+
+
+    </style>
+
+    <style name="myDialog" parent="Theme.AppCompat.Light.Dialog">
+        <item name="android:windowNoTitle">true</item>
+        <item name="editTextColor">@color/colorPrimary</item>
+
+    </style>
+
+    <!--Dialog-->
+    <style name="CustomDialogTheme" parent="Theme.AppCompat.Light.Dialog.Alert">
+        <!--buttons color-->
+        <item name="colorAccent">@android:color/holo_orange_dark</item>
+        <!--title and message color-->
+        <item name="android:textColorPrimary">@color/colorPrimaryDark</item>
+        <!--dialog background-->
+        <item name="android:windowBackground">@drawable/background_dialog</item>
+
+
+    </style>
+
+
+    <!--Button-->
+    <style name="AppTheme.RoundedCornerMaterialButtonBlue" parent="Widget.AppCompat.Button.Colored">
+        <item name="android:background">@drawable/rounded_button_blue</item>
+    </style>
+
+    <style name="AppTheme.RoundedCornerMaterialButtonRed" parent="Widget.AppCompat.Button.Colored">
+        <item name="android:background">@drawable/rounded_button_red</item>
+    </style>
+
+    <style name="MyMaterialTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
+
+    <style name="MyMaterialTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
+
+    <!--<style name="CustomActivityAnimation" parent="@android:style/Animation.Activity">
+       &lt;!&ndash; <item name="android:activityOpenEnterAnimation">@anim/go_up</item>&ndash;&gt;
+        <item name="android:activityOpenExitAnimation">@anim/go_down</item>
+        &lt;!&ndash;<item name="android:activityCloseEnterAnimation">@anim/go_up</item>
+        <item name="android:activityCloseExitAnimation">@anim/go_down</item>&ndash;&gt;
+    </style>-->
+
+
+</resources>
